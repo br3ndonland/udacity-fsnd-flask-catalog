@@ -1,4 +1,5 @@
 # gitignore from https://github.com/github/gitignore/blob/master/Python.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -106,3 +107,5 @@ venv.bak/
 
 # br3ndonland additions
 *.html
+*.sublime-project
+*.sublime-workspace

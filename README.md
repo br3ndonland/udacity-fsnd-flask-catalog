@@ -21,6 +21,7 @@ br3ndonland
 - [Project description](#project-description)
 - [Repository contents](#repository-contents)
 - [Development environment](#development-environment)
+- [Application](#application)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -41,6 +42,7 @@ RESTful Python Flask web app with CRUD and OAuth
 * templates/
 	- HTML webpage templates
 * [application.py](application.py): Main Flask app
+* [database_setup.py](database_setup.py): Python file used to configure database
 * [README.md](README.md): This file, a concise description of the project
 
 
@@ -98,5 +100,11 @@ Change into the Vagrant directory:
 ```bash
 vagrant@vagrant:~$ cd /vagrant
 ```
+
+
+## Application
+
+1. On the Linux command line, run `python3 project.py`.
+2. Navigate to http://localhost:8000 in a web browser.
 
 [(back to top)](#top)

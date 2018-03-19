@@ -18,10 +18,10 @@ br3ndonland
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Getting started](#getting-started)
-- [Step 0: Creating the folders](#step-0-creating-the-folders)
-- [Step 1: Database schema](#step-1-database-schema)
-- [Step 2: Application setup code](#step-2-application-setup-code)
+- [Environment and documentation setup](#environment-and-documentation-setup)
+- [Directory setup](#directory-setup)
+- [Database setup](#database-setup)
+- [Application setup](#application-setup)
 - [Step 3: Installing app as a package](#step-3-installing-app-as-a-package)
 - [Step 4: Database connections](#step-4-database-connections)
 - [Step 5: Creating the database](#step-5-creating-the-database)
@@ -33,12 +33,12 @@ br3ndonland
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-## Getting started
+## Environment and documentation setup
 [(back to top)](#top)
 
 ### Virtual machine
 
-I already had the vagrant virtual machine installed and ready to go.
+I already had the vagrant virtual machine environment installed and ready to go.
 
 
 ### Docs
@@ -47,14 +47,17 @@ I already had the vagrant virtual machine installed and ready to go.
 * I read through the Udacity documentation and rubric, and added the materials to the repo in [flask-catalog-udacity-docs.md](flask-catalog-udacity-docs.md).
 	- The documentation is open-ended on how to work through construction of the app.
 		> Whether you start on the front end or the back end is up to you. Some people prefer seeing the layout before thinking about the data they want to present, whereas others enjoy thinking about the structure and organization of their data and the Flask application before beginning on the front end portion of their project.
-	- Instructor Lorenzo Brown says:
+	- Instructor Lorenzo Brown seems to prefer a back-end-first approach:
 		> Personally, I usually start with the database layout so that the database is modelling the information the way I want. Then I go ahead and add the backend, the Flask code, the Python code, and then I move on to the frontend where I then receive feedback on the frontend where I use the feedback to make it more stylish and elegant and presentable with everything else already in place. This is just me though, it varies from developer to developer.
+		
+		Not that helpful, or even grammatical.
+	- Lorenzo's lesson on agile iterative development (Full Stack Foundations Lesson 4, FSND Part 03 Lesson 09) actually walks through a front-end-first approach, starting with mockups.
 * I reviewed my course notes, and walked through [my notes on the Flask lesson](https://github.com/br3ndonland/udacity-fsnd/blob/master/03-backend/06-09-foundations/fsnd03_08-flask.md), and the [Flask app code from the lesson](https://github.com/udacity/Full-Stack-Foundations) in Full-Stack-Foundations/Lesson-3/Final-Flask-Application.
 * The **[Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/)** gave me a helpful step-by-step outline of the app creation process.
 * **I compared the steps from the Udacity lesson and the Flask tutorial to make my own app.**
 
 
-## Step 0: Creating the folders
+## Directory setup
 [(back to top)](#top)
 
 * I created a directory at */vagrant/flask-catalog* for the application, and set up the basic structure of the app directory.
@@ -78,15 +81,16 @@ I already had the vagrant virtual machine installed and ready to go.
 * I added the */templates* directory for the HTML webpages.
 
 
-## Step 1: Database setup
+## Database setup
 [(back to top)](#top)
 
-We will be using SQLAlchemy for this project. I modified this step from the SQLite instructions in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/schema/). The SQLAlchemy database is established within *database_setup.py*. I may not need the *schema.sql file*.
+### database_setup.py
 
-I started off adding in the necessary SQLAlchemy imports.
+#### SQLAlchemy imports
 
-We need a database of items in different categories for this project. This is similar to having restaurants with different menu items in the Udacity lesson. I was therefore able to easily adapt the `class Restaurant(Base)` to `class Category(Base)`, and `class MenuItem(Base)` to class `CatalogItem(Base)`.
+As we did in lesson 6, I will perform CRUD operations with SQLAlchemy on an SQLite database. The SQL database is established within *database_setup.py*. I also read through the SQLite instructions in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/schema/), but I may not need the *schema.sql file*.
 
+We first import the necessary modules:
 
 ## Step 2: Application setup code
 [(back to top)](#top)
