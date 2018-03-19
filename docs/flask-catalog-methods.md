@@ -92,7 +92,67 @@ As we did in lesson 6, I will perform CRUD operations with SQLAlchemy on an SQLi
 
 We first import the necessary modules:
 
-## Step 2: Application setup code
+```python
+# Import SQLAlchemy modules for database
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Category, CatalogItem, User
+```
+
+
+#### Classes
+
+Next, I needed to create Python classes for the different tables in the database. We need a database of items in different categories for this project. This is similar to having restaurants with different menu items in the Udacity lesson. I was therefore able to easily adapt the `class Restaurant(Base)` to `class Category(Base)`, and `class MenuItem(Base)` to class `CatalogItem(Base)`. I added a `class User(Base)` to keep track of users registered for the app.
+
+
+#### SQLAlchemy engine and database creation
+
+Next, we need to [configure the SQLAlchemy engine](http://docs.sqlalchemy.org/en/latest/core/engines.html):
+
+```python
+engine = create_engine('sqlite:///restaurantmenu.db')
+```
+
+The [SQLAlchemy SQLite](http://docs.sqlalchemy.org/en/latest/core/engines.html#sqlite) URL has three slashes for a relative file path.
+
+Finally, we use SQLAlchemy to create the SQLite database:
+
+```python
+Base.metadata.create_all(engine)
+```
+
+
+### catalog.py
+
+#### Setup
+
+Now that I have *database_setup.py* to set up my database, I need to populate the database with items for the catalog. I based *catalog.py* on *[lotsofmenus.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/lotsofmenus.py)* from the Full Stack Foundations course.
+
+As with *database_setup.py*, I started off adding in the necessary SQLAlchemy imports and configuring the SQLAlchemy engine.
+
+Next, we need to
+
+> Bind the engine to the metadata of the Base class so that the declaratives can be accessed through a DBSession instance
+
+```python
+engine = create_engine('sqlite:///restaurantmenu.db')
+Base.metadata.bind = engine
+```
+
+After we bind the engine to the Base class, we need to establish a database session. The comments in *lotsofmenus.py* explain:
+
+> A `DBSession()` instance establishes all conversations with the database and represents a "staging zone" for all the objects loaded into the database session object. Any change made against the objects in the session won't be persisted into the database until you call `session.commit()`. If you're not happy about the changes, you can revert all of them back to the last commit by calling `session.rollback()`.
+
+
+#### Categories and items
+
+Now that *catalog.py* is set up, I will start adding items. I used a film noir theme for my [movie trailer site](https://github.com/br3ndonland/udacity-fsnd01-p01-movies), so here I will bring in another one of my interests: Bodybuilding! Welcome to Brendon's Bodybuilding Bazaar! I entered some brief info about some of my favorite strength training equipment and accessories.
+
+I knew from experience that Python concatenates adjacent strings, so I broke the descriptions into multiple strings, with one string per line.
+
+I included website and image URLs, and commented them out, in case I want to add them in the future.
+
+
 [(back to top)](#top)
 
 * I adapted the [api_server.py](https://github.com/udacity/APIs/blob/master/Lesson_2/06_Sending%20API%20Requests/api_server.py) from 15.05 (APIs course, lesson 2) to set up the basic app at [application.py](application.py).
