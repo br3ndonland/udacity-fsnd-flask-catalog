@@ -10,13 +10,12 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
-
+import datetime
 
 Base = declarative_base()
 
+
 # Use Python classes to establish database tables
-
-
 class User(Base):
     """Create a database table for application users."""
     __tablename__ = 'user'
@@ -45,13 +44,14 @@ class Category(Base):
 
 class Item(Base):
     """Create a database table for items."""
-    __tablename__ = 'catalog_item'
+    __tablename__ = 'items'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
     description = Column(String(250))
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
+    date_created = Column(datetime, default=datetime.datetime.now())
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
@@ -62,7 +62,8 @@ class Item(Base):
             'name': self.name,
             'description': self.description,
             'category': self.category.name,
-            'id': self.id,
+            'date created': self.date_created,
+            'id': self.id
         }
 
 

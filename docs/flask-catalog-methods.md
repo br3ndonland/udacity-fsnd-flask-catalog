@@ -21,14 +21,11 @@ br3ndonland
 - [Environment and documentation setup](#environment-and-documentation-setup)
 - [Directory setup](#directory-setup)
 - [Database setup](#database-setup)
-- [Application setup](#application-setup)
-- [Step 3: Installing app as a package](#step-3-installing-app-as-a-package)
-- [Step 4: Database connections](#step-4-database-connections)
-- [Step 5: Creating the database](#step-5-creating-the-database)
-- [Step 6: The view functions](#step-6-the-view-functions)
-- [Step 7: The templates](#step-7-the-templates)
-- [Step 8: Adding style](#step-8-adding-style)
-- [Testing the application](#testing-the-application)
+- [Application](#application)
+- [Authentication and authorization](#authentication-and-authorization)
+- [Templates](#templates)
+- [Style](#style)
+- [Testing](#testing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -88,7 +85,7 @@ I already had the vagrant virtual machine environment installed and ready to go.
 
 #### SQLAlchemy imports
 
-As we did in lesson 6, I will perform CRUD operations with SQLAlchemy on an SQLite database. The SQL database is established within *database_setup.py*. I also read through the SQLite instructions in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/schema/), but I may not need the *schema.sql file*.
+As we did in lesson 6, I will perform CRUD operations with SQLAlchemy on an SQLite database. The SQL database is established within [database_setup.py](database_setup.py). I also read through the SQLite instructions in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/schema/), but I may not need the schema.sql file.
 
 We first import the necessary modules:
 
@@ -126,11 +123,11 @@ Base.metadata.create_all(engine)
 
 #### Setup
 
-Now that I have *database_setup.py* to set up my database, I need to populate the database with items for the catalog. I based *catalog.py* on *[lotsofmenus.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/lotsofmenus.py)* from the Full Stack Foundations course.
+Now that I have database_setup.py to set up my database, I need to populate the database with items for the catalog. I based [catalog.py](catalog.py) on [lotsofmenus.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/lotsofmenus.py) from the Full Stack Foundations course.
 
-As with *database_setup.py*, I started off adding in the necessary SQLAlchemy imports and configuring the SQLAlchemy engine.
+As with database_setup.py, I started off adding in the necessary SQLAlchemy imports and configuring the SQLAlchemy engine.
 
-Next, we need to
+Next, we need to:
 
 > Bind the engine to the metadata of the Base class so that the declaratives can be accessed through a DBSession instance
 
@@ -139,42 +136,95 @@ engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
 ```
 
-After we bind the engine to the Base class, we need to establish a database session. The comments in *lotsofmenus.py* explain:
+After we bind the engine to the Base class, we need to establish a database session. The comments in lotsofmenus.py explain:
 
 > A `DBSession()` instance establishes all conversations with the database and represents a "staging zone" for all the objects loaded into the database session object. Any change made against the objects in the session won't be persisted into the database until you call `session.commit()`. If you're not happy about the changes, you can revert all of them back to the last commit by calling `session.rollback()`.
 
 
 #### Categories and items
 
-Now that *catalog.py* is set up, I will start adding items. I used a film noir theme for my [movie trailer site](https://github.com/br3ndonland/udacity-fsnd01-p01-movies), so here I will bring in another one of my interests: Bodybuilding! Welcome to Brendon's Bodybuilding Bazaar! I entered some brief info about some of my favorite strength training equipment and accessories.
+Now that catalog.py is set up, I will start adding items. I used a film noir theme for my [movie trailer site](https://github.com/br3ndonland/udacity-fsnd01-p01-movies), so here I will bring in another one of my interests: Bodybuilding! Welcome to Brendon's Bodybuilding Bazaar! I entered some brief info about some of my favorite strength training equipment and accessories.
 
 I knew from experience that Python concatenates adjacent strings, so I broke the descriptions into multiple strings, with one string per line.
 
-I included website and image URLs, and commented them out, in case I want to add them in the future.
+I included website and image URLs, and commented them out, in case I want to use them in the future.
 
 
+## Application
 [(back to top)](#top)
 
-* I adapted the [api_server.py](https://github.com/udacity/APIs/blob/master/Lesson_2/06_Sending%20API%20Requests/api_server.py) from 15.05 (APIs course, lesson 2) to set up the basic app at [application.py](application.py).
+Now that I have the database and catalog set up, it's time to code the main application in [application.py](application.py). If you're still following along in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/), this would roughly be around [Step 6: The view functions](http://flask.pocoo.org/docs/0.12/tutorial/views/).
 
-## Step 3: Installing app as a package
-[(back to top)](#top)
 
-## Step 4: Database connections
-[(back to top)](#top)
+### application.py
 
-## Step 5: Creating the database
-[(back to top)](#top)
+#### Setup
 
-TODO: KONRAD JUST HARDCODED THE ITEMS INTO INIT_DB_SETUP.PY
+* I started with the usual imports and database connection.
+* Before any operations are performed, we must first import the necessary libraries, connect to the database, and create a session to interface with the database. SQLAlchemy uses "sessions" to connect to the database. We can store the commands we plan to use, but not send them to the database until we run a commit.
 
-## Step 6: The view functions
-[(back to top)](#top)
 
-### Show entries
-### Add new entry
+#### App routes
 
-### Authentication: Login and Logout
+* **The lessons didn't adequately prepare me for building the rest of the application code.** I started, as before, by reviewing code from the Full Stack Foundations restaurant menus example. I referenced [finalproject.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/finalproject.py).
+* **I decided to start by defining functions for the Flask app routes, and then to leave the authentication flow for later.**
+
+
+##### CRUD: Read
+
+* The homepage was fairly straightforward. The most difficult thing was figuring out how to display recent items. I accomplished this by creating a `recent_items` object and using a [SQLAlchemy command](https://stackoverflow.com/questions/4186062/sqlalchemy-order-by-descending#4187279):
+	```python
+	    recent_items = (session.query(Item)
+        .order_by(Item.date_created.desc())
+        .limit(10)
+        .all())
+	```
+* Next, I coded the app route function to display all items in a specific category. The URL in [finalproject.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/finalproject.py) is coded using the category `id`, which is okay, but it may be more intuitive to use the category name in the URL.
+<!-- TODO: Re-code URL with category name -->
+
+
+##### CRUD: Create an item with a POST request
+
+* The next function to build in would be item creation. We will use POST requests for this.
+* Users need to be logged in to edit items. I added a simple login verification:
+	```python
+	# Verify user is logged in
+	if 'username' not in login_session:
+	    return redirect('/login')
+	```
+* I will build in additional login functions later.
+* Next, I needed flash messages to warn users if they haven't added all the information needed for a new item. I used the Flask lesson from Full Stack Foundations, Part 15, as a starting point (see [lesson notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/06-09-foundations/fsnd03_08-flask.md#message-flashing) and [lesson code](https://github.com/br3ndonland/Full-Stack-Foundations/blob/master/Lesson-3/17_Flash-Messaging-Solution/project.py))
+* I added in the `from Flask import flash` to support flash messaging.
+* I then added an object to provide all the proper fields for the item, based on database_setup.py.
+
+
+##### CRUD: Edit and delete items
+
+* Of course, after we create items, we may want to edit or delete them.
+* We only want the creator of the item to be able to modify it.
+
+
+##### JSON
+
+I created additional app routes with `jsonify` by appending '/json' to the homepage, category, and item pages.
+
+For example:
+
+```python
+@app.route('/catalog/<int:category_id>/json`')
+@app.route('/catalog/<int:category_id>/items/json')
+def show_category_json(category_id):
+    """App route function to provide category data in JSON format."""
+    items = session.query(Item).filter_by(category_id=category_id).all()
+    return jsonify(items=[items.serialize for item in items])
+```
+
+
+## Authentication and authorization
+
+### Google
+
+### Facebook
 
 ### CSRF protection
 
@@ -183,15 +233,18 @@ Cross-Site Request Forgery (CSRF)
 [CSRF protection in Flask](http://flask.pocoo.org/snippets/3/)
 
 
-## Step 7: The templates
+## Templates
 [(back to top)](#top)
 
+flask tutorial step 7
 
-* layout.html
-* show_entries.html
-* login.html
+* I started by quickly creating the files I knew I needed on the command line:
+	```bash
+	touch index.html categories.html category.html item.html add_item.html edit_item.html delete_item.html login.html
+	```
+* 
 
-## Step 8: Adding style
+## Style
 [(back to top)](#top)
 
 ### HTML and CSS
@@ -199,10 +252,8 @@ Cross-Site Request Forgery (CSRF)
 TODO: IMPORT BOOTSTRAP
 
 
-## Testing the application
+## Testing
 [(back to top)](#top)
-
-### API endpoints
 
 
 [(back to top)](#top)

@@ -102,6 +102,7 @@ slingshot_hip_2 = Item(name='SlingShot Hip Circle 2.0',
 session.add(slingshot_hip_2)
 session.commit()
 
+# Verify categories
 categories = session.query(Category).all()
 for category in categories:
     print('Category: {}'.format(category.name))

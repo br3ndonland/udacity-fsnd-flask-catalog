@@ -98,13 +98,36 @@ $ vagrant ssh
 Change into the Vagrant directory:
 
 ```bash
-vagrant@vagrant:~$ cd /vagrant
+$ vagrant@vagrant:~$ cd /vagrant
 ```
 
 
 ## Application
 
-1. On the Linux command line, run `python3 project.py`.
-2. Navigate to http://localhost:8000 in a web browser.
+Save the application at */vagrant/flask-catalog*.
+
+On the Linux command line, after logging into vagrant:
+
+Change into the application directory:
+
+```bash
+$ cd flask-catalog
+```
+
+Set up the database:
+
+```bash
+$ python3 database_setup.py
+```
+
+Start the application:
+
+```bash
+$ python3 project.py
+```
+
+Navigate to http://localhost:8000 in a web browser.
+
+Log in, and enjoy!
 
 [(back to top)](#top)
