@@ -249,6 +249,23 @@ class Item(Base):
 
 ```
 
+Git commit at this point: Debug database item timestamping 695e7bb
+
+
+### Database population
+
+I populated the database with items from catalog.py by running:
+
+```
+vagrant@vagrant:/vagrant/flask-catalog$ python3 catalog.py
+Category: Equipment
+Category: Accessories
+```
+
+I verified the additions to the database using [DB Browser for SQLite](http://sqlitebrowser.org/):
+
+<img src="img/database-population.png" alt="Screenshot of DB Browser for SQLite, showing successful database creation and population" width="75%">
+
 
 ## Application
 [(back to top)](#top)
@@ -272,7 +289,7 @@ Now that I have the database and catalog set up, it's time to code the main appl
 
 ##### CRUD: Read
 
-* The homepage was fairly straightforward. The most difficult thing was figuring out how to display recent items. I accomplished this by creating a `recent_items` object and using a [SQLAlchemy command](https://stackoverflow.com/questions/4186062/sqlalchemy-order-by-descending#4187279):
+* The homepage app route was fairly straightforward. The most difficult thing was figuring out how to display recent items. I accomplished this by creating a `recent_items` object and using a [SQLAlchemy command](https://stackoverflow.com/questions/4186062/sqlalchemy-order-by-descending#4187279):
 	```python
 	    recent_items = (session.query(Item)
         .order_by(Item.date_created.desc())
