@@ -6,7 +6,7 @@
 # Database setup code
 
 # Import SQLAlchemy modules for database
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -51,7 +51,7 @@ class Item(Base):
     description = Column(String(250))
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
-    date_created = Column(datetime, default=datetime.datetime.now())
+    date_created = Column(DateTime, default=datetime.datetime.now())
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 

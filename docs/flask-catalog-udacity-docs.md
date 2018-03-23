@@ -14,6 +14,18 @@ Brendon Smith
 
 br3ndonland
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Project Overview](#project-overview)
+- [Project Display Example](#project-display-example)
+- [Project Details](#project-details)
+- [Project Submission](#project-submission)
+- [Project Specification Rubric](#project-specification-rubric)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Project Overview
 
@@ -37,6 +49,7 @@ You will learn how to develop a RESTful web application using the Python framewo
 
 
 ## Project Display Example
+[(back to top)](#top)
 
 **Note: The screenshots on this page are just examples of one implementation of the minimal functionality. You are encouraged to redesign and strive for even better solutions.**
 
@@ -68,6 +81,7 @@ In this sample project, the homepage displays all current categories along with 
 
 
 ## Project Details
+[(back to top)](#top)
 
 ### How will I complete this project?
 
@@ -84,6 +98,7 @@ Get started with this helpful [guide](https://docs.google.com/document/d/1jFjlq_
 
 
 ## Project Submission
+[(back to top)](#top)
 
 You will develop an application that provides a list of items within a variety of categories as well as provide a user registration and authentication system. Registered users will have the ability to post, edit and delete their own items.
 
@@ -108,6 +123,7 @@ You will get an email as soon as your reviewer has feedback for you. In the mean
 
 
 ## Project Specification Rubric
+[(back to top)](#top)
 
 Item Catalog
 
@@ -215,3 +231,5 @@ Is there a `README` file included detailing all steps required to successfully r
 
 *   Add `CRUD` functionality for image handling.
 *   Implement `CSRF` protection on your `CRUD` operations.
+
+[(back to top)](#top)

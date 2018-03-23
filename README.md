@@ -95,12 +95,6 @@ Log in to Ubuntu:
 $ vagrant ssh
 ```
 
-Change into the Vagrant directory:
-
-```bash
-$ vagrant@vagrant:~$ cd /vagrant
-```
-
 
 ## Application
 
@@ -111,7 +105,7 @@ On the Linux command line, after logging into vagrant:
 Change into the application directory:
 
 ```bash
-$ cd flask-catalog
+$ vagrant@vagrant:~$ cd /vagrant/flask-catalog
 ```
 
 Set up the database:
