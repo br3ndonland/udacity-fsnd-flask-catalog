@@ -14,15 +14,15 @@ from database_setup import Base, Category, Item, User
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
 # Import Flask modules from flask library
-from flask import Flask
-from flask import flash, jsonify, redirect, render_template, request, url_for
+from flask import Flask, flash, jsonify, make_response, redirect
+from flask import render_template, request, url_for
 from flask import session as login_session
 
 # Other modules
-import random
-import string
 import json
+import random
 import requests
+import string
 
 
 # Create an instance of class Flask.
@@ -37,36 +37,6 @@ Base.metadata.bind = engine
 # Create database session
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
-# Functions for establishing login session and user info
-CLIENT_ID = json.loads(open('client_secrets.json', 'r')
-    .read())['web']['client_id']
-
-
-def create_user(login_session):
-    """Create new user based on login info."""
-    new_user = User(name=login_session['username'],
-                    email=login_session['email'],
-                    photo=login_session['photo'])
-    session.add(new_user)
-    session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
-    return user.id
-
-
-def get_user_id(user_id):
-    """Get user ID."""
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
-
-
-def get_user_email(email):
-    """Get user email."""
-    try:
-        user = session.query(User).filter_by(email=email).one()
-        return user.id
-    except Exception:
-        return None
 
 
 # Decorators to wrap each function inside Flask's app.route() function
@@ -242,6 +212,176 @@ def delete_item(category_id, item_id):
                                 category_id=item_category.category_id))
     else:
         return render_template('delete_item.html', item=item)
+
+
+# Functions for establishing login session and user info
+CLIENT_ID = json.loads(open('client_secrets.json', 'r')
+    .read())['web']['client_id']
+
+
+def create_user(login_session):
+    """Create new user based on login info."""
+    new_user = User(name=login_session['username'],
+                    email=login_session['email'],
+                    photo=login_session['photo'])
+    session.add(new_user)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def get_user_id(user_id):
+    """Get user ID."""
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def get_user_email(email):
+    """Get user email."""
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except Exception:
+        return None
+
+
+# Login page
+@app.route('/login')
+def login():
+    """App route function to log in and generate token."""
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in range(32))
+    login_session['state'] = state
+    return render_template('login.html', STATE=state)
+
+
+# GConnect login
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    """App route function for Google GConnect login."""
+    # Confirm that client and server tokens match
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # Obtain authorization code
+    code = request.data
+
+    try:
+        # Upgrade the authorization code into a credentials object
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow.redirect_uri = 'postmessage'
+        credentials = oauth_flow.step2_exchange(code)
+    except FlowExchangeError:
+        response = make_response(
+            json.dumps('Failed to upgrade the authorization code.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Check that the access token is valid.
+    access_token = credentials.access_token
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+           % access_token)
+    resp = requests.get(url=url)
+    result = json.loads(resp.text)
+    # If there was an error in the access token info, abort.
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is valid for the user.
+    gplus_id = credentials.id_token['sub']
+    if result['user_id'] != gplus_id:
+        response = make_response(
+            json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Verify that the access token is valid for this app.
+    if result['issued_to'] != CLIENT_ID:
+        response = make_response(
+            json.dumps("Token's client ID does not match app's."), 401)
+        print("Token's client ID does not match app's.")
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    stored_credentials = login_session.get('credentials')
+    stored_gplus_id = login_session.get('gplus_id')
+    if stored_credentials is not None and gplus_id == stored_gplus_id:
+        response = make_response(json.dumps('User is already connected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    # Store the access token in the session for later use.
+    login_session['credentials'] = credentials.access_token
+    login_session['gplus_id'] = gplus_id
+
+    # Get user info
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    params = {'access_token': credentials.access_token, 'alt': 'json'}
+    answer = requests.get(userinfo_url, params=params)
+
+    data = answer.json()
+
+    login_session['username'] = data['name']
+    login_session['picture'] = data['picture']
+    login_session['email'] = data['email']
+
+    # Create new user if user does not already exist
+    user = session.query(User).filter_by(email=data['email']).first()
+    if user:
+        print('{} already exists.'.format(user.email))
+    else:
+        new_user = User(name=data['name'], email=data['email'],
+            picture_url=data['picture'])
+        session.add(new_user)
+        session.commit()
+
+    output = ''
+    output += '<h1>Welcome, '
+    output += login_session['username']
+    output += '!</h1>'
+    output += '<img src="'
+    output += login_session['picture']
+    flash('Logged in as {}'.format(login_session['username']))
+    print('Logged in as {}'.format(login_session['username']))
+    print('Done!')
+    return output
+
+
+@app.route('/gdisconnect')
+def gdisconnect():
+    """App route function to disconnect from Google login."""
+    try:
+        access_token = login_session['credentials']
+    except KeyError:
+        flash('Failed to get access token')
+        return redirect('/')
+
+    print('GDisconnect access token is {}'.format(access_token))
+    print('User name is {}'.format(login_session['username']))
+    if access_token is None:
+        print('Access Token is None')
+        response = make_response(
+            json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    url = ('https://accounts.google.com/o/oauth2/revoke?token=%s'
+        % login_session['credentials'])
+    print(url)
+    resp = requests.get(url=url)
+    print('Result is {}'.format(resp))
+
+    del login_session['credentials']
+    del login_session['gplus_id']
+    del login_session['username']
+    del login_session['email']
+    del login_session['picture']
+
+    flash('Successfully logged out.')
+
+    return redirect('/')
 
 
 # If this file is called as a standalone program:

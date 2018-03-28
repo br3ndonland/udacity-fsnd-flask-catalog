@@ -65,7 +65,7 @@ A virtual machine can be used to run the code from an operating system with a de
 I wrote the program in a Linux virtual machine with the following components:
 
 * Oracle [VirtualBox](https://www.virtualbox.org/wiki/Downloads) Version 5.2.6 r120293 (Qt5.6.3)
-	- Software that runs special containers called  virtual machines, like Vagrant.
+	- Software that runs special containers called virtual machines, like Vagrant.
 * [Vagrant](https://www.vagrantup.com/) 2.0.1 with Ubuntu 16.04.3 LTS (GNU/Linux 4.4.0-75-generic i686)
 	- Software that provides the Linux operating system in a defined configuration, allowing it to run identically across many personal computers. Linux can then be run as a virtual machine with VirtualBox.
 * [Udacity Virtual Machine configuration](https://github.com/udacity/fullstack-nanodegree-vm)
@@ -98,7 +98,7 @@ $ vagrant ssh
 
 ## Application
 
-Save the application at */vagrant/flask-catalog*.
+Save the application in the virtual machine directory at */vagrant/flask-catalog*.
 
 On the Linux command line, after logging into vagrant:
 
@@ -108,10 +108,16 @@ Change into the application directory:
 $ vagrant@vagrant:~$ cd /vagrant/flask-catalog
 ```
 
-Set up the database:
+Create the database:
 
 ```bash
 $ python3 database_setup.py
+```
+
+Populate the database:
+
+```bash
+$ python3 catalog.py
 ```
 
 Start the application:

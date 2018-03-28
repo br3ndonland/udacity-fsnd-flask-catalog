@@ -102,7 +102,7 @@ from database_setup import Base, Category, CatalogItem, User
 Next, I needed to create Python classes for the different tables in the database. We need a database of items in different categories for this project. This is similar to having restaurants with different menu items in the Udacity lesson. I was therefore able to easily adapt the `class Restaurant(Base)` to `class Category(Base)`, and `class MenuItem(Base)` to class `CatalogItem(Base)`. I added a `class User(Base)` to keep track of users registered for the app.
 
 
-#### SQLAlchemy engine and database creation
+#### SQLAlchemy engine
 
 Next, we need to [configure the SQLAlchemy engine](http://docs.sqlalchemy.org/en/latest/core/engines.html):
 
@@ -117,6 +117,8 @@ Finally, we use SQLAlchemy to create the SQLite database:
 ```python
 Base.metadata.create_all(engine)
 ```
+
+Git commit at this point: Set up database 7844cbb
 
 
 ### catalog.py
@@ -149,10 +151,12 @@ I knew from experience that Python concatenates adjacent strings, so I broke the
 
 I included website and image URLs, and commented them out, in case I want to use them in the future.
 
+Git commit at this point: Create item catalog 0dd29ab
+
 
 ### Database creation
 
-When I first tried to create the database with
+When I first tried to create the database by running
 
 ```bash
 $ python3 database_setup.py
@@ -264,7 +268,12 @@ Category: Accessories
 
 I verified the additions to the database using [DB Browser for SQLite](http://sqlitebrowser.org/):
 
+```
+$ brew cask install db-browser-for-sqlite
+```
+
 <img src="img/database-population.png" alt="Screenshot of DB Browser for SQLite, showing successful database creation and population" width="75%">
+
 
 
 ## Application
@@ -303,13 +312,14 @@ Now that I have the database and catalog set up, it's time to code the main appl
 ##### CRUD: Create an item with a POST request
 
 * The next function to build in would be item creation. We will use POST requests for this.
-* Users need to be logged in to edit items. I added a simple login verification:
+* Users need to be logged in to edit items. I added a simple login verification for the local permission system:
 	```python
 	# Verify user is logged in
 	if 'username' not in login_session:
 	    return redirect('/login')
 	```
-* I will build in additional login functions later.
+	- This was based on Lesson 12. Local permission system 12.06. Quiz: Protect Menu Pages (Lesson 3 in free course [Authentication & Authorization: OAuth](https://www.udacity.com/course/authentication-authorization-oauth--ud330))
+	- I will build in additional login functions later.
 * Next, I needed flash messages to warn users if they haven't added all the information needed for a new item. I used the Flask lesson from Full Stack Foundations, Part 15, as a starting point (see [lesson notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/06-09-foundations/fsnd03_08-flask.md#message-flashing) and [lesson code](https://github.com/br3ndonland/Full-Stack-Foundations/blob/master/Lesson-3/17_Flash-Messaging-Solution/project.py))
 * I added in the `from Flask import flash` to support flash messaging.
 * I then added an object to provide all the proper fields for the item, based on database_setup.py.
@@ -339,23 +349,77 @@ def show_category_json(category_id):
 
 ### Next steps
 
-I did a Git commit at this point (Create app routes, 0bcddf7), and thought about how to proceed. I could have built the HTML templates and tested the app, but decided to proceed with authentication and build the front-end later.
+Git commit at this point: Create app routes 0bcddf7 
+
+**I thought about how to proceed. I could have built the HTML templates and tested the app, but decided to proceed with authentication and build the front-end later.**
 
 
 ## Authentication and authorization
 
 ### Getting started
 
-I turned to [my notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/10-13-oauth/fsnd03_10-13-oauth.md) and the [material](https://github.com/udacity/OAuth2.0) from the [OAuth lessons](https://www.udacity.com/course/authentication-authorization-oauth--ud330) to implement Google and Facebook sign-in.
+I followed the [OAuth lessons](https://www.udacity.com/course/authentication-authorization-oauth--ud330) to implement sign-in. The Udacity materials are, of course, poorly formatted and outdated, and didn't prepare me for the project. The course code exists, confusingly, in two repos: [OAuth2.0](https://github.com/udacity/OAuth2.0) and [ud330](https://github.com/udacity/ud330/blob/master/Lesson2/step2/project.py). The code in ud330 is formatted a little better than the OAuth repo. 
 
-The Udacity materials are, of course, poorly formatted and outdated, and didn't prepare me for the project.
-
-The instructor notes in Lesson 10.02 Authentication and Authorization link to [lepture's blog post about Flask-OAuthlib](http://lepture.com/en/2013/create-oauth-server). He was the creator of Flask-OAuthlib and has now replaced it with the [announcement of Authlib](https://lepture.com/en/2018/announcement-of-authlib).
-
-How does this relate to Google and Facebook sign-in, and do I need it?
+I turned to [my notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/10-13-oauth/fsnd03_10-13-oauth.md) and re-watched the OAuth lessons to implement Google and Facebook sign-in.
 
 
 ### Google
+
+#### Create client ID and secret
+
+* **The client ID and secret allow the app to communicate with Google.**
+* I searched around a bit and found the [Google API Client Library for Python](https://developers.google.com/api-client-library/python/).
+* Created a new project in the [Google APIs Dashboard](https://console.developers.google.com/apis/dashboard) (udacity-flask-catalog).
+* It seems like I will need an OAuth key, rather than a simple API key like I used in the API lessons. See [Lesson 11.05](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/10-13-oauth/fsnd03_10-13-oauth.md#1105-quiz-step-1-create-client-id--secret).
+* I set the "Authorized JavaScript Origins" to allow http://localhost:8000
+* Downloaded JSON and renamed to client_secrets.json
+* Create a server-side helper function to store the client secret as an object
+	```python
+	CLIENT_ID = json.loads(open('client_secrets.json', 'r')
+	    .read())['web']['client_id']
+	```
+
+
+#### Create anti-forgery state token
+
+* **The anti-forgery state token is a random string generated by Flask. This helps verify the authenticated user and prevent attacks.**
+* I imported Flask's version of sessions, and named it `login_session`:
+	```python
+	from flask import session as login_session
+	import random
+	import string
+	```
+	- `login_session` is a dictionary. We can store values there during the session.
+* I then created the login page app route, including generation of a random string:
+	```python
+	@app.route('/login')
+	def login():
+	    """App route function to log in and generate token."""
+	    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+	                    for x in range(32))
+	    login_session['state'] = state
+	    return render_template('login.html', STATE=state)
+	```
+	- Session works like a dictionary and can store values.
+	- `random` and `string` are used to generate a random string, stored in an object with the name `state` here.
+	- The `xrange` in Python 2 is replaced by `range` in Python 3.
+	- The `state` token is stored in the `login_session` object.
+
+
+#### GConnect
+
+New imports in application.py:
+
+```python
+# Import OAuth modules for user authentication
+from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
+from flask import make_response
+import json
+import requests
+```
+
+We then created the GConnect and GDisconnect app routes.
+
 
 ### Facebook
 
@@ -365,22 +429,49 @@ Cross-Site Request Forgery (CSRF)
 
 [CSRF protection in Flask](http://flask.pocoo.org/snippets/3/)
 
+Passing the state token as an argument in login.html helps protect against CSRF.
+
 
 ## Templates
 [(back to top)](#top)
 
 flask tutorial step 7
 
+We use [Jinja](http://jinja.pocoo.org/docs/2.10/) templating in Flask. 
+
+I followed the [guidelines for template inheritance](http://flask.pocoo.org/docs/0.12/patterns/templateinheritance/) by naming the base template layout.html.
+
+As we saw in the Udacity Flask lesson part 10:
+
+```
+{% logical code for Python %}
+{{ printed output code }}
+```
+
+HTML templates don't get to use Python indendation and spacing, so we have to inclde instructions to terminate loops:
+
+```
+{% endfor %}
+{% endif %}
+```
+
+
 * I started by quickly creating the files I knew I needed on the command line:
 	```bash
-	touch index.html categories.html category.html item.html add_item.html edit_item.html delete_item.html login.html
+	touch layout.html categories.html category.html item.html add_item.html edit_item.html delete_item.html login.html
 	```
-* 
+* layout.html
+	- This is the base template.
+* login.html
+	- I based this template on [ud330/Lesson2/step3/templates/login.html](https://github.com/udacity/ud330/blob/master/Lesson2/step3/templates/login.html).
+* asdf
 
 ## Style
 [(back to top)](#top)
 
 ### HTML and CSS
+
+I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
 
 TODO: IMPORT BOOTSTRAP
 
