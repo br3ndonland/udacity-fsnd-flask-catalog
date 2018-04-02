@@ -123,11 +123,11 @@ $ python3 catalog.py
 Start the application:
 
 ```bash
-$ python3 project.py
+$ python3 application.py
 ```
 
 Navigate to http://localhost:8000 in a web browser.
 
 Log in, and enjoy!
 
-[(back to top)](#top)
+[(Back to TOC)](#toc)

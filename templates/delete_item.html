@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container">
+  <header>
+    <h2>Delete {{ item.name }}</h2>
+    <p>Are you sure you want to delete <i>{{ item.name }}?</i></p>
+  </header>
+  <form method="post">
+    <input type="hidden" name="category_id" value="{{ item.category.id }}">
+    <input type="hidden" name="item_id" value="{{ item.id }}">
+    <button class="btn" type="submit">Confirm</button>
+    <a class="btn btn-secondary" href="{{ url_for('/') }}">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container">
+  <header>
+    <h2>Add New Item</h2>
+  </header>
+  <div class="form-group">
+    <form method="post">
+      <h3>Name</h3>
+      <input style="min-width: 200px;" type="text" name="item_name" value="{{ item.name }}">
+      <h3>Description</h3>
+      <input style="min-width: 200px;" type="text" name="item_description" value="{{ item.description }}">
+      <h3>Category</h3>
+      <select name="item_category">
+        {% for category in categories %}
+          {% if category.name == item.category.name %}
+            <option value="{{ category.name }}" selected="selected">{{ category.name }}</option>
+          {% else %}
+            <option value="{{ category.name }}">{{ category.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <div class="btn-group" role="group" aria-label="Submission buttons">
+        <button type="button submit" class="btn btn-secondary">Edit</button>
+        <a class="btn btn-secondary" href="{{ url_for('/') }}" role="button">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

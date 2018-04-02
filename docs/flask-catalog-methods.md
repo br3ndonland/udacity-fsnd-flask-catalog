@@ -14,6 +14,7 @@ Brendon Smith
 
 br3ndonland
 
+## TOC
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -31,7 +32,7 @@ br3ndonland
 
 
 ## Environment and documentation setup
-[(back to top)](#top)
+[(back to TOC)](#toc)
 
 ### Virtual machine
 
@@ -55,7 +56,7 @@ I already had the vagrant virtual machine environment installed and ready to go.
 
 
 ## Directory setup
-[(back to top)](#top)
+[(back to TOC)](#toc)
 
 * I created a directory at */vagrant/flask-catalog* for the application, and set up the basic structure of the app directory.
 * The **[Flask docs](http://flask.pocoo.org/docs/0.12/)** had some helpful instructions in the foreword for how to organize the directory:
@@ -79,7 +80,7 @@ I already had the vagrant virtual machine environment installed and ready to go.
 
 
 ## Database setup
-[(back to top)](#top)
+[(back to TOC)](#toc)
 
 ### database_setup.py
 
@@ -277,7 +278,7 @@ $ brew cask install db-browser-for-sqlite
 
 
 ## Application
-[(back to top)](#top)
+[(back to TOC)](#toc)
 
 Now that I have the database and catalog set up, it's time to code the main application in [application.py](application.py). If you're still following along in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/), this would roughly be around [Step 6: The view functions](http://flask.pocoo.org/docs/0.12/tutorial/views/).
 
@@ -355,6 +356,7 @@ Git commit at this point: Create app routes 0bcddf7
 
 
 ## Authentication and authorization
+[(back to TOC)](#toc)
 
 ### Getting started
 
@@ -404,6 +406,7 @@ I turned to [my notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/0
 	- `random` and `string` are used to generate a random string, stored in an object with the name `state` here.
 	- The `xrange` in Python 2 is replaced by `range` in Python 3.
 	- The `state` token is stored in the `login_session` object.
+	- Passing the state token as an argument in login.html helps protect against CSRF. See [CSRF protection in Flask](http://flask.pocoo.org/snippets/3/) for more info.
 
 
 #### GConnect
@@ -418,66 +421,66 @@ import json
 import requests
 ```
 
-We then created the GConnect and GDisconnect app routes.
+I then created the GConnect and GDisconnect app routes.
+
+Git commit at this point: Add Google login 4d3d016
 
 
 ### Facebook
 
-### CSRF protection
-
-Cross-Site Request Forgery (CSRF)
-
-[CSRF protection in Flask](http://flask.pocoo.org/snippets/3/)
-
-Passing the state token as an argument in login.html helps protect against CSRF.
+We were only required to implement one third-party login. Facebook login would probably be more effectively implemented with JavaScript, so I opted not to include it. See the [Facebook login documentation](https://developers.facebook.com/docs/facebook-login).
 
 
 ## Templates
-[(back to top)](#top)
+[(back to TOC)](#toc)
 
-flask tutorial step 7
-
-We use [Jinja](http://jinja.pocoo.org/docs/2.10/) templating in Flask. 
-
-I followed the [guidelines for template inheritance](http://flask.pocoo.org/docs/0.12/patterns/templateinheritance/) by naming the base template layout.html.
-
-As we saw in the Udacity Flask lesson part 10:
-
-```
-{% logical code for Python %}
-{{ printed output code }}
-```
-
-HTML templates don't get to use Python indendation and spacing, so we have to inclde instructions to terminate loops:
-
-```
-{% endfor %}
-{% endif %}
-```
-
-
+* We use [Jinja](http://jinja.pocoo.org/docs/2.10/) templating in Flask. See the [Flask tutorial step 7](http://flask.pocoo.org/docs/0.12/tutorial/templates/).
+* I followed the [guidelines for template inheritance](http://flask.pocoo.org/docs/0.12/patterns/templateinheritance/) by naming the base template layout.html. As we saw in the Udacity Flask lesson part 10:
+	```
+	{% logical code for Python %}
+	{{ printed output code }}
+	```
+* HTML templates don't get to use Python indendation and spacing, so we have to inclde instructions to terminate loops:
+	```
+	{% endfor %}
+	{% endif %}
+	```
 * I started by quickly creating the files I knew I needed on the command line:
 	```bash
 	touch layout.html categories.html category.html item.html add_item.html edit_item.html delete_item.html login.html
 	```
 * layout.html
 	- This is the base template.
+	- I elected not to include the `<meta name="keywords" content="">` tag, because [Google does not use the keywords meta tag in web ranking](https://webmasters.googleblog.com/2009/09/google-does-not-use-keywords-meta-tag.html).
 * login.html
-	- I based this template on [ud330/Lesson2/step3/templates/login.html](https://github.com/udacity/ud330/blob/master/Lesson2/step3/templates/login.html).
+	- I extended the base template.
+	- I based the Google sign-in part of the template on [ud330/Lesson2/step3/templates/login.html](https://github.com/udacity/ud330/blob/master/Lesson2/step3/templates/login.html).
 * asdf
 
 ## Style
-[(back to top)](#top)
+[(back to TOC)](#toc)
 
 ### HTML and CSS
 
-I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
-
-TODO: IMPORT BOOTSTRAP
+I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
 
 
 ## Testing
-[(back to top)](#top)
+[(back to TOC)](#toc)
 
+* Here's what the app looked like when I started it up for the first time:
+	
+	<img src="../static/img/Screen-Shot-2018-03-29-at-3.44.23-PM.png">
 
-[(back to top)](#top)
+* :face_palm: 🤦
+* Clicking Categories just stays at the same page.
+* Clicking login returns an error:
+	```text
+	builtins.RuntimeError
+	
+	RuntimeError: The session is unavailable because no secret key was set.
+	Set the secret_key on the application to something unique and secret.
+	```
+* The easiest place to start is with fixing the HTML. I need to keep the main container in line with the header.
+
+[(back to TOC)](#toc)

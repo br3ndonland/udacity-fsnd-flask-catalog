@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <header>
+        <h2>Categories</h2>
+      </header>
+      <ul>
+        {% for category in categories %}
+          <li>
+            <a href="{{ url_for('category', category=category.name) }}">
+            {{ category.name }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-sm-6">
+      <header>
+        <h2>Items in {{ category_name }}</h2>
+      </header>
+      <ul>
+        {% for item in category_items %}
+        <li>
+          <a href="{{ url_for('show_item', category_name=item.category.name, item_name=item.name) }}">
+          {{ item.name }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
