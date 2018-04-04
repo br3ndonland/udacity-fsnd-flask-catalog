@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>BreBoBa</title>
+  <title>Flask catalog</title>
   <meta name="description" content="Brendon's Bodybuilding Bazaar">
   <meta name="author" content="Brendon Smith">
   <!-- Required meta tags -->
@@ -18,7 +18,7 @@
   <!-- Header -->
   <header class="container header">
     <!-- Navbar -->
-    <nav class="navbar navbar-dark bg-dark rounded-bottom">
+    <nav class="navbar navbar-dark bg-dark rounded-bottom mb-1">
       <a class="navbar-brand h1" href="/">Brendon's Bodybuilding Bazaar</a>
       {% if 'username' in login_session %}
       <a class="btn btn-primary btn-lg" role="button" href="{{ url_for('add_item') }}">Add item</a>
@@ -33,8 +33,17 @@
   <!-- Main page content -->
   <main>
     <div class="container">
-      {% block content %}
-      {% endblock %}
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 mt-1">
+            {% block content %}
+            {% endblock %}
+          </div>
+          <div class="col-sm-4 mt-1">
+            <img src="../static/img/arnold-schwarzenegger-encyclopedia-232.png" alt="Picture of Arnold Schwarzenegger and Franco Columbu doing incline dumbbell curls" class="img-fluid rounded">
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 

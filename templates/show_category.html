@@ -21,15 +21,16 @@
 <div class="row">
   <div class="col-sm-5">
     <header>
-      <h2 class="font-weight-light">Recent items</h2>
+      <h3 class="font-weight-light">Items in {{ category_name }}</h3>
     </header>
+    <span class="text-muted"><em>{{ category_items_count }} items</em></span>
   </div>
   <div class="col-sm-7">
     <ul>
-      {% for item in recent_items %}
+      {% for item in category_items %}
         <li>
           <a href="{{ url_for('show_item', category=item.category.name, item=item.name) | replace('%20', '%2D') }}">
-            {{ item.name }} <em class="text-muted">({{ item.category.name }})</em>
+            {{ item.name }}
           </a>
         </li>
       {% endfor %}

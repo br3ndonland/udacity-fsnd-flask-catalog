@@ -4,8 +4,8 @@
 Udacity Full Stack Web Developer Nanodegree program (FSND)
 Project 4. Flask Item Catalog App
 
-catalog.py
-~~~~~~~~~~
+database_data.py
+~~~~~~~~~~~~~~~~
 
 This file contains information used to populate the Flask app database.
 """
@@ -66,7 +66,7 @@ power_cage = Item(name='Hoist Power Cage',
                          'equipment/CF-3364.JPG?width=348'),
                   description=('Gotta have a power cage. This one features'
                                ' top-quality Hoist construction,'
-                               'easy adjustments, and a pull-up bar.'),
+                               ' easy adjustments, and a pull-up bar.'),
                   category=category_equipment,
                   user=example_user)
 session.add(power_cage)
@@ -100,7 +100,7 @@ rumbleroller = Item(name='RumbleRoller',
                     photo=('https://www.rumbleroller.com/rr2-images/'
                            'godeeper-1920x390.jpg'),
                     description=('This roller will change your life.'
-                                 'Release soft tissue and roll out knots.'),
+                                 ' Release soft tissue and roll out knots.'),
                     category=category_accessories,
                     user=example_user)
 

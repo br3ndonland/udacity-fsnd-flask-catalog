@@ -6,9 +6,7 @@
 
 **Udacity Full Stack Web Developer Nanodegree program**
 
-Part 03. Backend
-
-[Project 02. Flask Item Catalog App](https://github.com/br3ndonland/udacity-fsnd03-p02-flask-catalog)
+[Project 4. Flask Item Catalog App](https://github.com/br3ndonland/udacity-fsnd-p4-flask-catalog)
 
 Brendon Smith
 
@@ -26,7 +24,7 @@ br3ndonland
 - [Authentication and authorization](#authentication-and-authorization)
 - [Templates](#templates)
 - [Style](#style)
-- [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -67,7 +65,7 @@ I already had the vagrant virtual machine environment installed and ready to go.
 	> [Step 0: Creating The Folders](http://flask.pocoo.org/docs/0.12/tutorial/folders/)
 	> 
 	> Before getting started, you will need to create the folders needed for this application:
-	> ```
+	> ```text
 	> /flaskr
 	>   /flaskr
 	>     /static
@@ -122,11 +120,11 @@ Base.metadata.create_all(engine)
 Git commit at this point: Set up database 7844cbb
 
 
-### catalog.py
+### database_data.py
 
 #### Setup
 
-Now that I have database_setup.py to set up my database, I need to populate the database with items for the catalog. I based [catalog.py](catalog.py) on [lotsofmenus.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/lotsofmenus.py) from the Full Stack Foundations course.
+Now that I have database_setup.py to set up my database, I need to populate the database with items for the catalog. I based [database_data.py](database_data.py) on [lotsofmenus.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/lotsofmenus.py) from the Full Stack Foundations course.
 
 As with database_setup.py, I started off adding in the necessary SQLAlchemy imports and configuring the SQLAlchemy engine.
 
@@ -146,7 +144,7 @@ After we bind the engine to the Base class, we need to establish a database sess
 
 #### Categories and items
 
-Now that catalog.py is set up, I will start adding items. I used a film noir theme for my [movie trailer site](https://github.com/br3ndonland/udacity-fsnd01-p01-movies), so here I will bring in another one of my interests: Bodybuilding! Welcome to Brendon's Bodybuilding Bazaar! I entered some brief info about some of my favorite strength training equipment and accessories.
+Now that database_data.py is set up, I will start adding items. I used a film noir theme for my [movie trailer site](https://github.com/br3ndonland/udacity-fsnd01-p01-movies), so here I will bring in another one of my interests: Bodybuilding! Welcome to Brendon's Bodybuilding Bazaar! I entered some brief info about some of my favorite strength training equipment and accessories.
 
 I knew from experience that Python concatenates adjacent strings, so I broke the descriptions into multiple strings, with one string per line.
 
@@ -165,7 +163,7 @@ $ python3 database_setup.py
 
 I was getting errors because of the `datetime` code.
 
-```
+```text
 Traceback (most recent call last):
   File "database_setup.py", line 45, in <module>
     class Item(Base):
@@ -182,7 +180,7 @@ I included a `date_created` object for each of the items, so the most recent ite
 
 I moved to the command line to troubleshoot this. My first progress came when changing `import datetime` to `from datetime import datetime`. Confusing nomenclature.
 
-```
+```text
 >>> from datetime import datetime
 >>> print(datetime.now())
 2018-03-22 22:12:03.950458
@@ -202,7 +200,7 @@ date_created = Column(datetime(timezone=True), default=func.now())
 
 Which then threw another error:
 
-```
+```text
 vagrant@vagrant:/vagrant/flask-catalog$ python3 database_setup.py
 Traceback (most recent call last):
   File "database_setup.py", line 45, in <module>
@@ -259,21 +257,21 @@ Git commit at this point: Debug database item timestamping 695e7bb
 
 ### Database population
 
-I populated the database with items from catalog.py by running:
+I populated the database with items from database_data.py by running:
 
-```
-vagrant@vagrant:/vagrant/flask-catalog$ python3 catalog.py
+```text
+vagrant@vagrant:/vagrant/flask-catalog$ python3 database_data.py
 Category: Equipment
 Category: Accessories
 ```
 
 I verified the additions to the database using [DB Browser for SQLite](http://sqlitebrowser.org/):
 
-```
+```text
 $ brew cask install db-browser-for-sqlite
 ```
 
-<img src="img/database-population.png" alt="Screenshot of DB Browser for SQLite, showing successful database creation and population" width="75%">
+<img src="img/database-population.png" alt="Screenshot of DB Browser for SQLite, showing successful database creation and population">
 
 
 
@@ -436,12 +434,12 @@ We were only required to implement one third-party login. Facebook login would p
 
 * We use [Jinja](http://jinja.pocoo.org/docs/2.10/) templating in Flask. See the [Flask tutorial step 7](http://flask.pocoo.org/docs/0.12/tutorial/templates/).
 * I followed the [guidelines for template inheritance](http://flask.pocoo.org/docs/0.12/patterns/templateinheritance/) by naming the base template layout.html. As we saw in the Udacity Flask lesson part 10:
-	```
+	```text
 	{% logical code for Python %}
 	{{ printed output code }}
 	```
-* HTML templates don't get to use Python indendation and spacing, so we have to inclde instructions to terminate loops:
-	```
+* HTML templates don't get to use Python indendation and spacing, so we have to include instructions to terminate loops:
+	```text
 	{% endfor %}
 	{% endif %}
 	```
@@ -455,7 +453,7 @@ We were only required to implement one third-party login. Facebook login would p
 * login.html
 	- I extended the base template.
 	- I based the Google sign-in part of the template on [ud330/Lesson2/step3/templates/login.html](https://github.com/udacity/ud330/blob/master/Lesson2/step3/templates/login.html).
-* asdf
+
 
 ## Style
 [(back to TOC)](#toc)
@@ -465,14 +463,33 @@ We were only required to implement one third-party login. Facebook login would p
 I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
 
 
-## Testing
+## Troubleshooting
 [(back to TOC)](#toc)
+
+**The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
+
+* [SQLAlchemy](http://www.sqlalchemy.org/)
+* [Jinja](http://jinja.pocoo.org/docs/2.10/)
+* [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
+* [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
+
+
+**In general, I found it difficult to:**
+
+* Build the app in a systematic way
+* Keep the application code structured
+* Understand the Flask syntax
+* Follow all the similar variable names being used everywhere.
+
+
+### First look
 
 * Here's what the app looked like when I started it up for the first time:
 	
-	<img src="../static/img/Screen-Shot-2018-03-29-at-3.44.23-PM.png">
+	<img src="img/Screen-Shot-2018-03-29-at-3.44.23-PM.png" alt="Screenshot of app after initial startup">
 
 * :face_palm: 🤦
+* Categories and items aren't listed.
 * Clicking Categories just stays at the same page.
 * Clicking login returns an error:
 	```text
@@ -481,6 +498,173 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 	RuntimeError: The session is unavailable because no secret key was set.
 	Set the secret_key on the application to something unique and secret.
 	```
-* The easiest place to start is with fixing the HTML. I need to keep the main container in line with the header.
+
+
+### index.html
+
+#### Page structure
+
+* The easiest place to start is with fixing the HTML page layout. I need to keep the main container in line with the header. This was easily fixed by adding a container around the block content tags in *layout.html*.
+	```html
+  <!-- Main page content -->
+  <main>
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
+	```
+* Adding a `class="img-fluid"` to the image at the right in *index.html* kept it within the container.
+* Next, I added buttons to the navbar.
+* The homepage is starting to look a little better now:
+	
+	<img src="img/Screen-Shot-2018-04-02-at-3.21.38-PM.png" alt="Screenshot of homepage after improving homepage HTML">
+
+* I also added a footer with a [border](https://getbootstrap.com/docs/4.0/utilities/borders/) above to *layout.html*.
+
+
+#### Page categories and items
+
+* Next, I need the categories and items to show up.
+* **This took many hours, and I couldn't really figure out how to be systematic about the changes.**
+* I eventually got it to work through tandem debugging of the app route functions in *application.py* and the Jinja tags in *index.html*.
+* I browsed through the traceback, and found some issues with *index.html*:
+	```text
+	File "/vagrant/flask-catalog/templates/index.html", line 1, in top-level template code
+
+	{% extends 'layout.html' %}
+
+	File "/vagrant/flask-catalog/templates/layout.html", line 32, in top-level template code
+
+	{% block content %}
+
+	File "/vagrant/flask-catalog/templates/index.html", line 13, in block "content"
+
+	<a href="{{ url_for('category', category=category.name) }}">
+	```
+* I deleted the links and the items showed up:
+
+	<img src="img/Screen-shot-2018-04-02-at-6.42.27-PM.png" alt="Screenshot of homepage after getting lists of items to show up">
+
+* This means I'm having an issue with `url_for` in *index.html*. The Udacity lessons should have explained this function more effectively. We touched on it in 8.11. Quiz: URL for Quiz, but the lessons were disorganized and it's difficult to keep all the app features straight. I searched the Flask documentation and found helpful info on [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building) on the quickstart page:
+	> To build a URL to a specific function you can use the `url_for()` function. It accepts the name of the function as first argument and a number of keyword arguments, each corresponding to the variable part of the URL rule. Unknown variable parts are appended to the URL as query parameters.
+* I deleted the recent items part so I could focus on the categories part. After going back and forth between *index.html* and the `show_category` function in *application.py*, correcting the variables referenced, I eventually got the homepage to show up:
+	```html
+	{% for category in categories %}
+	  <li>
+	    <a href="{{ url_for('show_category', category=category.name) }}">
+	    {{ category.name }}
+	    </a>
+	  </li>
+	{% endfor %}
+	```
+
+	<img src="img/Screen-shot-2018-04-02-at-10.11.50-PM.png" alt="Screenshot after troubleshooting URL for categories">
+
+* Getting the URLs for the items to show up on the homepage also depends on how the item URLs are built in *application.py*. I was successful with this encoding:
+	```python
+	@app.route('/<string:category>/<string:category_item>')
+	```
+* I then modified the HTML in *index.html*. In order to use the item name in the URL, I had to replace spaces with dashes, within the Jinja `url_for` template. Note that I used `%20` and `%2D`, instead of space and dash, for proper [URL encoding (percent encoding)](https://en.wikipedia.org/wiki/Percent-encoding).
+	```html
+	{% for item in recent_items %}
+	  <li>
+      <a href="{{ url_for('show_item', category=item.category.name, category_item=item.name) | replace('%20', '%2D') }}">
+	    {{ item.name }} <em>({{ item.category.name }})</em>
+	    </a>
+	  </li>
+	{% endfor %}
+	```
+
+	<img src="img/Screen-shot-2018-04-02-at-10.21.59-PM.png" alt="Screenshot after troubleshooting URL for recent items">
+
+* I also put the category and item lists inside columns to align them.
+* **Alright! Looking a lot better!**
+
+
+### show_category.html
+
+* Now that I have the homepage at *index.html* looking good, I need to debug the category and item pages so they show up.
+* Again, this required tandem debugging of the app route functions in *application.py* and the Jinja tags in *show_category.html*.
+* I was having issues accessing the data with SQLAlchemy. Breaking the queries onto different lines helped keep them straight. The solution was to query the categories by name, but the items by category ID. Confusing.
+
+	<img src="img/Screen-shot-2018-04-03-at-5.38.44-PM.png" alt="Screenshot after getting category page working">
+
+* The scrollbar at the bottom was there because I hadn't enclosed the message flashing HTML in a container.
+* `Items in {{ category }}` wasn't displaying the category name at first. The solution was to go back to the `show_category` code in *application.py* and change `render_template`. This function passes variables that can be used in the template. I originally had `category_name=category`, which returns `<database_setup.Category object at 0xb57f44ec>`.
+	```python
+	# Render webpage
+    return render_template('show_category.html',
+                           categories=categories,
+                           category_name=category,
+                           category_items=category_items,
+                           category_items_count=category_items_count)
+	```
+* I changed it to `category_name=category.name`, which provided the name of the currently selected category.
+	```python
+	# Render webpage
+    return render_template('show_category.html',
+                           categories=categories,
+                           category_name=category.name,
+                           category_items=category_items,
+                           category_items_count=category_items_count)
+	```
+* I used the `category_items_count` variable to provide an item count on the page with `{{ category_items_count }} items`.
+* I also modified the SQLAlchemy command to sort the items alphabetically.
+	```python
+    category_items = (session.query(Item)
+                      .filter_by(category_id=category.id)
+                      .order_by(Item.name)
+                      .all())
+	```
+
+	<img src="img/Screen-shot-2018-04-03-at-8.40.17-PM.png" alt="Screenshot after adding category name to category page">
+
+* **Excellent!**
+
+
+### show_item.html
+
+* Now I need to do the same thing for the item page. I did tandem troubleshooting of the `show_item` app route and *show_item.html*.
+* I had some issues with the SQLAlchemy query to retrieve the individual item from the database. I was basically just not getting the information. I played around with the SQLAlchemy queries for a while. I still don't understand the syntax well.
+* I was only able to get the RumbleRoller item page to come up:
+
+	<img src="img/Screen-shot-2018-04-04-at-1.11.01-AM.png" alt="Screenshot of RumbleRoller item page">
+
+* This told me that there was probably an issue with spacing in the item names. Remember that I added [URL encoded](https://en.wikipedia.org/wiki/Percent-encoding) dashes (`%2D`) to the URLs.
+* After some trial and error, I was able to formulate a coherent SQLAlchemy query, and attempted to change out the dashes for spaces, so the item name would match the database entry.
+	```python
+	item = (session.query(Item)
+          .filter_by(name=item.replace('%2D', '%2F'), category_id=category.id)
+          .one())
+	```
+* This was unsuccessful. I stepped into the Flask console to investigate.
+	- `print(item)` returned the item name with hyphens, indicating that my string replacement was unsuccessful. **Python is reading the regular character, not the percent encoded character.**
+	- Modifying the string replacement to `item.replace('-', ' ')` successfully returned the item name.
+		```text
+		>>> print(item)
+		Pro-Monster-Mini-Resistance-Band
+		>>> print(item.replace('-', ' '))
+		Pro Monster Mini Resistance Band
+		```
+
+	<img src="img/Screen-shot-2018-04-04-at-2.07.58-AM.png" alt="Screenshot of Flask console when debugging item page">
+
+* Success! I now have functioning home, category and item pages!
+
+	<img src="img/Screen-shot-2018-04-04-at-3.02.47-AM.png" alt="Screenshot of item page on laptop">
+
+* The app looks great on mobile devices also, thanks to the responsive Bootstrap framework. The screenshot below simulates an Apple iPhone 6S with Firefox Developer Tools.
+
+	<img src="img/Screen-Shot-2018-04-04-at-02.53.52.png" alt="Screenshot of item page on simulated Apple iPhone 6S">
+
+
+### Login
+
+* Next, I needed to debug the login.
+* The error probably results from me not properly inputting my client ID and secret.
+
+
+### JSON
 
 [(back to TOC)](#toc)

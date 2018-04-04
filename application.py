@@ -69,64 +69,90 @@ def home():
                            recent_items=recent_items)
 
 
-@app.route('/catalog/json')
-def home_json():
-    """App route function to provide homepage data in JSON format."""
-    categories = session.query(Category).all()
-    return jsonify(categories=[category.serialize for category in categories])
-
-
-# CRUD: Read pages for categories
-@app.route('/catalog/<int:category_id>')
-@app.route('/catalog/<int:category_id>/items')
-def show_category(category_id):
+@app.route('/<string:category>')
+def show_category(category):
     """App route function to display all items in a specific category."""
-    # Get category info
-    categories = session.query(Category).all()
-    category = session.query(Category).filter_by(id=category_id).first()
-    category_name = category.name
 
-    # Get all items in a specific category
-    category_items = session.query(Item).filter_by(category_id).all()
+    # Query database with SQLAlchemy to show all categories
+    categories = (session.query(Category)
+                  .order_by(Category.name)
+                  .all())
+    # Query database with SQLAlchemy to show selected category and items
+    category = (session.query(Category)
+                .filter_by(name=category)
+                .one())
+    category_items = (session.query(Item)
+                      .filter_by(category_id=category.id)
+                      .order_by(Item.name)
+                      .all())
+    category_items_count = (session.query(Item)
+                            .filter_by(category_id=category.id)
+                            .count())
 
-    # Get count of category items
-    category_items_count = session.query(Item).filter_by(category_id).count()
-
-    return render_template('category.html',
+    # Render webpage
+    return render_template('show_category.html',
                            categories=categories,
+                           category_name=category.name,
                            category_items=category_items,
-                           category_name=category_name,
                            category_items_count=category_items_count)
 
 
-@app.route('/catalog/<int:category_id>/json`')
-@app.route('/catalog/<int:category_id>/items/json')
-def show_category_json(category_id):
-    """App route function to provide category data in JSON format."""
-    items = session.query(Item).filter_by(category_id=category_id).all()
-    return jsonify(items=[items.serialize for item in items])
-
-
-# CRUD: Read specific item
-@app.route('/catalog/<int:category_id>/items/<int:item_id>')
-def show_item(category_id, item_id):
+@app.route('/<string:category>/<string:item>')
+def show_item(category, item):
     """App route function to display an item."""
-    item = session.query(Item).filter_by(id=item_id).first()
-    item_creator = get_user_id(item.user_id)
-    return render_template('item.html', item=item, creator=item_creator)
+
+    # Query database with SQLAlchemy to show selected category and item
+    category = (session.query(Category)
+                .filter_by(name=category)
+                .one())
+    item = (session.query(Item)
+            .filter_by(name=item.replace('-', ' '), category_id=category.id)
+            .one())
+
+    # Render webpage
+    return render_template('show_item.html',
+                           item=item,
+                           category=category)
 
 
-@app.route('/catalog/<int:category_id>/items/<int:item_id>/json')
-def show_item_json(category_id, item_id):
-    """App route function to provide item data in JSON format."""
-    item = session.query(Item).filter_by(id=item_id).first()
-    return jsonify(item=[item.serialize])
+@app.route('/add-category', methods=['GET', 'POST'])
+def add_category():
+    """App route function to create categories with POST requests."""
+
+    # Verify user is logged in. If not, redirect to login page.
+    if 'username' not in login_session:
+        flash('Please log in.')
+        return redirect('/login')
+
+    if request.method == 'POST':
+        # Flash messages for incomplete item info
+        if not request.form['name']:
+            flash('Please add category name')
+            return redirect(url_for('add_category'))
+        if not request.form['description']:
+            flash('Please add a description')
+            return redirect(url_for('add_category'))
+
+        # If user is logged in, and all info provided, add item
+        new_category = Category(name=request.form['name'],
+                                user_id=login_session['user_id'])
+        session.add(new_category)
+        session.commit()
+
+        # Return to page for category
+        return redirect(url_for('show_category'))
+
+    else:
+        # Get all categories
+        categories = session.query(Category).all()
+        # Render webpage
+        return render_template('add_category.html', categories=categories)
 
 
-# CRUD: Create an item
-@app.route('/catalog/add', methods=['GET', 'POST'])
+@app.route('/add-item', methods=['GET', 'POST'])
 def add_item():
     """App route function to create items with POST requests."""
+
     # Verify user is logged in. If not, redirect to login page.
     if 'username' not in login_session:
         flash('Please log in.')
@@ -155,15 +181,15 @@ def add_item():
     else:
         # Get all categories
         categories = session.query(Category).all()
-
+        # Render webpage
         return render_template('add_item.html', categories=categories)
 
 
-# CRUD: Update/edit an item
-@app.route('/catalog/<int:category_id>/items/<int:item_id>/edit',
+@app.route('/<string:category>/<string:category_item>/edit',
            methods=['GET', 'POST'])
 def edit_item(category_id, item_id):
     """App route function to edit an item."""
+
     # Verify user is logged in. If not, redirect to login page.
     if 'username' not in login_session:
         flash('Please log in.')
@@ -193,16 +219,17 @@ def edit_item(category_id, item_id):
                                 category_id=item_category.category_id,
                                 item_id=item.id))
     else:
+        # Render webpage
         return render_template('edit_item.html',
                                categories=categories,
                                item=item)
 
 
-# CRUD: Delete an item
-@app.route('/catalog/<int:category_id>/items/<int:item_id>/delete',
+@app.route('/<string:category>/<string:category_item>/delete',
            methods=['GET', 'POST'])
 def delete_item(category_id, item_id):
     """App route function to delete an item."""
+
     # Verify user is logged in. If not, redirect to login page.
     if 'username' not in login_session:
         flash('Please log in.')
@@ -224,16 +251,52 @@ def delete_item(category_id, item_id):
         return redirect(url_for('show_category',
                                 category_id=item_category.category_id))
     else:
+        # Render webpage
         return render_template('delete_item.html', item=item)
 
 
-# Functions for establishing login session and user info
+"""
+JSON functions
+~~~~~~~~~~~~~~
+"""
+
+
+@app.route('/json')
+def catalog_json():
+    """App route function to provide catalog data in JSON format."""
+
+    categories = session.query(Category).all()
+    return jsonify(categories=[category.serialize for category in categories])
+
+
+@app.route('/<string:category>/json`')
+def show_category_json(category_id):
+    """App route function to provide category data in JSON format."""
+
+    items = session.query(Item).filter_by(category_id=category_id).all()
+    return jsonify(items=[items.serialize for item in items])
+
+
+@app.route('/<string:category>/<string:category_item>/json')
+def show_item_json(category_id, item_id):
+    """App route function to provide item data in JSON format."""
+
+    item = session.query(Item).filter_by(id=item_id).first()
+    return jsonify(item=[item.serialize])
+
+
+"""
+Login functions
+~~~~~~~~~~~~~~~
+"""
+
 CLIENT_ID = json.loads(open('client_secrets.json', 'r')
     .read())['web']['client_id']
 
 
 def create_user(login_session):
     """Create new user based on login info."""
+
     new_user = User(name=login_session['username'],
                     email=login_session['email'],
                     photo=login_session['photo'])
@@ -245,12 +308,14 @@ def create_user(login_session):
 
 def get_user_id(user_id):
     """Get user ID."""
+
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def get_user_email(email):
     """Get user email."""
+
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
@@ -262,9 +327,11 @@ def get_user_email(email):
 @app.route('/login')
 def login():
     """App route function to log in and generate token."""
+
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
+    # Render webpage
     return render_template('login.html', STATE=state)
 
 
@@ -272,6 +339,7 @@ def login():
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     """App route function for Google GConnect login."""
+
     # Confirm that client and server tokens match
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -366,6 +434,7 @@ def gconnect():
 @app.route('/gdisconnect')
 def gdisconnect():
     """App route function to disconnect from Google login."""
+
     try:
         access_token = login_session['credentials']
     except KeyError:
@@ -401,3 +470,4 @@ def gdisconnect():
 if __name__ == '__main__':
     # Run the Flask app on port 8000 and enable debugging
     app.run(host='0.0.0.0', port=8000, debug=True)
+    app.secret_key = 'super_secret_key'

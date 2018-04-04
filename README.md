@@ -6,14 +6,13 @@
 
 **Udacity Full Stack Web Developer Nanodegree program**
 
-Part 03. Backend
-
-[Project 02. Flask Item Catalog App](https://github.com/br3ndonland/udacity-fsnd03-p02-flask-catalog)
+[Project 4. Flask Item Catalog App](https://github.com/br3ndonland/udacity-fsnd-p4-flask-catalog)
 
 Brendon Smith
 
 br3ndonland
 
+## TOC
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -30,18 +29,35 @@ br3ndonland
 
 RESTful Python Flask web app with CRUD and OAuth
 
+The homepage displays item categories, the items most recently added to the database, and a login button.
+
+<img src="static/img/flask-catalog-home.png" alt="Homepage">
+
+Clicking log in allows the user to authenticate with Google.
+
+<img src="static/img/flask-catalog-login.png" alt="Login page">
+
+Clicking on a category name displays the items in the category.
+
+<img src="static/img/flask-catalog-categories.png" alt="Page for categories">
+
+Clicking on an item provides a photo, description, and link. Users who are logged in can add items, and the creator of each item can edit or delete it.
+
+<img src="static/img/flask-catalog-item.png" alt="Pages for individual items">
+
 
 ## Repository contents
 
-* docs/
+* *docs/*: Project documentation
 	- [flask-catalog-methods.md](flask-catalog-methods.md): Step-by-step computational narrative detailing the app creation process
 	- [flask-catalog-udacity-docs.md](flask-catalog-udacity-docs.md): Udacity documentation for the project
-* static/
+* *static/*: Static CSS, JavaScript, and image files for the app.
 	- css/
+	- img/
 	- js/
-* templates/
-	- HTML webpage templates
-* [application.py](application.py): Main Flask app
+* *templates/*: HTML webpage templates
+* [application.py](application.py): Main Flask app file
+* [database_data.py](database_data.py): Python file used to populate database
 * [database_setup.py](database_setup.py): Python file used to configure database
 * [README.md](README.md): This file, a concise description of the project
 
@@ -117,7 +133,7 @@ $ python3 database_setup.py
 Populate the database:
 
 ```bash
-$ python3 catalog.py
+$ python3 database_data.py
 ```
 
 Start the application:
