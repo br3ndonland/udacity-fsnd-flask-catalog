@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 
-# Udacity Full Stack Web Developer Nanodegree program (FSND)
-# Part 03. Backend
-# Project 02. Flask Item Catalog App
-# Flask application code
+"""
+Udacity Full Stack Web Developer Nanodegree program (FSND)
+Project 4. Flask Item Catalog App
+
+application.py
+~~~~~~~~~~~~~~
+
+This file contains the main Flask application code.
+"""
 
 # Import SQLAlchemy modules for database
 from sqlalchemy import create_engine
@@ -39,18 +44,26 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# Decorators to wrap each function inside Flask's app.route() function
+"""
+App route functions
+~~~~~~~~~~~~~~~~~~~
+"""
 
-# CRUD: Read homepage and catalog page
+
 @app.route('/')
-@app.route('/catalog')
 def home():
     """App route function for the homepage."""
-    categories = session.query(Category).all()
+
+    # Query database with SQLAlchemy to show all categories
+    categories = (session.query(Category)
+                  .order_by(Category.name)
+                  .all())
+    # Query database with SQLAlchemy to show most recent ten items
     recent_items = (session.query(Item)
-        .order_by(Item.date_created.desc())
-        .limit(10)
-        .all())
+                    .order_by(Item.date_created.desc())
+                    .limit(10))
+
+    # Render webpage
     return render_template('index.html',
                            categories=categories,
                            recent_items=recent_items)

@@ -1,36 +1,48 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="row">
-  <div class="col-sm-8">
-    <div class="row">
-      <header>
-        <h2>Categories</h2>
-      </header>
-      <ul>
-        {% for category in categories %}
-          <li>
-            <a href="{{ url_for('category', category=category.name) }}">
-            {{ category.name }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="row">
+        <div class="col-sm-4">
+          <header>
+            <h2>Categories</h2>
+          </header>
+        </div>
+        <div class="col-sm-8">
+          <ul>
+            {% for category in categories %}
+              <li>
+                <a href="{{ url_for('show_category', category=category.name) | replace('%20', '%2D') }}">
+                  {{ category.name }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <header>
+            <h2>Recent items</h2>
+          </header>
+        </div>
+        <div class="col-sm-8">
+          <ul>
+            {% for item in recent_items %}
+              <li>
+                <a href="{{ url_for('show_item', category=item.category.name, category_item=item.name) | replace('%20', '%2D') }}">
+                  {{ item.name }} <em class="text-muted">({{ item.category.name }})</em>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
     </div>
-    <div class="row">
-      <header><h2>Recent items</h2></header>
-      <ul>
-        {% for item in recent_items %}
-          <li>
-            <a href="{{ url_for('item',category_name=item.category.name, item_name=item.name) }}">
-            {{ item.name }} ({{ item.category.name }})
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
+    <div class="col-sm-4">
+      <img src="../static/img/arnold-schwarzenegger-encyclopedia-232.png" alt="Picture of Arnold Schwarzenegger and Franco Columbu doing incline dumbbell curls" class="img-fluid">
     </div>
-  </div>
-  <div class="col-sm-4">
-    <img src="../static/img/arnold-schwarzenegger-encyclopedia-232.png">
   </div>
 </div>
 {% endblock %}
