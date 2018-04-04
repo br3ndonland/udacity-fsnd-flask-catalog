@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 
-# Udacity Full Stack Web Developer Nanodegree program (FSND)
-# Part 03. Backend
-# Project 02. Flask Item Catalog App
-# Database setup code
+"""
+Udacity Full Stack Web Developer Nanodegree program (FSND)
+Project 4. Flask Item Catalog App
+
+database_setup.py
+~~~~~~~~~~~~~~~~~
+
+This file sets up the SQL database for the Flask app.
+"""
 
 # Import SQLAlchemy modules for database
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
@@ -33,6 +38,7 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -49,6 +55,8 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
+    url = Column(String(250))
+    photo = Column(String(250))
     description = Column(String(250))
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
