@@ -21,9 +21,9 @@ Base = declarative_base()
 
 
 # Use Python classes to establish database tables
-class User(Base):
+class Users(Base):
     """Create a database table for application users."""
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
@@ -31,14 +31,14 @@ class User(Base):
     photo = Column(String(250))
 
 
-class Category(Base):
+class Categories(Base):
     """Create a database table for item categories."""
-    __tablename__ = 'category'
+    __tablename__ = 'categories'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship(Users)
 
     @property
     def serialize(self):
@@ -49,7 +49,7 @@ class Category(Base):
         }
 
 
-class Item(Base):
+class Items(Base):
     """Create a database table for items."""
     __tablename__ = 'items'
 
@@ -58,11 +58,11 @@ class Item(Base):
     url = Column(String(250))
     photo = Column(String(250))
     description = Column(String(250))
-    category_id = Column(Integer, ForeignKey('category.id'))
-    category = relationship(Category)
+    category_id = Column(Integer, ForeignKey('categories.id'))
+    category = relationship(Categories)
     date_created = Column(DateTime, default=datetime.datetime.now())
-    user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship(Users)
 
     @property
     def serialize(self):
@@ -78,5 +78,6 @@ class Item(Base):
 
 # Configure SQLAlchemy engine
 engine = create_engine('sqlite:///catalog.db')
+
 # Create database
 Base.metadata.create_all(engine)

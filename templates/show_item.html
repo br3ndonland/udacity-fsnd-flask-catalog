@@ -15,6 +15,9 @@
         {{ item.description }}
       </section>
       <section>
+        <a href="{{ url_for('show_item_json', category=category.name, item=item.name) }}"><em>Show {{ item.name }} JSON</em></a>
+      </section>
+      <section>
         <a class="btn btn-primary mt-1" role="button" href="{{ item.url }}">More information</a>
         <a class="btn btn-secondary mt-1" role="button" href="{{ url_for('show_category', category=item.category.name) }}">Back to {{ item.category.name }}</a>
         {% if item.user.email == current_user_email %}

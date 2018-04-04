@@ -1,7 +1,7 @@
 # README
 
 <a href="https://www.udacity.com/">
-    <img src="https://s3-us-west-1.amazonaws.com/udacity-content/rebrand/svg/logo.min.svg" width="300" alt="Udacity logo svg">
+  <img src="https://s3-us-west-1.amazonaws.com/udacity-content/rebrand/svg/logo.min.svg" width="300" alt="Udacity logo svg">
 </a>
 
 **Udacity Full Stack Web Developer Nanodegree program**
@@ -17,7 +17,7 @@ br3ndonland
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Project description](#project-description)
+- [Description](#description)
 - [Repository contents](#repository-contents)
 - [Development environment](#development-environment)
 - [Application](#application)
@@ -25,9 +25,13 @@ br3ndonland
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-## Project description
+## Description
 
-RESTful Python Flask web app with CRUD and OAuth
+* This is a [RESTful](https://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/) web application created with [Python 3](https://docs.python.org/3/) and the Python micro-framework [Flask](http://flask.pocoo.org/).
+* The app's SQLite database contains a catalog of items and associated information. 
+* The SQLite database is accessed by [SQLAlchemy](http://www.sqlalchemy.org/) from within the Python code in [application.py](application.py).
+* The main application code is located in [application.py](application.py). This file controls the app with routing functions to render the pages of the web application and access app content. The Python code conforms to the [PEP 8](http://pep8.org/) specification. Comments and spacing keep the code as organized and readable as possible.
+* The web pages are styled with [Bootstrap 4.0.0](https://getbootstrap.com/docs/4.0/getting-started/introduction/), a library of HTML, CSS, and JavaScript components.
 
 The homepage displays item categories, the items most recently added to the database, and a login button.
 
@@ -64,19 +68,7 @@ Clicking on an item provides a photo, description, and link. Users who are logge
 
 ## Development environment
 
-### Application dependencies
-
-* Flask
-* Python 3
-* SQLAlchemy
-
-
-### Virtual machine
-
 A virtual machine can be used to run the code from an operating system with a defined configuration. The virtual machine has all the dependencies needed to run the app.
-
-
-#### Virtual machine configuration
 
 I wrote the program in a Linux virtual machine with the following components:
 
@@ -86,64 +78,41 @@ I wrote the program in a Linux virtual machine with the following components:
 	- Software that provides the Linux operating system in a defined configuration, allowing it to run identically across many personal computers. Linux can then be run as a virtual machine with VirtualBox.
 * [Udacity Virtual Machine configuration](https://github.com/udacity/fullstack-nanodegree-vm)
 	- Repository from Udacity that configures Vagrant.
-	- I created a directory at */vagrant/flask-catalog* for the application.
-
-
-#### Virtual machine operation
-
-On the Linux command line:
-
-Change into the Vagrant directory (wherever you have it stored):
-
-```bash
-$ cd <path>/fullstack-nanodegree-vm/vagrant
-```
-
-Start Vagrant (only necessary after computer restart):
-
-```bash
-$ vagrant up
-```
-
-Log in to Ubuntu:
-
-```bash
-$ vagrant ssh
-```
 
 
 ## Application
 
-Save the application in the virtual machine directory at */vagrant/flask-catalog*.
-
-On the Linux command line, after logging into vagrant:
-
-Change into the application directory:
-
-```bash
-$ vagrant@vagrant:~$ cd /vagrant/flask-catalog
-```
-
-Create the database:
-
-```bash
-$ python3 database_setup.py
-```
-
-Populate the database:
-
-```bash
-$ python3 database_data.py
-```
-
-Start the application:
-
-```bash
-$ python3 application.py
-```
-
-Navigate to http://localhost:8000 in a web browser.
-
-Log in, and enjoy!
+* Save the application repository within the */vagrant/* virtual machine directory.
+* Start the virtual machine and log into vagrant:
+	- Change into the vagrant directory on the command line (wherever you have it stored):
+		```bash
+		$ cd <path>/fullstack-nanodegree-vm/vagrant
+		```
+	- Start Vagrant (only necessary after computer restart):
+		```bash
+		$ vagrant up
+		```
+	- Log in to Ubuntu:
+		```bash
+		$ vagrant ssh
+		```
+* Change into the application directory:
+	```bash
+	$ vagrant@vagrant:~$ cd /vagrant/flask-catalog
+	```
+* Create the database:
+	```bash
+	$ python3 database_setup.py
+	```
+* Populate the database:
+	```bash
+	$ python3 database_data.py
+	```
+* Start the application:
+	```bash
+	$ python3 application.py
+	```
+* Navigate to http://localhost:8000 in a web browser.
+* Log in, and enjoy!
 
 [(Back to TOC)](#toc)

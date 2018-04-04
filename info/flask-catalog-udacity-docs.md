@@ -19,10 +19,27 @@ br3ndonland
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Project Overview](#project-overview)
+  - [Why This Project?](#why-this-project)
+  - [What Will I Learn?](#what-will-i-learn)
+  - [How Does This Help My Career?](#how-does-this-help-my-career)
 - [Project Display Example](#project-display-example)
 - [Project Details](#project-details)
+  - [How will I complete this project?](#how-will-i-complete-this-project)
 - [Project Submission](#project-submission)
+  - [Evaluation](#evaluation)
+  - [Submission](#submission)
+  - [Next Steps](#next-steps)
 - [Project Specification Rubric](#project-specification-rubric)
+  - [API Endpoints](#api-endpoints)
+  - [CRUD: Read](#crud-read)
+  - [CRUD: Create](#crud-create)
+  - [CRUD: Update](#crud-update)
+  - [CRUD: Delete](#crud-delete)
+  - [Authentication & Authorization](#authentication--authorization)
+  - [Code Quality](#code-quality)
+  - [Comments](#comments)
+  - [Documentation](#documentation)
+  - [Suggestions to Make Your Project Stand Out!](#suggestions-to-make-your-project-stand-out)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

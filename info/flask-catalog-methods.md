@@ -18,13 +18,30 @@ br3ndonland
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Environment and documentation setup](#environment-and-documentation-setup)
+  - [Virtual machine](#virtual-machine)
+  - [Info](#info)
 - [Directory setup](#directory-setup)
 - [Database setup](#database-setup)
+  - [database_setup.py](#database_setuppy)
+  - [database_data.py](#database_datapy)
+  - [Database creation](#database-creation)
+  - [Database population](#database-population)
 - [Application](#application)
+  - [application.py](#applicationpy)
+  - [Next steps](#next-steps)
 - [Authentication and authorization](#authentication-and-authorization)
+  - [Getting started](#getting-started)
+  - [Google](#google)
+  - [Facebook](#facebook)
 - [Templates](#templates)
 - [Style](#style)
-- [Troubleshooting](#troubleshooting)
+  - [HTML and CSS](#html-and-css)
+- [First look](#first-look)
+- [Debugging](#debugging)
+  - [General comments](#general-comments)
+  - [Debugging pages](#debugging-pages)
+  - [Debugging JSON](#debugging-json)
+  - [Debugging login](#debugging-login)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -37,7 +54,7 @@ br3ndonland
 I already had the vagrant virtual machine environment installed and ready to go.
 
 
-### Docs
+### Info
 
 * I created the basic outline of the [README](README.md).
 * I read through the Udacity documentation and rubric, and added the materials to the repo in [flask-catalog-udacity-docs.md](flask-catalog-udacity-docs.md).
@@ -462,27 +479,7 @@ We were only required to implement one third-party login. Facebook login would p
 
 I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
 
-
-## Troubleshooting
-[(back to TOC)](#toc)
-
-**The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
-
-* [SQLAlchemy](http://www.sqlalchemy.org/)
-* [Jinja](http://jinja.pocoo.org/docs/2.10/)
-* [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
-* [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
-
-
-**In general, I found it difficult to:**
-
-* Build the app in a systematic way
-* Keep the application code structured
-* Understand the Flask syntax
-* Follow all the similar variable names being used everywhere.
-
-
-### First look
+## First look
 
 * Here's what the app looked like when I started it up for the first time:
 	
@@ -500,9 +497,32 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 	```
 
 
-### index.html
+## Debugging
+[(back to TOC)](#toc)
 
-#### Page structure
+### General comments
+
+**The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
+
+* [SQLAlchemy](http://www.sqlalchemy.org/)
+* [Jinja](http://jinja.pocoo.org/docs/2.10/)
+* [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
+* [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
+
+
+**In general, I found it difficult to:**
+
+* Build the app in a systematic way
+* Keep the application code structured
+* Understand the Flask syntax
+* Follow all the similar variable names being used everywhere.
+
+
+### Debugging pages
+
+#### index.html
+
+##### Page structure
 
 * The easiest place to start is with fixing the HTML page layout. I need to keep the main container in line with the header. This was easily fixed by adding a container around the block content tags in *layout.html*.
 	```html
@@ -520,10 +540,11 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 	
 	<img src="img/Screen-Shot-2018-04-02-at-3.21.38-PM.png" alt="Screenshot of homepage after improving homepage HTML">
 
-* I also added a footer with a [border](https://getbootstrap.com/docs/4.0/utilities/borders/) above to *layout.html*.
+* I added a footer with a [border](https://getbootstrap.com/docs/4.0/utilities/borders/) above to *layout.html*.
+* I put the category and item lists inside columns to align them.
 
 
-#### Page categories and items
+##### Page categories and items
 
 * Next, I need the categories and items to show up.
 * **This took many hours, and I couldn't really figure out how to be systematic about the changes.**
@@ -578,11 +599,10 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 
 	<img src="img/Screen-shot-2018-04-02-at-10.21.59-PM.png" alt="Screenshot after troubleshooting URL for recent items">
 
-* I also put the category and item lists inside columns to align them.
 * **Alright! Looking a lot better!**
 
 
-### show_category.html
+#### show_category.html
 
 * Now that I have the homepage at *index.html* looking good, I need to debug the category and item pages so they show up.
 * Again, this required tandem debugging of the app route functions in *application.py* and the Jinja tags in *show_category.html*.
@@ -623,7 +643,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 * **Excellent!**
 
 
-### show_item.html
+#### show_item.html
 
 * Now I need to do the same thing for the item page. I did tandem troubleshooting of the `show_item` app route and *show_item.html*.
 * I had some issues with the SQLAlchemy query to retrieve the individual item from the database. I was basically just not getting the information. I played around with the SQLAlchemy queries for a while. I still don't understand the syntax well.
@@ -632,39 +652,192 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 	<img src="img/Screen-shot-2018-04-04-at-1.11.01-AM.png" alt="Screenshot of RumbleRoller item page">
 
 * This told me that there was probably an issue with spacing in the item names. Remember that I added [URL encoded](https://en.wikipedia.org/wiki/Percent-encoding) dashes (`%2D`) to the URLs.
-* After some trial and error, I was able to formulate a coherent SQLAlchemy query, and attempted to change out the dashes for spaces, so the item name would match the database entry.
+* After some trial and error, I was able to formulate a coherent SQLAlchemy query. I attempted to change out the dashes for spaces, so the item name would match the database entry.
 	```python
 	item = (session.query(Item)
           .filter_by(name=item.replace('%2D', '%2F'), category_id=category.id)
           .one())
 	```
-* This was unsuccessful. I stepped into the Flask console to investigate.
-	- `print(item)` returned the item name with hyphens, indicating that my string replacement was unsuccessful. **Python is reading the regular character, not the percent encoded character.**
-	- Modifying the string replacement to `item.replace('-', ' ')` successfully returned the item name.
-		```text
-		>>> print(item)
-		Pro-Monster-Mini-Resistance-Band
-		>>> print(item.replace('-', ' '))
-		Pro Monster Mini Resistance Band
-		```
+* This was unsuccessful. I stepped into the Flask console to investigate. 
 
 	<img src="img/Screen-shot-2018-04-04-at-2.07.58-AM.png" alt="Screenshot of Flask console when debugging item page">
 
-* Success! I now have functioning home, category and item pages!
+* I could see that `print(item)` returned the item name with hyphens, indicating that my string replacement was unsuccessful. **Python is reading the regular character, not the percent encoded character.** Modifying the string replacement to `item.replace('-', ' ')` successfully returned the item name.
+	```text
+	>>> print(item)
+	Pro-Monster-Mini-Resistance-Band
+	>>> print(item.replace('-', ' '))
+	Pro Monster Mini Resistance Band
+	```
+	```python
+	item = (session.query(Item)
+          .filter_by(name=item.replace('-', ' '), category_id=category.id)
+          .one())
+	```
+
+* **Success! I now have functioning home, category and item pages!**
 
 	<img src="img/Screen-shot-2018-04-04-at-3.02.47-AM.png" alt="Screenshot of item page on laptop">
 
-* The app looks great on mobile devices also, thanks to the responsive Bootstrap framework. The screenshot below simulates an Apple iPhone 6S with Firefox Developer Tools.
+* **The app looks great on mobile devices also**, thanks to the responsive Bootstrap framework. The screenshot below simulates an Apple iPhone 6S with Firefox Developer Tools.
 
 	<img src="img/Screen-Shot-2018-04-04-at-02.53.52.png" alt="Screenshot of item page on simulated Apple iPhone 6S">
 
 
-### Login
+### Debugging JSON
 
-* Next, I needed to debug the login.
+* I revised the JSON pages in accordance with the new app route functions.
+* Again, for some reason, I was able to read category data easily, but I had trouble reading item data from the database.
+
+
+#### Homepage JSON
+
+* I started with the homepage. It is easy to display just the categories:
+	```python
+	@app.route('/json')
+	def home_json():
+	    """App route function to provide catalog data in JSON format."""
+
+	    categories = (session.query(Category)
+	                  .all())
+
+	    return jsonify(categories=[category.serialize for category in categories])
+	```
+	```json
+	{
+	  "categories": [
+	    {
+	      "id": 1, 
+	      "name": "Equipment"
+	    }, 
+	    {
+	      "id": 2, 
+	      "name": "Accessories"
+	    }
+	  ]
+	}
+	```
+* Adding the items in throws an error:
+	```python
+	@app.route('/json')
+	def home_json():
+	    """App route function to provide catalog data in JSON format."""
+
+	    categories = (session.query(Category)
+	                  .all())
+	    items = (session.query(Item)
+	             .all())
+
+	    return jsonify(categories=[category.serialize for category in categories],
+	                   items=[items.serialize for item in items])
+	```
+	```text
+	AttributeError: 'list' object has no attribute 'serialize'
+	```
+* The Flask console reveals that I am just retrieving a list of database entries. It's strange that there are only six items.
+	```text
+	>>> print(items)
+	[<database_setup.Item object at 0xb585d3ac>, <database_setup.Item object at 0xb585d86c>, <database_setup.Item object at 0xb585d8cc>, <database_setup.Item object at 0xb585d96c>, <database_setup.Item object at 0xb585da2c>, <database_setup.Item object at 0xb585daec>]
+	```
+* **I already included serialization in the class defintions in database_setup.py. Why is this so difficult?** I still felt like the names of the classes, tables, and objects overlapped too much. I wasn't sure what I was calling where.
+* **The solution was to revise the class and table names** in *database_setup.py*. It didn't make sense to have a table named 'item' with more than one item in it, anyway.
+	```text
+	class User => class Users
+	__tablename__ = 'user' => __tablename__ = 'users'
+
+	class Category => class Categories
+	__tablename__ = 'category' => __tablename__ = 'categories'
+
+	class Item => class Items
+	__tablename__ = 'item' => __tablename__ = 'items'
+
+	```
+* I revised the app route to show all the items and categories. The syntax used in `jsonify()` is very confusing.
+	```python
+	@app.route('/json')
+	def catalog_json():
+	    """App route function to provide catalog data in JSON format."""
+
+	    categories = (session.query(Categories).all())
+	    items = (session.query(Items).all())
+
+	    return jsonify(categories=[categories.serialize for categories in categories],
+	                   items=[items.serialize for items in items])
+	```
+* After updating all the references to class and table names in *database_data.py* and *application.py*, I closed down Flask, deleted, re-created, and re-populated the database, and started the app again.
+* I browsed to http://0.0.0.0:8000/json and got a nice JSON output!
+
+	<img src="img/Screen-shot-2018-04-04-at-5.27.07-PM.png" alt="Screenshot of catalog JSON">
+
+
+#### Categories JSON
+
+* Unfortunately, displaying JSON for the categories still took me a few more hours. 
+* I had already revised the database classes and table names for the homepage JSON as described above, so I focused on revising the app route.
+* I copied the `category` and `category_items` objects from the `show_category` app route.
+* I then had to revise the `jsonify()` code, which was even more confusing here. After many tries, I finally figured out the magic combination (or repetition) of terms:
+	```python
+	@app.route('/<string:category>/json')
+	def show_category_json(category):
+	    """App route function to provide category data in JSON format."""
+
+	    category = (session.query(Categories)
+	                .filter_by(name=category)
+	                .one())
+	    category_items = (session.query(Items)
+	                      .filter_by(category_id=category.id)
+	                      .order_by(Items.name)
+	                      .all())
+
+	    return jsonify(category=[category.serialize],
+	                   items=([category_items
+	                          .serialize for category_items in category_items]))
+	```
+* "category_items.serialize for category_items in category_items"? Wow.
+
+	<img src="img/Screen-shot-2018-04-04-at-5.48.02-PM.png" alt="Screenshot of category-specific JSON">
+
+
+#### Individual items JSON
+
+* This was easy after figuring out the category JSON.
+	```python
+	@app.route('/<string:category>/<string:item>/json')
+	def show_item_json(category, item):
+	    """App route function to provide item data in JSON format."""
+
+	    category = (session.query(Categories)
+	                .filter_by(name=category)
+	                .one())
+	    item = (session.query(Items)
+	            .filter_by(name=item.replace('-', ' '))
+	            .one())
+
+	    return jsonify(item=[item.serialize])
+	```
+
+	```json
+	{
+	  "item": [
+	    {
+	      "category": "Equipment", 
+	      "date created": "Wed, 04 Apr 2018 19:46:56 GMT", 
+	      "description": "This Hoist composite motion leg press is, by far, the best leg press I have used. The arc motion activates the posterior chain and protects the knees. Build your legs on this beast!", 
+	      "id": 1, 
+	      "name": "Hoist Dual Action Leg Press"
+	    }
+	  ]
+	}
+	```
+* I updated the item pages to have a JSON link for convenience. **Looking good!**
+
+	<img src="img/Screen-Shot-2018-04-04-at-18.08.56.png" alt="Screenshot of item page on simulated Apple iPhone 6S after adding JSON link">
+
+
+### Debugging login
+
+* Next, I need to debug the login.
 * The error probably results from me not properly inputting my client ID and secret.
 
-
-### JSON
 
 [(back to TOC)](#toc)
