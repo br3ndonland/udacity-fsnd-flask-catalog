@@ -4,7 +4,7 @@
     <img src="https://s3-us-west-1.amazonaws.com/udacity-content/rebrand/svg/logo.min.svg" width="300" alt="Udacity logo svg">
 </a>
 
-**Udacity Full Stack Web Developer Nanodegree program**
+Udacity Full Stack Web Developer Nanodegree program
 
 [Project 4. Flask Item Catalog App](https://github.com/br3ndonland/udacity-fsnd-p4-flask-catalog)
 
@@ -12,18 +12,16 @@ Brendon Smith
 
 br3ndonland
 
-## TOC
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Environment and documentation setup](#environment-and-documentation-setup)
   - [Virtual machine](#virtual-machine)
   - [Info](#info)
 - [Directory setup](#directory-setup)
 - [Database setup](#database-setup)
-  - [database_setup.py](#database_setuppy)
-  - [database_data.py](#database_datapy)
+  - [database_setup.py](#databasesetuppy)
+  - [database_data.py](#databasedatapy)
   - [Database creation](#database-creation)
   - [Database population](#database-population)
 - [Application](#application)
@@ -38,64 +36,61 @@ br3ndonland
   - [HTML and CSS](#html-and-css)
 - [First look](#first-look)
 - [Debugging](#debugging)
-  - [General comments](#general-comments)
   - [Debugging pages](#debugging-pages)
   - [Debugging JSON](#debugging-json)
-  - [Debugging login](#debugging-login)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
+  - [Debugging authentication](#debugging-authentication)
+- [Comments](#comments)
 
 ## Environment and documentation setup
-[(back to TOC)](#toc)
 
 ### Virtual machine
 
 I already had the vagrant virtual machine environment installed and ready to go.
 
-
 ### Info
 
-* I created the basic outline of the [README](README.md).
-* I read through the Udacity documentation and rubric, and added the materials to the repo in [flask-catalog-udacity-docs.md](flask-catalog-udacity-docs.md).
-	- The documentation is open-ended on how to work through construction of the app.
-		> Whether you start on the front end or the back end is up to you. Some people prefer seeing the layout before thinking about the data they want to present, whereas others enjoy thinking about the structure and organization of their data and the Flask application before beginning on the front end portion of their project.
-	- Instructor Lorenzo Brown seems to prefer a back-end-first approach:
-		> Personally, I usually start with the database layout so that the database is modelling the information the way I want. Then I go ahead and add the backend, the Flask code, the Python code, and then I move on to the frontend where I then receive feedback on the frontend where I use the feedback to make it more stylish and elegant and presentable with everything else already in place. This is just me though, it varies from developer to developer.
-		
-		Not that helpful, or even grammatical.
-	- Lorenzo's lesson on agile iterative development (Full Stack Foundations Lesson 4, FSND Part 03 Lesson 09) actually walks through a front-end-first approach, starting with mockups.
-* I reviewed my course notes, and walked through [my notes on the Flask lesson](https://github.com/br3ndonland/udacity-fsnd/blob/master/03-backend/06-09-foundations/fsnd03_08-flask.md), and the [Flask app code from the lesson](https://github.com/udacity/Full-Stack-Foundations) in Full-Stack-Foundations/Lesson-3/Final-Flask-Application.
-* The **[Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/)** gave me a helpful step-by-step outline of the app creation process.
-* **I compared the steps from the Udacity lesson and the Flask tutorial to make my own app.**
+- I created the basic outline of the [README](README.md).
+- I read through the Udacity documentation and rubric, and added the materials to the repo in [flask-catalog-udacity-docs.md](flask-catalog-udacity-docs.md).
+  - The documentation is open-ended on how to work through construction of the app.
+    > Whether you start on the front end or the back end is up to you. Some people prefer seeing the layout before thinking about the data they want to present, whereas others enjoy thinking about the structure and organization of their data and the Flask application before beginning on the front end portion of their project.
+  - Instructor Lorenzo Brown seems to prefer a back-end-first approach:
+    > Personally, I usually start with the database layout so that the database is modelling the information the way I want. Then I go ahead and add the backend, the Flask code, the Python code, and then I move on to the frontend where I then receive feedback on the frontend where I use the feedback to make it more stylish and elegant and presentable with everything else already in place. This is just me though, it varies from developer to developer.
 
+    Not that helpful, or even grammatical.
+  - Lorenzo's lesson on agile iterative development (Full Stack Foundations Lesson 4, FSND Part 03 Lesson 09) actually walks through a front-end-first approach, starting with mockups.
+- I reviewed my course notes, and walked through [my notes on the Flask lesson](https://github.com/br3ndonland/udacity-fsnd/blob/master/03-backend/06-09-foundations/fsnd03_08-flask.md), and the [Flask app code from the lesson](https://github.com/udacity/Full-Stack-Foundations) in Full-Stack-Foundations/Lesson-3/Final-Flask-Application.
+- The **[Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/)** gave me a helpful step-by-step outline of the app creation process.
+- **I compared the steps from the Udacity lesson and the Flask tutorial to make my own app.**
+
+[(Back to TOC)](#table-of-contents)
 
 ## Directory setup
-[(back to TOC)](#toc)
 
-* I created a directory at */vagrant/flask-catalog* for the application, and set up the basic structure of the app directory.
-* The **[Flask docs](http://flask.pocoo.org/docs/0.12/)** had some helpful instructions in the foreword for how to organize the directory:
-	> [Configuration and Conventions](http://flask.pocoo.org/docs/0.12/foreword/#configuration-and-conventions)
-	> 
-	> Flask has many configuration values, with sensible defaults, and a few conventions when getting started. By convention, templates and static files are stored in subdirectories within the application’s Python source tree, with the names templates and static respectively. While this can be changed, you usually don’t have to, especially when getting started.
-* I also referred to the **[Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/)**:
-	> [Step 0: Creating The Folders](http://flask.pocoo.org/docs/0.12/tutorial/folders/)
-	> 
-	> Before getting started, you will need to create the folders needed for this application:
-	> ```text
-	> /flaskr
-	>   /flaskr
-	>     /static
-	>     /templates
-	> ```
-	**I elected not to create two top-level folders.**
-* I created [application.py](application.py) for the main Flask application.
-* I added the */static* directory for CSS and JavaScript.
-* I added the */templates* directory for the HTML webpages.
+- I created a directory at */vagrant/flask-catalog- for the application, and set up the basic structure of the app directory.
+- The **[Flask docs](http://flask.pocoo.org/docs/0.12/)** had some helpful instructions in the foreword for how to organize the directory:
+  > [Configuration and Conventions](http://flask.pocoo.org/docs/0.12/foreword/#configuration-and-conventions)
+  >
+  > Flask has many configuration values, with sensible defaults, and a few conventions when getting started. By convention, templates and static files are stored in subdirectories within the application’s Python source tree, with the names templates and static respectively. While this can be changed, you usually don’t have to, especially when getting started.
+- I also referred to the **[Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/)**:
+  > [Step 0: Creating The Folders](http://flask.pocoo.org/docs/0.12/tutorial/folders/)
+  >
+  > Before getting started, you will need to create the folders needed for this application:
+  >
+  > ```text
+  > /flaskr
+  >   /flaskr
+  >     /static
+  >     /templates
+  > ```
+  >
+  **I elected not to create two top-level folders.**
+- I created [application.py](application.py) for the main Flask application.
+- I added the */static- directory for CSS and JavaScript.
+- I added the */templates- directory for the HTML webpages.
 
+[(Back to TOC)](#table-of-contents)
 
 ## Database setup
-[(back to TOC)](#toc)
 
 ### database_setup.py
 
@@ -112,11 +107,9 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CatalogItem, User
 ```
 
-
 #### Classes
 
 Next, I needed to create Python classes for the different tables in the database. We need a database of items in different categories for this project. This is similar to having restaurants with different menu items in the Udacity lesson. I was therefore able to easily adapt the `class Restaurant(Base)` to `class Category(Base)`, and `class MenuItem(Base)` to class `CatalogItem(Base)`. I added a `class User(Base)` to keep track of users registered for the app.
-
 
 #### SQLAlchemy engine
 
@@ -135,7 +128,6 @@ Base.metadata.create_all(engine)
 ```
 
 Git commit at this point: Set up database 7844cbb
-
 
 ### database_data.py
 
@@ -158,7 +150,6 @@ After we bind the engine to the Base class, we need to establish a database sess
 
 > A `DBSession()` instance establishes all conversations with the database and represents a "staging zone" for all the objects loaded into the database session object. Any change made against the objects in the session won't be persisted into the database until you call `session.commit()`. If you're not happy about the changes, you can revert all of them back to the last commit by calling `session.rollback()`.
 
-
 #### Categories and items
 
 Now that database_data.py is set up, I will start adding items. I used a film noir theme for my [movie trailer site](https://github.com/br3ndonland/udacity-fsnd01-p01-movies), so here I will bring in another one of my interests: Bodybuilding! Welcome to Brendon's Bodybuilding Bazaar! I entered some brief info about some of my favorite strength training equipment and accessories.
@@ -168,7 +159,6 @@ I knew from experience that Python concatenates adjacent strings, so I broke the
 I included website and image URLs, and commented them out, in case I want to use them in the future.
 
 Git commit at this point: Create item catalog 0dd29ab
-
 
 ### Database creation
 
@@ -266,11 +256,9 @@ class Item(Base):
             'id': self.id
         }
 
-
 ```
 
 Git commit at this point: Debug database item timestamping 695e7bb
-
 
 ### Database population
 
@@ -290,62 +278,58 @@ $ brew cask install db-browser-for-sqlite
 
 <img src="img/database-population.png" alt="Screenshot of DB Browser for SQLite, showing successful database creation and population">
 
-
+[(Back to TOC)](#table-of-contents)
 
 ## Application
-[(back to TOC)](#toc)
 
 Now that I have the database and catalog set up, it's time to code the main application in [application.py](application.py). If you're still following along in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/), this would roughly be around [Step 6: The view functions](http://flask.pocoo.org/docs/0.12/tutorial/views/).
 
-
 ### application.py
 
-#### Setup
+#### application.py setup
 
-* I started with the usual imports and database connection.
-* Before any operations are performed, we must first import the necessary libraries, connect to the database, and create a session to interface with the database. SQLAlchemy uses "sessions" to connect to the database. We can store the commands we plan to use, but not send them to the database until we run a commit.
-
+- I started with the usual imports and database connection.
+- Before any operations are performed, we must first import the necessary libraries, connect to the database, and create a session to interface with the database. SQLAlchemy uses "sessions" to connect to the database. We can store the commands we plan to use, but not send them to the database until we run a commit.
 
 #### App routes
 
-* **The lessons didn't adequately prepare me for building the rest of the application code.** I started, as before, by reviewing code from the Full Stack Foundations restaurant menus example. I referenced [finalproject.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/finalproject.py).
-* **I decided to start by defining functions for the Flask app routes, and then to leave the authentication flow for later.**
-
+- **The lessons didn't adequately prepare me for building the rest of the application code.** I started, as before, by reviewing code from the Full Stack Foundations restaurant menus example. I referenced [finalproject.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/finalproject.py).
+- **I decided to start by defining functions for the Flask app routes, and then to leave the authentication flow for later.**
 
 ##### CRUD: Read
 
-* The homepage app route was fairly straightforward. The most difficult thing was figuring out how to display recent items. I accomplished this by creating a `recent_items` object and using a [SQLAlchemy command](https://stackoverflow.com/questions/4186062/sqlalchemy-order-by-descending#4187279):
-	```python
-	    recent_items = (session.query(Item)
+- The homepage app route was fairly straightforward. The most difficult thing was figuring out how to display recent items. I accomplished this by creating a `recent_items` object and using a [SQLAlchemy command](https://stackoverflow.com/questions/4186062/sqlalchemy-order-by-descending#4187279):
+
+  ```python
+      recent_items = (session.query(Item)
         .order_by(Item.date_created.desc())
         .limit(10)
         .all())
-	```
-* Next, I coded the app route function to display all items in a specific category. The URL in [finalproject.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/finalproject.py) is coded using the category `id`, which is okay, but it may be more intuitive to use the category name in the URL.
-<!-- TODO: Re-code URL with category name -->
+  ```
 
+- Next, I coded the app route function to display all items in a specific category. The URL in [finalproject.py](https://github.com/udacity/Full-Stack-Foundations/blob/master/Lesson-4/Final-Project/finalproject.py) is coded using the category `id`, which is okay, but it may be more intuitive to use the category name in the URL.
 
 ##### CRUD: Create an item with a POST request
 
-* The next function to build in would be item creation. We will use POST requests for this.
-* Users need to be logged in to edit items. I added a simple login verification for the local permission system:
-	```python
-	# Verify user is logged in
-	if 'username' not in login_session:
-	    return redirect('/login')
-	```
-	- This was based on Lesson 12. Local permission system 12.06. Quiz: Protect Menu Pages (Lesson 3 in free course [Authentication & Authorization: OAuth](https://www.udacity.com/course/authentication-authorization-oauth--ud330))
-	- I will build in additional login functions later.
-* Next, I needed flash messages to warn users if they haven't added all the information needed for a new item. I used the Flask lesson from Full Stack Foundations, Part 15, as a starting point (see [lesson notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/06-09-foundations/fsnd03_08-flask.md#message-flashing) and [lesson code](https://github.com/br3ndonland/Full-Stack-Foundations/blob/master/Lesson-3/17_Flash-Messaging-Solution/project.py))
-* I added in the `from Flask import flash` to support flash messaging.
-* I then added an object to provide all the proper fields for the item, based on database_setup.py.
+- The next function to build in would be item creation. We will use POST requests for this.
+- Users need to be logged in to edit items. I added a simple login verification for the local permission system:
 
+  ```python
+  # Verify user is logged in
+  if 'username' not in login_session:
+      return redirect('/login')
+  ```
+
+  - This was based on Lesson 12. Local permission system 12.06. Quiz: Protect Menu Pages (Lesson 3 in free course [Authentication & Authorization: OAuth](https://www.udacity.com/course/authentication-authorization-oauth--ud330))
+  - I will build in additional login functions later.
+- Next, I needed flash messages to warn users if they haven't added all the information needed for a new item. I used the Flask lesson from Full Stack Foundations, Part 15, as a starting point (see [lesson notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/06-09-foundations/fsnd03_08-flask.md#message-flashing) and [lesson code](https://github.com/br3ndonland/Full-Stack-Foundations/blob/master/Lesson-3/17_Flash-Messaging-Solution/project.py))
+- I added in the `from Flask import flash` to support flash messaging.
+- I then added an object to provide all the proper fields for the item, based on database_setup.py.
 
 ##### CRUD: Edit and delete items
 
-* Of course, after we create items, we may want to edit or delete them.
-* We only want the creator of the item to be able to modify it.
-
+- Of course, after we create items, we may want to edit or delete them.
+- We only want the creator of the item to be able to modify it.
 
 ##### JSON
 
@@ -362,67 +346,68 @@ def show_category_json(category_id):
     return jsonify(items=[items.serialize for item in items])
 ```
 
-
 ### Next steps
 
-Git commit at this point: Create app routes 0bcddf7 
+Git commit at this point: Create app routes 0bcddf7
 
 **I thought about how to proceed. I could have built the HTML templates and tested the app, but decided to proceed with authentication and build the front-end later.**
 
+[(Back to TOC)](#table-of-contents)
 
 ## Authentication and authorization
-[(back to TOC)](#toc)
 
 ### Getting started
 
-I followed the [OAuth lessons](https://www.udacity.com/course/authentication-authorization-oauth--ud330) to implement sign-in. The Udacity materials are, of course, poorly formatted and outdated, and didn't prepare me for the project. The course code exists, confusingly, in two repos: [OAuth2.0](https://github.com/udacity/OAuth2.0) and [ud330](https://github.com/udacity/ud330/blob/master/Lesson2/step2/project.py). The code in ud330 is formatted a little better than the OAuth repo. 
+I followed the [OAuth lessons](https://www.udacity.com/course/authentication-authorization-oauth--ud330) to implement sign-in. The Udacity materials are, of course, poorly formatted and outdated, and didn't prepare me for the project. The course code exists, confusingly, in two repos: [OAuth2.0](https://github.com/udacity/OAuth2.0) and [ud330](https://github.com/udacity/ud330/blob/master/Lesson2/step2/project.py). The code in ud330 is formatted a little better than the OAuth repo.
 
 I turned to [my notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/10-13-oauth/fsnd03_10-13-oauth.md) and re-watched the OAuth lessons to implement Google and Facebook sign-in.
-
 
 ### Google
 
 #### Create client ID and secret
 
-* **The client ID and secret allow the app to communicate with Google.**
-* I searched around a bit and found the [Google API Client Library for Python](https://developers.google.com/api-client-library/python/).
-* Created a new project in the [Google APIs Dashboard](https://console.developers.google.com/apis/dashboard) (udacity-flask-catalog).
-* It seems like I will need an OAuth key, rather than a simple API key like I used in the API lessons. See [Lesson 11.05](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/10-13-oauth/fsnd03_10-13-oauth.md#1105-quiz-step-1-create-client-id--secret).
-* I set the "Authorized JavaScript Origins" to allow http://localhost:8000
-* Downloaded JSON and renamed to client_secrets.json
-* Create a server-side helper function to store the client secret as an object
-	```python
-	CLIENT_ID = json.loads(open('client_secrets.json', 'r')
-	    .read())['web']['client_id']
-	```
+- **The client ID and secret allow the app to communicate with Google.**
+- I searched around a bit and found the [Google API Client Library for Python](https://developers.google.com/api-client-library/python/).
+- Created a new project in the [Google APIs Dashboard](https://console.developers.google.com/apis/dashboard) (udacity-flask-catalog).
+- It seems like I will need an OAuth key, rather than a simple API key like I used in the API lessons. See [Lesson 11.05](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/10-13-oauth/fsnd03_10-13-oauth.md#1105-quiz-step-1-create-client-id--secret).
+- Set the "Authorized JavaScript Origins" to allow [localhost:8000](http://localhost:8000).
+- Downloaded JSON and renamed to client_secrets.json
+- Created a server-side helper function to store the client secret as an object
 
+  ```python
+  CLIENT_ID = json.loads(open('client_secrets.json', 'r')
+      .read())['web']['client_id']
+  ```
 
 #### Create anti-forgery state token
 
-* **The anti-forgery state token is a random string generated by Flask. This helps verify the authenticated user and prevent attacks.**
-* I imported Flask's version of sessions, and named it `login_session`:
-	```python
-	from flask import session as login_session
-	import random
-	import string
-	```
-	- `login_session` is a dictionary. We can store values there during the session.
-* I then created the login page app route, including generation of a random string:
-	```python
-	@app.route('/login')
-	def login():
-	    """App route function to log in and generate token."""
-	    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-	                    for x in range(32))
-	    login_session['state'] = state
-	    return render_template('login.html', STATE=state)
-	```
-	- Session works like a dictionary and can store values.
-	- `random` and `string` are used to generate a random string, stored in an object with the name `state` here.
-	- The `xrange` in Python 2 is replaced by `range` in Python 3.
-	- The `state` token is stored in the `login_session` object.
-	- Passing the state token as an argument in login.html helps protect against CSRF. See [CSRF protection in Flask](http://flask.pocoo.org/snippets/3/) for more info.
+- **The anti-forgery state token is a random string generated by Flask. This helps verify the authenticated user and prevent attacks.**
+- I imported Flask's version of sessions, and named it `login_session`:
 
+  ```python
+  from flask import session as login_session
+  import random
+  import string
+  ```
+
+  - `login_session` is a dictionary. We can store values there during the session.
+- I then created the login page app route, including generation of a random string:
+
+  ```python
+  @app.route('/login')
+  def login():
+      """App route function to log in and generate token."""
+      state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                      for x in range(32))
+      login_session['state'] = state
+      return render_template('login.html', STATE=state)
+  ```
+
+  - Session works like a dictionary and can store values.
+  - `random` and `string` are used to generate a random string, stored in an object with the name `state` here.
+  - The `xrange` in Python 2 is replaced by `range` in Python 3.
+  - The `state` token is stored in the `login_session` object.
+  - Passing the state token as an argument in login.html helps protect against CSRF. See [CSRF protection in Flask](http://flask.pocoo.org/snippets/3/) for more info.
 
 #### GConnect
 
@@ -440,40 +425,47 @@ I then created the GConnect and GDisconnect app routes.
 
 Git commit at this point: Add Google login 4d3d016
 
-
 ### Facebook
 
 We were only required to implement one third-party login. Facebook login would probably be more effectively implemented with JavaScript, so I opted not to include it. See the [Facebook login documentation](https://developers.facebook.com/docs/facebook-login).
 
+[(Back to TOC)](#table-of-contents)
 
 ## Templates
-[(back to TOC)](#toc)
 
-* We use [Jinja](http://jinja.pocoo.org/docs/2.10/) templating in Flask. See the [Flask tutorial step 7](http://flask.pocoo.org/docs/0.12/tutorial/templates/).
-* I followed the [guidelines for template inheritance](http://flask.pocoo.org/docs/0.12/patterns/templateinheritance/) by naming the base template layout.html. As we saw in the Udacity Flask lesson part 10:
-	```text
-	{% logical code for Python %}
-	{{ printed output code }}
-	```
-* HTML templates don't get to use Python indendation and spacing, so we have to include instructions to terminate loops:
-	```text
-	{% endfor %}
-	{% endif %}
-	```
-* I started by quickly creating the files I knew I needed on the command line:
-	```bash
-	touch layout.html categories.html category.html item.html add_item.html edit_item.html delete_item.html login.html
-	```
-* layout.html
-	- This is the base template.
-	- I elected not to include the `<meta name="keywords" content="">` tag, because [Google does not use the keywords meta tag in web ranking](https://webmasters.googleblog.com/2009/09/google-does-not-use-keywords-meta-tag.html).
-* login.html
-	- I extended the base template.
-	- I based the Google sign-in part of the template on [ud330/Lesson2/step3/templates/login.html](https://github.com/udacity/ud330/blob/master/Lesson2/step3/templates/login.html).
+- We use [Jinja](http://jinja.pocoo.org/docs/2.10/) templating in Flask. See the [Flask tutorial step 7](http://flask.pocoo.org/docs/0.12/tutorial/templates/).
+- I followed the [guidelines for template inheritance](http://flask.pocoo.org/docs/0.12/patterns/templateinheritance/) by naming the base template layout.html. As we saw in the Udacity Flask lesson part 10:
 
+  ```text
+  {% logical code for Python %}
+  {{ printed output code }}
+  ```
+
+- HTML templates don't get to use Python indendation and spacing, so we have to include instructions to terminate loops:
+
+  ```text
+  {% endfor %}
+  {% endif %}
+  ```
+
+- I started by quickly creating the files I knew I needed on the command line:
+
+  ```bash
+  touch layout.html categories.html category.html item.html add_item.html edit_item.html delete_item.html login.html
+  ```
+
+- layout.html
+  - This is the base template.
+  - I elected not to include the `<meta name="keywords" content="">` tag, because [Google does not use the keywords meta tag in web ranking](https://webmasters.googleblog.com/2009/09/google-does-not-use-keywords-meta-tag.html).
+- login.html
+  - I extended the base template.
+  - I based the Google sign-in part of the template on [ud330/Lesson2/step3/templates/login.html](https://github.com/udacity/ud330/blob/master/Lesson2/step3/templates/login.html).
+
+Git commit at this point: Create templates 5d1febd
+
+[(Back to TOC)](#table-of-contents)
 
 ## Style
-[(back to TOC)](#toc)
 
 ### HTML and CSS
 
@@ -481,42 +473,25 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 
 ## First look
 
-* Here's what the app looked like when I started it up for the first time:
-	
-	<img src="img/Screen-Shot-2018-03-29-at-3.44.23-PM.png" alt="Screenshot of app after initial startup">
+- Here's what the app looked like when I started it up for the first time:
 
-* :face_palm: 🤦
-* Categories and items aren't listed.
-* Clicking Categories just stays at the same page.
-* Clicking login returns an error:
-	```text
-	builtins.RuntimeError
-	
-	RuntimeError: The session is unavailable because no secret key was set.
-	Set the secret_key on the application to something unique and secret.
-	```
+  <img src="img/Screen-Shot-2018-03-29-at-3.44.23-PM.png" alt="Screenshot of app after initial startup">
 
+- :face_palm: 🤦
+- Categories and items aren't listed.
+- Clicking Categories just stays at the same page.
+- Clicking login returns an error:
+
+  ```text
+  builtins.RuntimeError
+
+  RuntimeError: The session is unavailable because no secret key was set.
+  Set the secret_key on the application to something unique and secret.
+  ```
+
+[(Back to TOC)](#table-of-contents)
 
 ## Debugging
-[(back to TOC)](#toc)
-
-### General comments
-
-**The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
-
-* [SQLAlchemy](http://www.sqlalchemy.org/)
-* [Jinja](http://jinja.pocoo.org/docs/2.10/)
-* [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
-* [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
-
-
-**In general, I found it difficult to:**
-
-* Build the app in a systematic way
-* Keep the application code structured
-* Understand the Flask syntax
-* Follow all the similar variable names being used everywhere.
-
 
 ### Debugging pages
 
@@ -524,8 +499,9 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 
 ##### Page structure
 
-* The easiest place to start is with fixing the HTML page layout. I need to keep the main container in line with the header. This was easily fixed by adding a container around the block content tags in *layout.html*.
-	```html
+- The easiest place to start is with fixing the HTML page layout. I need to keep the main container in line with the header. This was easily fixed by adding a container around the block content tags in *layout.html*.
+
+  ```html
   <!-- Main page content -->
   <main>
     <div class="container">
@@ -533,311 +509,478 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
       {% endblock %}
     </div>
   </main>
-	```
-* Adding a `class="img-fluid"` to the image at the right in *index.html* kept it within the container.
-* Next, I added buttons to the navbar.
-* The homepage is starting to look a little better now:
-	
-	<img src="img/Screen-Shot-2018-04-02-at-3.21.38-PM.png" alt="Screenshot of homepage after improving homepage HTML">
+  ```
 
-* I added a footer with a [border](https://getbootstrap.com/docs/4.0/utilities/borders/) above to *layout.html*.
-* I put the category and item lists inside columns to align them.
+- Adding a `class="img-fluid"` to the image at the right in *index.html- kept it within the container.
+- Next, I added buttons to the navbar.
+- The homepage is starting to look a little better now:
 
+  <img src="img/Screen-Shot-2018-04-02-at-3.21.38-PM.png" alt="Screenshot of homepage after improving homepage HTML">
+
+- I added a footer with a [border](https://getbootstrap.com/docs/4.0/utilities/borders/) above to *layout.html*.
+- I put the category and item lists inside columns to align them.
 
 ##### Page categories and items
 
-* Next, I need the categories and items to show up.
-* **This took many hours, and I couldn't really figure out how to be systematic about the changes.**
-* I eventually got it to work through tandem debugging of the app route functions in *application.py* and the Jinja tags in *index.html*.
-* I browsed through the traceback, and found some issues with *index.html*:
-	```text
-	File "/vagrant/flask-catalog/templates/index.html", line 1, in top-level template code
+- Next, I need the categories and items to show up.
+- **This took many hours, and I couldn't really figure out how to be systematic about the changes.**
+- I eventually got it to work through tandem debugging of the app route functions in *application.py- and the Jinja tags in *index.html*.
+- I browsed through the traceback, and found some issues with *index.html*:
 
-	{% extends 'layout.html' %}
+  ```text
+  File "/vagrant/flask-catalog/templates/index.html", line 1, in top-level template code
 
-	File "/vagrant/flask-catalog/templates/layout.html", line 32, in top-level template code
+  {% extends 'layout.html' %}
 
-	{% block content %}
+  File "/vagrant/flask-catalog/templates/layout.html", line 32, in top-level template code
 
-	File "/vagrant/flask-catalog/templates/index.html", line 13, in block "content"
+  {% block content %}
 
-	<a href="{{ url_for('category', category=category.name) }}">
-	```
-* I deleted the links and the items showed up:
+  File "/vagrant/flask-catalog/templates/index.html", line 13, in block "content"
 
-	<img src="img/Screen-shot-2018-04-02-at-6.42.27-PM.png" alt="Screenshot of homepage after getting lists of items to show up">
+  <a href="{{ url_for('category', category=category.name) }}">
+  ```
 
-* This means I'm having an issue with `url_for` in *index.html*. The Udacity lessons should have explained this function more effectively. We touched on it in 8.11. Quiz: URL for Quiz, but the lessons were disorganized and it's difficult to keep all the app features straight. I searched the Flask documentation and found helpful info on [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building) on the quickstart page:
-	> To build a URL to a specific function you can use the `url_for()` function. It accepts the name of the function as first argument and a number of keyword arguments, each corresponding to the variable part of the URL rule. Unknown variable parts are appended to the URL as query parameters.
-* I deleted the recent items part so I could focus on the categories part. After going back and forth between *index.html* and the `show_category` function in *application.py*, correcting the variables referenced, I eventually got the homepage to show up:
-	```html
-	{% for category in categories %}
-	  <li>
-	    <a href="{{ url_for('show_category', category=category.name) }}">
-	    {{ category.name }}
-	    </a>
-	  </li>
-	{% endfor %}
-	```
+- I deleted the links and the items showed up:
 
-	<img src="img/Screen-shot-2018-04-02-at-10.11.50-PM.png" alt="Screenshot after troubleshooting URL for categories">
+  <img src="img/Screen-shot-2018-04-02-at-6.42.27-PM.png" alt="Screenshot of homepage after getting lists of items to show up">
 
-* Getting the URLs for the items to show up on the homepage also depends on how the item URLs are built in *application.py*. I was successful with this encoding:
-	```python
-	@app.route('/<string:category>/<string:category_item>')
-	```
-* I then modified the HTML in *index.html*. In order to use the item name in the URL, I had to replace spaces with dashes, within the Jinja `url_for` template. Note that I used `%20` and `%2D`, instead of space and dash, for proper [URL encoding (percent encoding)](https://en.wikipedia.org/wiki/Percent-encoding).
-	```html
-	{% for item in recent_items %}
-	  <li>
+- This means I'm having an issue with `url_for` in *index.html*. The Udacity lessons should have explained this function more effectively. We touched on it in 8.11. Quiz: URL for Quiz, but the lessons were disorganized and it's difficult to keep all the app features straight. I searched the Flask documentation and found helpful info on [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building) on the quickstart page:
+  > To build a URL to a specific function you can use the `url_for()` function. It accepts the name of the function as first argument and a number of keyword arguments, each corresponding to the variable part of the URL rule. Unknown variable parts are appended to the URL as query parameters.
+- I deleted the recent items part so I could focus on the categories part. After going back and forth between *index.html- and the `show_category` function in *application.py*, correcting the variables referenced, I eventually got the homepage to show up:
+
+  ```html
+  {% for category in categories %}
+    <li>
+      <a href="{{ url_for('show_category', category=category.name) }}">
+      {{ category.name }}
+      </a>
+    </li>
+  {% endfor %}
+  ```
+
+  <img src="img/Screen-shot-2018-04-02-at-10.11.50-PM.png" alt="Screenshot after troubleshooting URL for categories">
+
+- Getting the URLs for the items to show up on the homepage also depends on how the item URLs are built in *application.py*. I was successful with this encoding:
+
+  ```python
+  @app.route('/<string:category>/<string:category_item>')
+  ```
+
+- I then modified the HTML in *index.html*. In order to use the item name in the URL, I had to replace spaces with dashes, within the Jinja `url_for` template. Note that I used `%20` and `%2D`, instead of space and dash, for proper [URL encoding (percent encoding)](https://en.wikipedia.org/wiki/Percent-encoding).
+
+  ```html
+  {% for item in recent_items %}
+    <li>
       <a href="{{ url_for('show_item', category=item.category.name, category_item=item.name) | replace('%20', '%2D') }}">
-	    {{ item.name }} <em>({{ item.category.name }})</em>
-	    </a>
-	  </li>
-	{% endfor %}
-	```
+      {{ item.name }} <em>({{ item.category.name }})</em>
+      </a>
+    </li>
+  {% endfor %}
+  ```
 
-	<img src="img/Screen-shot-2018-04-02-at-10.21.59-PM.png" alt="Screenshot after troubleshooting URL for recent items">
+  <img src="img/Screen-shot-2018-04-02-at-10.21.59-PM.png" alt="Screenshot after troubleshooting URL for recent items">
 
-* **Alright! Looking a lot better!**
+- **Alright! Looking a lot better!**
 
+Git commit at this point: Debug homepage 6b21f07
 
 #### show_category.html
 
-* Now that I have the homepage at *index.html* looking good, I need to debug the category and item pages so they show up.
-* Again, this required tandem debugging of the app route functions in *application.py* and the Jinja tags in *show_category.html*.
-* I was having issues accessing the data with SQLAlchemy. Breaking the queries onto different lines helped keep them straight. The solution was to query the categories by name, but the items by category ID. Confusing.
+- Now that I have the homepage at *index.html- looking good, I need to debug the category and item pages so they show up.
+- Again, this required tandem debugging of the app route functions in *application.py- and the Jinja tags in *show_category.html*.
+- I was having issues accessing the data with SQLAlchemy. Breaking the queries onto different lines helped keep them straight. The solution was to query the categories by name, but the items by category ID. Confusing.
 
-	<img src="img/Screen-shot-2018-04-03-at-5.38.44-PM.png" alt="Screenshot after getting category page working">
+  <img src="img/Screen-shot-2018-04-03-at-5.38.44-PM.png" alt="Screenshot after getting category page working">
 
-* The scrollbar at the bottom was there because I hadn't enclosed the message flashing HTML in a container.
-* `Items in {{ category }}` wasn't displaying the category name at first. The solution was to go back to the `show_category` code in *application.py* and change `render_template`. This function passes variables that can be used in the template. I originally had `category_name=category`, which returns `<database_setup.Category object at 0xb57f44ec>`.
-	```python
-	# Render webpage
+- The scrollbar at the bottom was there because I hadn't enclosed the message flashing HTML in a container.
+- `Items in {{ category }}` wasn't displaying the category name at first. The solution was to go back to the `show_category` code in *application.py- and change `render_template`. This function passes variables that can be used in the template. I originally had `category_name=category`, which returns `<database_setup.Category object at 0xb57f44ec>`.
+
+  ```python
+  # Render webpage
     return render_template('show_category.html',
                            categories=categories,
                            category_name=category,
                            category_items=category_items,
                            category_items_count=category_items_count)
-	```
-* I changed it to `category_name=category.name`, which provided the name of the currently selected category.
-	```python
-	# Render webpage
+  ```
+
+- I changed it to `category_name=category.name`, which provided the name of the currently selected category.
+
+  ```python
+  # Render webpage
     return render_template('show_category.html',
                            categories=categories,
                            category_name=category.name,
                            category_items=category_items,
                            category_items_count=category_items_count)
-	```
-* I used the `category_items_count` variable to provide an item count on the page with `{{ category_items_count }} items`.
-* I also modified the SQLAlchemy command to sort the items alphabetically.
-	```python
+  ```
+
+- I used the `category_items_count` variable to provide an item count on the page with `{{ category_items_count }} items`.
+- I also modified the SQLAlchemy command to sort the items alphabetically.
+
+  ```python
     category_items = (session.query(Item)
                       .filter_by(category_id=category.id)
                       .order_by(Item.name)
                       .all())
-	```
+  ```
 
-	<img src="img/Screen-shot-2018-04-03-at-8.40.17-PM.png" alt="Screenshot after adding category name to category page">
+  <img src="img/Screen-shot-2018-04-03-at-8.40.17-PM.png" alt="Screenshot after adding category name to category page">
 
-* **Excellent!**
-
+- **Excellent!**
 
 #### show_item.html
 
-* Now I need to do the same thing for the item page. I did tandem troubleshooting of the `show_item` app route and *show_item.html*.
-* I had some issues with the SQLAlchemy query to retrieve the individual item from the database. I was basically just not getting the information. I played around with the SQLAlchemy queries for a while. I still don't understand the syntax well.
-* I was only able to get the RumbleRoller item page to come up:
+- Now I need to do the same thing for the item page. I did tandem troubleshooting of the `show_item` app route and *show_item.html*.
+- I had some issues with the SQLAlchemy query to retrieve the individual item from the database. I was basically just not getting the information. I played around with the SQLAlchemy queries for a while. I still don't understand the syntax well.
+- I was only able to get the RumbleRoller item page to come up:
 
-	<img src="img/Screen-shot-2018-04-04-at-1.11.01-AM.png" alt="Screenshot of RumbleRoller item page">
+  <img src="img/Screen-shot-2018-04-04-at-1.11.01-AM.png" alt="Screenshot of RumbleRoller item page">
 
-* This told me that there was probably an issue with spacing in the item names. Remember that I added [URL encoded](https://en.wikipedia.org/wiki/Percent-encoding) dashes (`%2D`) to the URLs.
-* After some trial and error, I was able to formulate a coherent SQLAlchemy query. I attempted to change out the dashes for spaces, so the item name would match the database entry.
-	```python
-	item = (session.query(Item)
+- This told me that there was probably an issue with spacing in the item names. Remember that I added [URL encoded](https://en.wikipedia.org/wiki/Percent-encoding) dashes (`%2D`) to the URLs.
+- After some trial and error, I was able to formulate a coherent SQLAlchemy query. I attempted to change out the dashes for spaces, so the item name would match the database entry.
+
+  ```python
+  item = (session.query(Item)
           .filter_by(name=item.replace('%2D', '%2F'), category_id=category.id)
           .one())
-	```
-* This was unsuccessful. I stepped into the Flask console to investigate. 
+  ```
 
-	<img src="img/Screen-shot-2018-04-04-at-2.07.58-AM.png" alt="Screenshot of Flask console when debugging item page">
+- This was unsuccessful. I stepped into the Flask console to investigate.
 
-* I could see that `print(item)` returned the item name with hyphens, indicating that my string replacement was unsuccessful. **Python is reading the regular character, not the percent encoded character.** Modifying the string replacement to `item.replace('-', ' ')` successfully returned the item name.
-	```text
-	>>> print(item)
-	Pro-Monster-Mini-Resistance-Band
-	>>> print(item.replace('-', ' '))
-	Pro Monster Mini Resistance Band
-	```
-	```python
-	item = (session.query(Item)
+  <img src="img/Screen-shot-2018-04-04-at-2.07.58-AM.png" alt="Screenshot of Flask console when debugging item page">
+
+- I could see that `print(item)` returned the item name with hyphens, indicating that my string replacement was unsuccessful. **Python is reading the regular character, not the percent encoded character.** Modifying the string replacement to `item.replace('-', ' ')` successfully returned the item name.
+
+  ```text
+  >>> print(item)
+  Pro-Monster-Mini-Resistance-Band
+  >>> print(item.replace('-', ' '))
+  Pro Monster Mini Resistance Band
+  ```
+
+  ```python
+  item = (session.query(Item)
           .filter_by(name=item.replace('-', ' '), category_id=category.id)
           .one())
-	```
+  ```
 
-* **Success! I now have functioning home, category and item pages!**
+- **Success! I now have functioning home, category and item pages!**
 
-	<img src="img/Screen-shot-2018-04-04-at-3.02.47-AM.png" alt="Screenshot of item page on laptop">
+  <img src="img/Screen-shot-2018-04-04-at-3.02.47-AM.png" alt="Screenshot of item page on laptop">
 
-* **The app looks great on mobile devices also**, thanks to the responsive Bootstrap framework. The screenshot below simulates an Apple iPhone 6S with Firefox Developer Tools.
+- **The app looks great on mobile devices also**, thanks to the responsive Bootstrap framework. The screenshot below simulates an Apple iPhone 6S with Firefox Developer Tools.
 
-	<img src="img/Screen-Shot-2018-04-04-at-02.53.52.png" alt="Screenshot of item page on simulated Apple iPhone 6S">
+  <img src="img/Screen-Shot-2018-04-04-at-02.53.52.png" alt="Screenshot of item page on simulated Apple iPhone 6S">
 
+Git commit at this point: Debug home, category, and item pages 84ee802
 
 ### Debugging JSON
 
-* I revised the JSON pages in accordance with the new app route functions.
-* Again, for some reason, I was able to read category data easily, but I had trouble reading item data from the database.
-
+- I revised the JSON pages in accordance with the new app route functions.
+- Again, for some reason, I was able to read category data easily, but I had trouble reading item data from the database.
 
 #### Homepage JSON
 
-* I started with the homepage. It is easy to display just the categories:
-	```python
-	@app.route('/json')
-	def home_json():
-	    """App route function to provide catalog data in JSON format."""
+- I started with the homepage. It is easy to display just the categories:
 
-	    categories = (session.query(Category)
-	                  .all())
+  ```python
+  @app.route('/json')
+  def home_json():
+      """App route function to provide catalog data in JSON format."""
 
-	    return jsonify(categories=[category.serialize for category in categories])
-	```
-	```json
-	{
-	  "categories": [
-	    {
-	      "id": 1, 
-	      "name": "Equipment"
-	    }, 
-	    {
-	      "id": 2, 
-	      "name": "Accessories"
-	    }
-	  ]
-	}
-	```
-* Adding the items in throws an error:
-	```python
-	@app.route('/json')
-	def home_json():
-	    """App route function to provide catalog data in JSON format."""
+      categories = (session.query(Category)
+                    .all())
 
-	    categories = (session.query(Category)
-	                  .all())
-	    items = (session.query(Item)
-	             .all())
+      return jsonify(categories=[category.serialize for category in categories])
+  ```
 
-	    return jsonify(categories=[category.serialize for category in categories],
-	                   items=[items.serialize for item in items])
-	```
-	```text
-	AttributeError: 'list' object has no attribute 'serialize'
-	```
-* The Flask console reveals that I am just retrieving a list of database entries. It's strange that there are only six items.
-	```text
-	>>> print(items)
-	[<database_setup.Item object at 0xb585d3ac>, <database_setup.Item object at 0xb585d86c>, <database_setup.Item object at 0xb585d8cc>, <database_setup.Item object at 0xb585d96c>, <database_setup.Item object at 0xb585da2c>, <database_setup.Item object at 0xb585daec>]
-	```
-* **I already included serialization in the class defintions in database_setup.py. Why is this so difficult?** I still felt like the names of the classes, tables, and objects overlapped too much. I wasn't sure what I was calling where.
-* **The solution was to revise the class and table names** in *database_setup.py*. It didn't make sense to have a table named 'item' with more than one item in it, anyway.
-	```text
-	class User => class Users
-	__tablename__ = 'user' => __tablename__ = 'users'
+  ```json
+  {
+    "categories": [
+      {
+        "id": 1,
+        "name": "Equipment"
+      },
+      {
+        "id": 2,
+        "name": "Accessories"
+      }
+    ]
+  }
+  ```
 
-	class Category => class Categories
-	__tablename__ = 'category' => __tablename__ = 'categories'
+- Adding the items in throws an error:
 
-	class Item => class Items
-	__tablename__ = 'item' => __tablename__ = 'items'
+  ```python
+  @app.route('/json')
+  def home_json():
+      """App route function to provide catalog data in JSON format."""
 
-	```
-* I revised the app route to show all the items and categories. The syntax used in `jsonify()` is very confusing.
-	```python
-	@app.route('/json')
-	def catalog_json():
-	    """App route function to provide catalog data in JSON format."""
+      categories = (session.query(Category)
+                    .all())
+      items = (session.query(Item)
+               .all())
 
-	    categories = (session.query(Categories).all())
-	    items = (session.query(Items).all())
+      return jsonify(categories=[category.serialize for category in categories],
+                     items=[items.serialize for item in items])
+  ```
 
-	    return jsonify(categories=[categories.serialize for categories in categories],
-	                   items=[items.serialize for items in items])
-	```
-* After updating all the references to class and table names in *database_data.py* and *application.py*, I closed down Flask, deleted, re-created, and re-populated the database, and started the app again.
-* I browsed to http://0.0.0.0:8000/json and got a nice JSON output!
+  ```text
+  AttributeError: 'list' object has no attribute 'serialize'
+  ```
 
-	<img src="img/Screen-shot-2018-04-04-at-5.27.07-PM.png" alt="Screenshot of catalog JSON">
+- The Flask console reveals that I am just retrieving a list of database entries. It's strange that there are only six items.
 
+  ```text
+  >>> print(items)
+  [<database_setup.Item object at 0xb585d3ac>, <database_setup.Item object at 0xb585d86c>, <database_setup.Item object at 0xb585d8cc>, <database_setup.Item object at 0xb585d96c>, <database_setup.Item object at 0xb585da2c>, <database_setup.Item object at 0xb585daec>]
+  ```
+
+- **I already included serialization in the class defintions in database_setup.py. Why is this so difficult?** I still felt like the names of the classes, tables, and objects overlapped too much. I wasn't sure what I was calling where.
+- **The solution was to revise the class and table names** in *database_setup.py*. It didn't make sense to have a table named 'item' with more than one item in it, anyway.
+
+  ```text
+  class User => class Users
+  __tablename__ = 'user' => __tablename__ = 'users'
+
+  class Category => class Categories
+  __tablename__ = 'category' => __tablename__ = 'categories'
+
+  class Item => class Items
+  __tablename__ = 'item' => __tablename__ = 'items'
+
+  ```
+
+- I revised the app route to show all the items and categories. The syntax used in `jsonify()` is very confusing.
+
+  ```python
+  @app.route('/json')
+  def catalog_json():
+      """App route function to provide catalog data in JSON format."""
+
+      categories = (session.query(Categories).all())
+      items = (session.query(Items).all())
+
+      return jsonify(categories=[categories.serialize for categories in categories],
+                     items=[items.serialize for items in items])
+  ```
+
+- After updating all the references to class and table names in *database_data.py- and *application.py*, I closed down Flask, deleted, re-created, and re-populated the database, and started the app again.
+- I browsed to [/json](http://0.0.0.0:8000/json) and got a nice JSON output!
+
+  <img src="img/Screen-shot-2018-04-04-at-5.27.07-PM.png" alt="Screenshot of catalog JSON">
 
 #### Categories JSON
 
-* Unfortunately, displaying JSON for the categories still took me a few more hours. 
-* I had already revised the database classes and table names for the homepage JSON as described above, so I focused on revising the app route.
-* I copied the `category` and `category_items` objects from the `show_category` app route.
-* I then had to revise the `jsonify()` code, which was even more confusing here. After many tries, I finally figured out the magic combination (or repetition) of terms:
-	```python
-	@app.route('/<string:category>/json')
-	def show_category_json(category):
-	    """App route function to provide category data in JSON format."""
+- Unfortunately, displaying JSON for the categories still took me a few more hours.
+- I had already revised the database classes and table names for the homepage JSON as described above, so I focused on revising the app route.
+- I copied the `category` and `category_items` objects from the `show_category` app route.
+- I then had to revise the `jsonify()` code, which was even more confusing here. After many tries, I finally figured out the magic combination (or repetition) of terms:
 
-	    category = (session.query(Categories)
-	                .filter_by(name=category)
-	                .one())
-	    category_items = (session.query(Items)
-	                      .filter_by(category_id=category.id)
-	                      .order_by(Items.name)
-	                      .all())
+  ```python
+  @app.route('/<string:category>/json')
+  def show_category_json(category):
+      """App route function to provide category data in JSON format."""
 
-	    return jsonify(category=[category.serialize],
-	                   items=([category_items
-	                          .serialize for category_items in category_items]))
-	```
-* "category_items.serialize for category_items in category_items"? Wow.
+      category = (session.query(Categories)
+                  .filter_by(name=category)
+                  .one())
+      category_items = (session.query(Items)
+                        .filter_by(category_id=category.id)
+                        .order_by(Items.name)
+                        .all())
 
-	<img src="img/Screen-shot-2018-04-04-at-5.48.02-PM.png" alt="Screenshot of category-specific JSON">
+      return jsonify(category=[category.serialize],
+                     items=([category_items
+                            .serialize for category_items in category_items]))
+  ```
 
+- "category_items.serialize for category_items in category_items"? Wow.
+
+  <img src="img/Screen-shot-2018-04-04-at-5.48.02-PM.png" alt="Screenshot of category-specific JSON">
 
 #### Individual items JSON
 
-* This was easy after figuring out the category JSON.
-	```python
-	@app.route('/<string:category>/<string:item>/json')
-	def show_item_json(category, item):
-	    """App route function to provide item data in JSON format."""
+- This was easy after figuring out the category JSON.
 
-	    category = (session.query(Categories)
-	                .filter_by(name=category)
-	                .one())
-	    item = (session.query(Items)
-	            .filter_by(name=item.replace('-', ' '))
-	            .one())
+  ```python
+  @app.route('/<string:category>/<string:item>/json')
+  def show_item_json(category, item):
+      """App route function to provide item data in JSON format."""
 
-	    return jsonify(item=[item.serialize])
-	```
+      category = (session.query(Categories)
+                  .filter_by(name=category)
+                  .one())
+      item = (session.query(Items)
+              .filter_by(name=item.replace('-', ' '))
+              .one())
 
-	```json
-	{
-	  "item": [
-	    {
-	      "category": "Equipment", 
-	      "date created": "Wed, 04 Apr 2018 19:46:56 GMT", 
-	      "description": "This Hoist composite motion leg press is, by far, the best leg press I have used. The arc motion activates the posterior chain and protects the knees. Build your legs on this beast!", 
-	      "id": 1, 
-	      "name": "Hoist Dual Action Leg Press"
-	    }
-	  ]
-	}
-	```
-* I updated the item pages to have a JSON link for convenience. **Looking good!**
+      return jsonify(item=[item.serialize])
+  ```
 
-	<img src="img/Screen-Shot-2018-04-04-at-18.08.56.png" alt="Screenshot of item page on simulated Apple iPhone 6S after adding JSON link">
+  ```json
+  {
+    "item": [
+      {
+        "category": "Equipment",
+        "date created": "Wed, 04 Apr 2018 19:46:56 GMT",
+        "description": "This Hoist composite motion leg press is, by far, the best leg press I have used. The arc motion activates the posterior chain and protects the knees. Build your legs on this beast!",
+        "id": 1,
+        "name": "Hoist Dual Action Leg Press"
+      }
+    ]
+  }
+  ```
 
+- I updated the item pages to have a JSON link for convenience. **Looking good!**
 
-### Debugging login
+  <img src="img/Screen-Shot-2018-04-04-at-18.08.56.png" alt="Screenshot of item page on simulated Apple iPhone 6S after adding JSON link">
 
-* Next, I need to debug the login.
-* The error probably results from me not properly inputting my client ID and secret.
+Git commit at this point: Debug database names and JSON endpoints ff3517e
 
+### Debugging authentication
 
-[(back to TOC)](#toc)
+#### Re-doing third party authentication
+
+##### Deciding how to proceed
+
+- Next, I need to debug the login.
+- To add to my [frustration and confusion](#getting-started), when I switched to vscode, the linter was picking up the `oauth2client` import. This is because [`oauth2client` has been deprecated](https://google-auth.readthedocs.io/en/latest/oauth2client-deprecation.html). Yet another outdated piece of code from Udacity.
+- I could use [`authlib`](https://docs.authlib.org/en/latest/#).
+- Google offers [`google-auth`](https://google-auth.readthedocs.io/en/latest/index.html) as a replacement.
+- I asked my Udacity mentor, and he recommended either `authlib` or `google-auth`.
+- I decided to go with `google-auth`. I think.
+- What about the other [info on Google Sign-In](https://developers.google.com/identity/)?
+
+##### Procedure
+
+- I installed `google-auth` with
+
+  ```bash
+  $ pip install --upgrade google-auth
+  ```
+
+- I was not able to install it directly from `conda`.
+- Obtain [user credentials](https://google-auth.readthedocs.io/en/latest/user-guide.html#user-credentials) with OAuth2.0
+
+  ```python
+  import google.oauth2.credentials
+  credentials = google.oauth2.credentials.Credentials('access_token')
+  ```
+
+  - *There is also an option to [obtain credentials with service account private key files](https://google-auth.readthedocs.io/en/latest/user-guide.html#service-account-private-key-files). Is this a separate option from OAuth2.0? Or related? Unclear.*
+
+    ```python
+    from google.oauth2 import service_account
+    credentials = (service_account.Credentials
+                  .from_service_account_file('client_secrets.json'))
+    ```
+
+- Create session object for [making authenticated requests](https://google-auth.readthedocs.io/en/latest/user-guide.html#making-authenticated-requests)
+
+  ```python
+  from google.auth.transport.requests import AuthorizedSession
+  authed_session = AuthorizedSession(credentials)
+  ```
+
+##### Add Google Sign-In to login page
+
+- Used code from the [guidelines for Google Sign-In for Websites](https://developers.google.com/identity/sign-in/web/). I [integrated Google Sign-In](https://developers.google.com/identity/sign-in/web/sign-in) with the HTML and JavaScript below. I put the `<head>` code inside *layout.html*, and the `<body>` code inside *login.html*.
+
+  ```html
+  <html lang="en">
+  <head>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  </head>
+  <body>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+    <script>
+      function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log("ID Token: " + id_token);
+      };
+    </script>
+  </body>
+</html>
+  ```
+
+- The code retrieves user data and generates a token.
+- What do I do about `content="YOUR_CLIENT_ID.apps.googleusercontent.com"`? Do I set that as a variable, and pass it in with Jinja?
+- I reviewed the "c$50 finance" Flask app from cs50 pset07, but they didn't use Google Sign-In, so it wasn't helpful at this point.
+
+##### Authenticate with a backend server
+
+- [Authenticate with a backend server](https://developers.google.com/identity/sign-in/web/backend-auth) using the Google API Client Library.
+- Google says:
+  >Rather than writing your own code to perform these verification steps, we strongly recommend using a Google API client library for your platform, or calling our tokeninfo validation endpoint.
+- Sounds good to me.
+
+  ```python
+  from google.oauth2 import id_token
+  from google.auth.transport import requests
+
+  # (Receive token by HTTPS POST)
+  # ...
+
+  try:
+      # Specify the CLIENT_ID of the app that accesses the backend:
+      idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+
+      # Or, if multiple clients access the backend server:
+      # idinfo = id_token.verify_oauth2_token(token, requests.Request())
+      # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
+      #     raise ValueError('Could not verify audience.')
+
+      if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+          raise ValueError('Wrong issuer.')
+
+      # If auth request is from a G Suite domain:
+      # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
+      #     raise ValueError('Wrong hosted domain.')
+
+      # ID token is valid. Get the user's Google Account ID from the decoded token.
+      userid = idinfo['sub']
+  except ValueError:
+      # Invalid token
+      pass
+  ```
+
+#### Other fixes
+
+- The error appears to partially result from me not properly inputting my client ID and secret.
+
+## Comments
+
+**The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
+
+- [SQLAlchemy](http://www.sqlalchemy.org/)
+- [Jinja](http://jinja.pocoo.org/docs/2.10/)
+- [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
+- [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
+
+**In general, I found it difficult to:**
+
+- Build the app in a systematic way
+- Keep the application code structured
+- Understand the Flask syntax
+- Follow all the similar variable names being used everywhere.
+
+**Time commitment:**
+
+- It took ~50 hours over a week (end of March 2018) to build the initial version of the app (up to the :face_palm: stage).
+
+[(Back to TOC)](#table-of-contents)
