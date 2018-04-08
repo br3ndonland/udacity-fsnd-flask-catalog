@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Flask catalog</title>
   <meta name="description" content="Brendon's Bodybuilding Bazaar">
@@ -7,13 +8,19 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Google Sign-In -->
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
   <!-- Favicon -->
   <link rel="icon" href="../static/img/favicon.png">
   <!-- For IE 9 and below. -->
   <!--[if IE]><link rel="shortcut icon" href="../static/img/favicon.ico"><![endif]-->
 </head>
+
 <body>
   <!-- Header -->
   <header class="container header">
@@ -36,11 +43,11 @@
       <div class="container">
         <div class="row">
           <div class="col-sm-8 mt-1">
-            {% block content %}
-            {% endblock %}
+            {% block content %} {% endblock %}
           </div>
           <div class="col-sm-4 mt-1">
-            <img src="../static/img/arnold-schwarzenegger-encyclopedia-232.png" alt="Picture of Arnold Schwarzenegger and Franco Columbu doing incline dumbbell curls" class="img-fluid rounded">
+            <img src="../static/img/arnold-schwarzenegger-encyclopedia-232.png" alt="Picture of Arnold Schwarzenegger and Franco Columbu doing incline dumbbell curls"
+              class="img-fluid rounded">
           </div>
         </div>
       </div>
@@ -52,15 +59,15 @@
     <div class="row">
       <div class="col">
         <div class="flash">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <ul>
-              {% for message in messages %}
-              <li><strong> {{ message }} </strong></li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-            {% endwith %}
+          {% with messages = get_flashed_messages() %} {% if messages %}
+          <ul>
+            {% for message in messages %}
+            <li>
+              <strong> {{ message }} </strong>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %} {% endwith %}
         </div>
       </div>
     </div>
@@ -77,8 +84,12 @@
   <!-- Bootstrap core JavaScript -->
   <!-- Placed at the end of the document so the pages load faster -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 </body>
+
 </html>

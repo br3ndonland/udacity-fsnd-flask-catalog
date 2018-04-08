@@ -15,13 +15,20 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Categories, Items, Users
 
-# Import OAuth modules for user authentication
-from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
-
 # Import Flask modules from flask library
 from flask import Flask, flash, jsonify, make_response, redirect
 from flask import render_template, request, url_for
 from flask import session as login_session
+
+# Import authentication modules
+from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
+
+import google.auth
+from google.auth.transport.requests import AuthorizedSession
+import google.oauth2.credentials
+from google.oauth2 import service_account
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 # Other modules
 import json
@@ -81,9 +88,9 @@ def catalog_json():
     all_items = (session.query(Items).all())
 
     return jsonify(categories=([all_categories.serialize
-                               for all_categories in all_categories]),
+                                for all_categories in all_categories]),
                    items=([all_items.serialize
-                          for all_items in all_items]))
+                           for all_items in all_items]))
 
 
 @app.route('/<string:category>')
@@ -128,7 +135,7 @@ def show_category_json(category):
 
     return jsonify(category=[category.serialize],
                    items=([category_items.serialize
-                          for category_items in category_items]))
+                           for category_items in category_items]))
 
 
 @app.route('/<string:category>/<string:item>')
@@ -167,27 +174,64 @@ def show_item_json(category, item):
 Login functions
 ~~~~~~~~~~~~~~~
 """
+# Obtain user credentials with OAuth2.0
+# credentials = google.oauth2.credentials.Credentials('access_token')
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r')
-    .read())['web']['client_id']
+# Obtain credentials with service account private key file
+credentials = (service_account.Credentials
+               .from_service_account_file('client_secrets.json'))
+# old code
+# CLIENT_ID = json.loads(open('client_secrets.json', 'r')
+#     .read())['web']['client_id']
+
+# Create session object for making authenticated requests
+authed_session = AuthorizedSession(credentials)
+# response = authed_session.get(
+#     'https://www.googleapis.com/storage/v1/b')
+
+
+# (Receive token by HTTPS POST)
+# ...
+
+try:
+    # Specify the CLIENT_ID of the app that accesses the backend:
+    idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+
+    # Or, if multiple clients access the backend server:
+    # idinfo = id_token.verify_oauth2_token(token, requests.Request())
+    # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
+    #     raise ValueError('Could not verify audience.')
+
+    if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+        raise ValueError('Wrong issuer.')
+
+    # If auth request is from a G Suite domain:
+    # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
+    #     raise ValueError('Wrong hosted domain.')
+
+    # ID token is valid. Get the user's Google Account ID from the decoded token.
+    userid = idinfo['sub']
+except ValueError:
+    # Invalid token
+    pass
 
 
 def create_user(login_session):
     """Create new user based on login info."""
 
-    new_user = User(name=login_session['username'],
-                    email=login_session['email'],
-                    photo=login_session['photo'])
+    new_user = Users(name=login_session['username'],
+                     email=login_session['email'],
+                     photo=login_session['photo'])
     session.add(new_user)
     session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    user = session.query(Users).filter_by(email=login_session['email']).one()
     return user.id
 
 
 def get_user_id(user_id):
     """Get user ID."""
 
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(Users).filter_by(id=user_id).one()
     return user
 
 
@@ -195,7 +239,7 @@ def get_user_email(email):
     """Get user email."""
 
     try:
-        user = session.query(User).filter_by(email=email).one()
+        user = session.query(Users).filter_by(email=email).one()
         return user.id
     except Exception:
         return None
@@ -268,7 +312,8 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('User is already connected.'), 200)
+        response = make_response(json.dumps(
+            'Users is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -288,12 +333,12 @@ def gconnect():
     login_session['email'] = data['email']
 
     # Create new user if user does not already exist
-    user = session.query(User).filter_by(email=data['email']).first()
+    user = session.query(Users).filter_by(email=data['email']).first()
     if user:
         print('{} already exists.'.format(user.email))
     else:
-        new_user = User(name=data['name'], email=data['email'],
-            picture_url=data['picture'])
+        new_user = Users(name=data['name'], email=data['email'],
+                         picture_url=data['picture'])
         session.add(new_user)
         session.commit()
 
@@ -320,7 +365,7 @@ def gdisconnect():
         return redirect('/')
 
     print('GDisconnect access token is {}'.format(access_token))
-    print('User name is {}'.format(login_session['username']))
+    print('Users name is {}'.format(login_session['username']))
     if access_token is None:
         print('Access Token is None')
         response = make_response(
@@ -328,7 +373,7 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     url = ('https://accounts.google.com/o/oauth2/revoke?token=%s'
-        % login_session['credentials'])
+           % login_session['credentials'])
     print(url)
     resp = requests.get(url=url)
     print('Result is {}'.format(resp))
@@ -350,6 +395,7 @@ App route functions available after login
 
 """
 
+
 @app.route('/add-category', methods=['GET', 'POST'])
 def add_category():
     """App route function to create categories with POST requests."""
@@ -370,7 +416,7 @@ def add_category():
 
         # If user is logged in, and all info provided, add item
         new_category = Categories(name=request.form['name'],
-                                user_id=login_session['user_id'])
+                                  user_id=login_session['user_id'])
         session.add(new_category)
         session.commit()
 
@@ -404,9 +450,9 @@ def add_item():
 
         # If user is logged in, and all info provided, add item
         new_item = Items(name=request.form['name'],
-                        description=request.form['description'],
-                        category_id=request.form['category'],
-                        user_id=login_session['user_id'])
+                         description=request.form['description'],
+                         category_id=request.form['category'],
+                         user_id=login_session['user_id'])
         session.add(new_item)
         session.commit()
 

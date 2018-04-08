@@ -1,62 +1,18 @@
-{% extends 'layout.html' %}
-{% block content %}
-
-<!-- GOOGLE PLUS SIGN IN -->
-
-<div id="google-signin">
-  <table style="width:400px">
-    <tr>
-      <td>
-        Login with your Google+ Account:
-      </td>
-      <td>
-        <span class="g-signin"
-          data-scope="openid email"
-          data-clientid="47763762587-4ibth656v96dl74mv23b0pof2bal6afd.apps.googleusercontent.com"
-          data-redirecturi="postmessage"
-          data-accesstype="offline"
-          data-cookiepolicy="single_host_origin"
-          data-callback="signInCallback"
-          data-approvalprompt="force">
-        </span>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div id="result"></div>
-
+{% extends 'layout.html' %} {% block content %}
+<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
 <script>
-function signInCallback(authResult) {
-  if (authResult['code']) {
-    // Hide the sign-in button now that the user is authorized
-    $('#signinButton').attr('style', 'display: none');
-    // Send one-time-use code to the server.
-    // If the server responds, return a 'login successful' message.
-    // Redirect back to the main index page.
-    $.ajax({
-      type: 'POST',
-      url: '/gconnect?state={{STATE}}',
-      processData: false,
-      data: authResult['code'],
-      contentType: 'application/octet-stream; charset=utf-8',
-      success: function(result) {
-        // Handle or verify server response if necessary.
-        if (result) {
-          $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
-         setTimeout(function() {
-          window.location.href = "{{ url_for('catalog_root_page') }}";
-         }, 4000);
+  function onSignIn(googleUser) {
+    // Useful data for your client-side scripts:
+    var profile = googleUser.getBasicProfile();
+    console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+    console.log('Full Name: ' + profile.getName());
+    console.log('Given Name: ' + profile.getGivenName());
+    console.log('Family Name: ' + profile.getFamilyName());
+    console.log("Image URL: " + profile.getImageUrl());
+    console.log("Email: " + profile.getEmail());
 
-      } else if (authResult['error']) {
-    console.log('There was an error: ' + authResult['error']);
-  } else {
-        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-         }
-      }
-
-  }); } }
-</script>
-
-<!--END GOOGLE PLUS SIGN IN -->
-{% endblock %}
+    // The ID token you need to pass to your backend:
+    var id_token = googleUser.getAuthResponse().id_token;
+    console.log("ID Token: " + id_token);
+  };
+</script> {% endblock %}
