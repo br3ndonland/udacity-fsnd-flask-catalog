@@ -106,5 +106,10 @@ venv.bak/
 .mypy_cache/
 
 # br3ndonland additions
+.DS_Store
+client_secrets.json
+misc
 *.sublime-project
 *.sublime-workspace
+*.code-workspace
+*.vscode

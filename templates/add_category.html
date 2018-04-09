@@ -1,20 +1,18 @@
 {% extends 'layout.html' %}
 {% block content %}
-
 <div class="container">
   <header>
-    <h2>Add New Category</h2>
+    <h2 class="font-weight-light">Add new category</h2>
   </header>
   <div class="form-group">
     <form method="post">
       <h3>Name</h3>
       <input style="min-width: 300px;" type="text" name="category_name" value="">
       <div class="btn-group" role="group" aria-label="Submission buttons">
-        <button type="button submit" class="btn btn-secondary">Create</button>
+        <button type="button submit" class="btn btn-primary">Create</button>
         <button type="button" class="btn btn-secondary">Cancel</button>
       </div>
     </form>
   </div>
 </div>
-
 {% endblock %}

@@ -23,14 +23,7 @@ from flask import session as login_session
 # Import authentication modules
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
-import google.auth
-from google.auth.transport.requests import AuthorizedSession
-import google.oauth2.credentials
-from google.oauth2 import service_account
-from google.oauth2 import id_token
-from google.auth.transport import requests
-
-# Other modules
+# Import other modules
 import json
 import random
 import requests
@@ -49,6 +42,7 @@ Connect to database and establish database session.
 """
 
 app = Flask(__name__)
+APPLICATION_NAME = 'Flask Catalog'
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
@@ -64,7 +58,6 @@ App route functions available prior to login
 @app.route('/')
 def home():
     """App route function for the homepage."""
-
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
                   .order_by(Categories.name)
@@ -73,7 +66,6 @@ def home():
     recent_items = (session.query(Items)
                     .order_by(Items.date_created.desc())
                     .limit(10))
-
     # Render webpage
     return render_template('index.html',
                            categories=categories,
@@ -83,10 +75,8 @@ def home():
 @app.route('/json')
 def catalog_json():
     """App route function to provide catalog data in JSON format."""
-
     all_categories = (session.query(Categories).all())
     all_items = (session.query(Items).all())
-
     return jsonify(categories=([all_categories.serialize
                                 for all_categories in all_categories]),
                    items=([all_items.serialize
@@ -96,7 +86,6 @@ def catalog_json():
 @app.route('/<string:category>')
 def show_category(category):
     """App route function to display all items in a specific category."""
-
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
                   .order_by(Categories.name)
@@ -112,7 +101,6 @@ def show_category(category):
     category_items_count = (session.query(Items)
                             .filter_by(category_id=category.id)
                             .count())
-
     # Render webpage
     return render_template('show_category.html',
                            categories=categories,
@@ -124,7 +112,6 @@ def show_category(category):
 @app.route('/<string:category>/json')
 def show_category_json(category):
     """App route function to provide category data in JSON format."""
-
     category = (session.query(Categories)
                 .filter_by(name=category)
                 .one())
@@ -132,7 +119,6 @@ def show_category_json(category):
                       .filter_by(category_id=category.id)
                       .order_by(Items.name)
                       .all())
-
     return jsonify(category=[category.serialize],
                    items=([category_items.serialize
                            for category_items in category_items]))
@@ -141,7 +127,6 @@ def show_category_json(category):
 @app.route('/<string:category>/<string:item>')
 def show_item(category, item):
     """App route function to display an item."""
-
     # Query database with SQLAlchemy to show selected category and item
     category = (session.query(Categories)
                 .filter_by(name=category)
@@ -149,7 +134,6 @@ def show_item(category, item):
     item = (session.query(Items)
             .filter_by(name=item.replace('-', ' '), category_id=category.id)
             .one())
-
     # Render webpage
     return render_template('show_item.html',
                            item=item,
@@ -159,14 +143,12 @@ def show_item(category, item):
 @app.route('/<string:category>/<string:item>/json')
 def show_item_json(category, item):
     """App route function to provide item data in JSON format."""
-
     category = (session.query(Categories)
                 .filter_by(name=category)
                 .one())
     item = (session.query(Items)
             .filter_by(name=item.replace('-', ' '))
             .one())
-
     return jsonify(item=[item.serialize])
 
 
@@ -174,94 +156,31 @@ def show_item_json(category, item):
 Login functions
 ~~~~~~~~~~~~~~~
 """
-# Obtain user credentials with OAuth2.0
-# credentials = google.oauth2.credentials.Credentials('access_token')
 
-# Obtain credentials with service account private key file
-credentials = (service_account.Credentials
-               .from_service_account_file('client_secrets.json'))
-# old code
-# CLIENT_ID = json.loads(open('client_secrets.json', 'r')
-#     .read())['web']['client_id']
+# Obtain credentials from JSON file
+CLIENT_ID = json.loads(open('client_secrets.json', 'r')
+                       .read())['web']['client_id']
+CLIENT_SECRET = json.loads(open('client_secrets.json', 'r')
+                           .read())['web']['client_secret']
+redirect_uris = json.loads(open('client_secrets.json', 'r')
+                           .read())['web']['redirect_uris']
 
-# Create session object for making authenticated requests
-authed_session = AuthorizedSession(credentials)
-# response = authed_session.get(
-#     'https://www.googleapis.com/storage/v1/b')
-
-
-# (Receive token by HTTPS POST)
-# ...
-
-try:
-    # Specify the CLIENT_ID of the app that accesses the backend:
-    idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
-
-    # Or, if multiple clients access the backend server:
-    # idinfo = id_token.verify_oauth2_token(token, requests.Request())
-    # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
-    #     raise ValueError('Could not verify audience.')
-
-    if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-        raise ValueError('Wrong issuer.')
-
-    # If auth request is from a G Suite domain:
-    # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
-    #     raise ValueError('Wrong hosted domain.')
-
-    # ID token is valid. Get the user's Google Account ID from the decoded token.
-    userid = idinfo['sub']
-except ValueError:
-    # Invalid token
-    pass
-
-
-def create_user(login_session):
-    """Create new user based on login info."""
-
-    new_user = Users(name=login_session['username'],
-                     email=login_session['email'],
-                     photo=login_session['photo'])
-    session.add(new_user)
-    session.commit()
-    user = session.query(Users).filter_by(email=login_session['email']).one()
-    return user.id
-
-
-def get_user_id(user_id):
-    """Get user ID."""
-
-    user = session.query(Users).filter_by(id=user_id).one()
-    return user
-
-
-def get_user_email(email):
-    """Get user email."""
-
-    try:
-        user = session.query(Users).filter_by(email=email).one()
-        return user.id
-    except Exception:
-        return None
-
-
-# Login page
 @app.route('/login')
 def login():
     """App route function to log in and generate token."""
-
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
     # Render webpage
-    return render_template('login.html', STATE=state)
+    return render_template('login.html',
+                           CLIENT_ID=CLIENT_ID,
+                           STATE=state)
 
 
 # GConnect login
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     """App route function for Google GConnect login."""
-
     # Confirm that client and server tokens match
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -269,7 +188,6 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
-
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
@@ -318,8 +236,8 @@ def gconnect():
         return response
 
     # Store the access token in the session for later use.
-    login_session['credentials'] = credentials.access_token
-    login_session['gplus_id'] = gplus_id
+    # login_session['credentials'] = credentials._token_uri
+    # login_session['gplus_id'] = gplus_id
 
     # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -329,7 +247,7 @@ def gconnect():
     data = answer.json()
 
     login_session['username'] = data['name']
-    login_session['picture'] = data['picture']
+    # login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
     # Create new user if user does not already exist
@@ -337,21 +255,47 @@ def gconnect():
     if user:
         print('{} already exists.'.format(user.email))
     else:
-        new_user = Users(name=data['name'], email=data['email'],
-                         picture_url=data['picture'])
+        new_user = Users(name=data['name'], email=data['email'])
+        # picture_url=data['picture']
         session.add(new_user)
         session.commit()
 
     output = ''
-    output += '<h1>Welcome, '
+    output += '<h3 class="font-weight-light">Welcome, '
     output += login_session['username']
-    output += '!</h1>'
+    output += '!</h3>'
     output += '<img src="'
-    output += login_session['picture']
+    # output += login_session['picture']
     flash('Logged in as {}'.format(login_session['username']))
     print('Logged in as {}'.format(login_session['username']))
     print('Done!')
     return output
+
+
+def create_user(login_session):
+    """Create new user based on login info."""
+    new_user = Users(name=login_session['username'],
+                     email=login_session['email'],
+                     photo=login_session['photo'])
+    session.add(new_user)
+    session.commit()
+    user = session.query(Users).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def get_user_id(user_id):
+    """Get user ID."""
+    user = session.query(Users).filter_by(id=user_id).one()
+    return user
+
+
+def get_user_email(email):
+    """Get user email."""
+    try:
+        user = session.query(Users).filter_by(email=email).one()
+        return user.id
+    except Exception:
+        return None
 
 
 @app.route('/gdisconnect')
@@ -382,7 +326,7 @@ def gdisconnect():
     del login_session['gplus_id']
     del login_session['username']
     del login_session['email']
-    del login_session['picture']
+    # del login_session['picture']
 
     flash('Successfully logged out.')
 
@@ -539,5 +483,5 @@ def delete_item(category_id, item_id):
 # If this file is called as a standalone program:
 if __name__ == '__main__':
     # Run the Flask app on port 8000 and enable debugging
-    app.run(host='0.0.0.0', port=8000, debug=True, )
-    app.secret_key = 'super_secret_key'
+    app.secret_key = CLIENT_SECRET
+    app.run(host='0.0.0.0', port=8000, debug=True)

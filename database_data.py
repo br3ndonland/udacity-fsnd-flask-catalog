@@ -60,14 +60,14 @@ session.commit()
 # Items
 leg_press = Items(name='Hoist Dual Action Leg Press',
                   url=('https://www.hoistfitness.com/commercial/equipment/'
-                      'rpl-5403_dual-action-leg-press'),
+                       'rpl-5403_dual-action-leg-press'),
                   photo=('https://www.hoistfitness.com/content/images/'
-                        'equipment/360view/RPL-5403/000007.jpg'),
+                         'equipment/360view/RPL-5403/000007.jpg'),
                   description=('This Hoist composite motion leg press is,'
-                              ' by far, the best leg press I have used.'
-                              ' The arc motion activates the posterior chain'
-                              ' and protects the knees. Build your legs on'
-                              ' this beast!'),
+                               ' by far, the best leg press I have used.'
+                               ' The arc motion activates the posterior chain'
+                               ' and protects the knees. Build your legs on'
+                               ' this beast!'),
                   category=category_equipment,
                   user=example_user)
 session.add(leg_press)
@@ -75,12 +75,12 @@ session.commit()
 
 power_cage = Items(name='Hoist Power Cage',
                    url=('https://www.hoistfitness.com/commercial/equipment/'
-                       'cf-3364_power-cage'),
+                        'cf-3364_power-cage'),
                    photo=('https://www.hoistfitness.com/content/images/'
-                         'equipment/CF-3364.JPG?width=348'),
+                          'equipment/CF-3364.JPG?width=348'),
                    description=('Gotta have a power cage. This one features'
-                               ' top-quality Hoist construction,'
-                               ' easy adjustments, and a pull-up bar.'),
+                                ' top-quality Hoist construction,'
+                                ' easy adjustments, and a pull-up bar.'),
                    category=category_equipment,
                    user=example_user)
 session.add(power_cage)
@@ -89,9 +89,9 @@ session.commit()
 band_monster_mini = Items(name='Pro Monster Mini Resistance Band',
                           url=('http://a.co/3sUV4b2'),
                           photo=('https://images-na.ssl-images-amazon.com/'
-                                'images/I/31TEsfuiulL._SX425_.jpg'),
+                                 'images/I/31TEsfuiulL._SX425_.jpg'),
                           description=('Add dynamic resistance to exercises'
-                                      ' with these super strong bands.'),
+                                       ' with these super strong bands.'),
                           category=category_accessories,
                           user=example_user)
 session.add(band_monster_mini)
@@ -101,7 +101,7 @@ fat_gripz = Items(name='Fat Gripz',
                   url=('http://www.fatgripz.com/'),
                   photo=('http://www.fatgripz.com/images/columns-8.jpg'),
                   description=('Stick these on any bar or handle to'
-                              ' build up your grip strength.'),
+                               ' build up your grip strength.'),
                   category=category_accessories,
                   user=example_user)
 session.add(fat_gripz)
@@ -110,9 +110,9 @@ session.commit()
 rumbleroller = Items(name='RumbleRoller',
                      url=('https://www.rumbleroller.com/'),
                      photo=('https://www.rumbleroller.com/rr2-images/'
-                           'godeeper-1920x390.jpg'),
+                            'godeeper-1920x390.jpg'),
                      description=('This roller will change your life.'
-                                 ' Release soft tissue and roll out knots.'),
+                                  ' Release soft tissue and roll out knots.'),
                      category=category_accessories,
                      user=example_user)
 
@@ -121,14 +121,14 @@ session.commit()
 
 slingshot_hip_2 = Items(name='SlingShot Hip Circle 2.0',
                         url=('https://markbellslingshot.com/collections/'
-                            'hip-circles/products/hip-circle-2-0'),
+                             'hip-circles/products/hip-circle-2-0'),
                         photo=('https://cdn.shopify.com/s/files/1/2233/5357/'
-                              'products/20180207_Hip_Circle-1.jpg'
-                              '?v=1521136877'),
+                               'products/20180207_Hip_Circle-1.jpg'
+                               '?v=1521136877'),
                         description=('Wear this hip circle to activate'
-                                    ' leg, hip and lower back muscles.'
-                                    ' Great for leg workouts, or even'
-                                    ' standing computer work!'),
+                                     ' leg, hip and lower back muscles.'
+                                     ' Great for leg workouts, or even'
+                                     ' standing computer work!'),
                         category=category_accessories,
                         user=example_user)
 

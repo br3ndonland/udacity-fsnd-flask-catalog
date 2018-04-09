@@ -276,7 +276,7 @@ I verified the additions to the database using [DB Browser for SQLite](http://sq
 $ brew cask install db-browser-for-sqlite
 ```
 
-<img src="img/database-population.png" alt="Screenshot of DB Browser for SQLite, showing successful database creation and population">
+![Screenshot of DB Browser for SQLite, showing successful database creation and population](img/database-population.png)
 
 [(Back to TOC)](#table-of-contents)
 
@@ -475,7 +475,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 
 - Here's what the app looked like when I started it up for the first time:
 
-  <img src="img/Screen-Shot-2018-03-29-at-3.44.23-PM.png" alt="Screenshot of app after initial startup">
+  ![Screenshot of app after initial startup](img/Screen-Shot-2018-03-29-at-3.44.23-PM.png)
 
 - :face_palm: 🤦
 - Categories and items aren't listed.
@@ -515,7 +515,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 - Next, I added buttons to the navbar.
 - The homepage is starting to look a little better now:
 
-  <img src="img/Screen-Shot-2018-04-02-at-3.21.38-PM.png" alt="Screenshot of homepage after improving homepage HTML">
+  ![Screenshot of homepage after improving homepage HTML](img/Screen-Shot-2018-04-02-at-3.21.38-PM.png)
 
 - I added a footer with a [border](https://getbootstrap.com/docs/4.0/utilities/borders/) above to *layout.html*.
 - I put the category and item lists inside columns to align them.
@@ -543,7 +543,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 
 - I deleted the links and the items showed up:
 
-  <img src="img/Screen-shot-2018-04-02-at-6.42.27-PM.png" alt="Screenshot of homepage after getting lists of items to show up">
+  ![Screenshot of homepage after getting lists of items to show up](img/Screen-shot-2018-04-02-at-6.42.27-PM.png)
 
 - This means I'm having an issue with `url_for` in *index.html*. The Udacity lessons should have explained this function more effectively. We touched on it in 8.11. Quiz: URL for Quiz, but the lessons were disorganized and it's difficult to keep all the app features straight. I searched the Flask documentation and found helpful info on [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building) on the quickstart page:
   > To build a URL to a specific function you can use the `url_for()` function. It accepts the name of the function as first argument and a number of keyword arguments, each corresponding to the variable part of the URL rule. Unknown variable parts are appended to the URL as query parameters.
@@ -559,7 +559,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
   {% endfor %}
   ```
 
-  <img src="img/Screen-shot-2018-04-02-at-10.11.50-PM.png" alt="Screenshot after troubleshooting URL for categories">
+  ![Screenshot after troubleshooting URL for categories](img/Screen-shot-2018-04-02-at-10.11.50-PM.png)
 
 - Getting the URLs for the items to show up on the homepage also depends on how the item URLs are built in *application.py*. I was successful with this encoding:
 
@@ -579,7 +579,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
   {% endfor %}
   ```
 
-  <img src="img/Screen-shot-2018-04-02-at-10.21.59-PM.png" alt="Screenshot after troubleshooting URL for recent items">
+  ![Screenshot after troubleshooting URL for recent items](img/Screen-shot-2018-04-02-at-10.21.59-PM.png)
 
 - **Alright! Looking a lot better!**
 
@@ -591,7 +591,7 @@ Git commit at this point: Debug homepage 6b21f07
 - Again, this required tandem debugging of the app route functions in *application.py- and the Jinja tags in *show_category.html*.
 - I was having issues accessing the data with SQLAlchemy. Breaking the queries onto different lines helped keep them straight. The solution was to query the categories by name, but the items by category ID. Confusing.
 
-  <img src="img/Screen-shot-2018-04-03-at-5.38.44-PM.png" alt="Screenshot after getting category page working">
+  ![Screenshot after getting category page working](img/Screen-shot-2018-04-03-at-5.38.44-PM.png)
 
 - The scrollbar at the bottom was there because I hadn't enclosed the message flashing HTML in a container.
 - `Items in {{ category }}` wasn't displaying the category name at first. The solution was to go back to the `show_category` code in *application.py- and change `render_template`. This function passes variables that can be used in the template. I originally had `category_name=category`, which returns `<database_setup.Category object at 0xb57f44ec>`.
@@ -626,7 +626,7 @@ Git commit at this point: Debug homepage 6b21f07
                       .all())
   ```
 
-  <img src="img/Screen-shot-2018-04-03-at-8.40.17-PM.png" alt="Screenshot after adding category name to category page">
+  ![Screenshot after adding category name to category page](img/Screen-shot-2018-04-03-at-8.40.17-PM.png)
 
 - **Excellent!**
 
@@ -636,7 +636,7 @@ Git commit at this point: Debug homepage 6b21f07
 - I had some issues with the SQLAlchemy query to retrieve the individual item from the database. I was basically just not getting the information. I played around with the SQLAlchemy queries for a while. I still don't understand the syntax well.
 - I was only able to get the RumbleRoller item page to come up:
 
-  <img src="img/Screen-shot-2018-04-04-at-1.11.01-AM.png" alt="Screenshot of RumbleRoller item page">
+  ![Screenshot of RumbleRoller item page](img/Screen-shot-2018-04-04-at-1.11.01-AM.png)
 
 - This told me that there was probably an issue with spacing in the item names. Remember that I added [URL encoded](https://en.wikipedia.org/wiki/Percent-encoding) dashes (`%2D`) to the URLs.
 - After some trial and error, I was able to formulate a coherent SQLAlchemy query. I attempted to change out the dashes for spaces, so the item name would match the database entry.
@@ -649,7 +649,7 @@ Git commit at this point: Debug homepage 6b21f07
 
 - This was unsuccessful. I stepped into the Flask console to investigate.
 
-  <img src="img/Screen-shot-2018-04-04-at-2.07.58-AM.png" alt="Screenshot of Flask console when debugging item page">
+  ![Screenshot of Flask console when debugging item page](img/Screen-shot-2018-04-04-at-2.07.58-AM.png)
 
 - I could see that `print(item)` returned the item name with hyphens, indicating that my string replacement was unsuccessful. **Python is reading the regular character, not the percent encoded character.** Modifying the string replacement to `item.replace('-', ' ')` successfully returned the item name.
 
@@ -668,11 +668,11 @@ Git commit at this point: Debug homepage 6b21f07
 
 - **Success! I now have functioning home, category and item pages!**
 
-  <img src="img/Screen-shot-2018-04-04-at-3.02.47-AM.png" alt="Screenshot of item page on laptop">
+  ![Screenshot of item page on laptop](img/Screen-shot-2018-04-04-at-3.02.47-AM.png)
 
 - **The app looks great on mobile devices also**, thanks to the responsive Bootstrap framework. The screenshot below simulates an Apple iPhone 6S with Firefox Developer Tools.
 
-  <img src="img/Screen-Shot-2018-04-04-at-02.53.52.png" alt="Screenshot of item page on simulated Apple iPhone 6S">
+  ![Screenshot of item page on simulated Apple iPhone 6S](img/Screen-Shot-2018-04-04-at-02.53.52.png)
 
 Git commit at this point: Debug home, category, and item pages 84ee802
 
@@ -770,7 +770,7 @@ Git commit at this point: Debug home, category, and item pages 84ee802
 - After updating all the references to class and table names in *database_data.py- and *application.py*, I closed down Flask, deleted, re-created, and re-populated the database, and started the app again.
 - I browsed to [/json](http://0.0.0.0:8000/json) and got a nice JSON output!
 
-  <img src="img/Screen-shot-2018-04-04-at-5.27.07-PM.png" alt="Screenshot of catalog JSON">
+  ![Screenshot of catalog JSON](img/Screen-shot-2018-04-04-at-5.27.07-PM.png)
 
 #### Categories JSON
 
@@ -799,7 +799,7 @@ Git commit at this point: Debug home, category, and item pages 84ee802
 
 - "category_items.serialize for category_items in category_items"? Wow.
 
-  <img src="img/Screen-shot-2018-04-04-at-5.48.02-PM.png" alt="Screenshot of category-specific JSON">
+  ![Screenshot of category-specific JSON](img/Screen-shot-2018-04-04-at-5.48.02-PM.png)
 
 #### Individual items JSON
 
@@ -836,34 +836,32 @@ Git commit at this point: Debug home, category, and item pages 84ee802
 
 - I updated the item pages to have a JSON link for convenience. **Looking good!**
 
-  <img src="img/Screen-Shot-2018-04-04-at-18.08.56.png" alt="Screenshot of item page on simulated Apple iPhone 6S after adding JSON link">
+  ![Screenshot of item page on simulated Apple iPhone 6S after adding JSON link](img/Screen-Shot-2018-04-04-at-18.08.56.png)
 
 Git commit at this point: Debug database names and JSON endpoints ff3517e
 
 ### Debugging authentication
 
-#### Re-doing third party authentication
-
-##### Deciding how to proceed
+#### Deciding how to proceed
 
 - Next, I need to debug the login.
 - To add to my [frustration and confusion](#getting-started), when I switched to vscode, the linter was picking up the `oauth2client` import. This is because [`oauth2client` has been deprecated](https://google-auth.readthedocs.io/en/latest/oauth2client-deprecation.html). Yet another outdated piece of code from Udacity.
 - I could use [`authlib`](https://docs.authlib.org/en/latest/#).
 - Google offers [`google-auth`](https://google-auth.readthedocs.io/en/latest/index.html) as a replacement.
+- I reviewed the "c$50 finance" Flask app from cs50 pset07, but they didn't use Google Sign-In, so it wasn't helpful at this point.
 - I asked my Udacity mentor, and he recommended either `authlib` or `google-auth`.
-- I decided to go with `google-auth`. I think.
-- What about the other [info on Google Sign-In](https://developers.google.com/identity/)?
 
-##### Procedure
+#### google-auth
 
+- I will go with `google-auth`. *I think.*
+- It was difficult to navigate the documentation.
 - I installed `google-auth` with
 
   ```bash
   $ pip install --upgrade google-auth
   ```
 
-- I was not able to install it directly from `conda`.
-- Obtain [user credentials](https://google-auth.readthedocs.io/en/latest/user-guide.html#user-credentials) with OAuth2.0
+- I obtained [user credentials](https://google-auth.readthedocs.io/en/latest/user-guide.html#user-credentials) with OAuth2.0
 
   ```python
   import google.oauth2.credentials
@@ -878,19 +876,16 @@ Git commit at this point: Debug database names and JSON endpoints ff3517e
                   .from_service_account_file('client_secrets.json'))
     ```
 
-- Create session object for [making authenticated requests](https://google-auth.readthedocs.io/en/latest/user-guide.html#making-authenticated-requests)
+- I created a session object for [making authenticated requests](https://google-auth.readthedocs.io/en/latest/user-guide.html#making-authenticated-requests)
 
   ```python
   from google.auth.transport.requests import AuthorizedSession
   authed_session = AuthorizedSession(credentials)
   ```
 
-##### Add Google Sign-In to login page
-
-- Used code from the [guidelines for Google Sign-In for Websites](https://developers.google.com/identity/sign-in/web/). I [integrated Google Sign-In](https://developers.google.com/identity/sign-in/web/sign-in) with the HTML and JavaScript below. I put the `<head>` code inside *layout.html*, and the `<body>` code inside *login.html*.
+- Add Google Sign-In to login page: Used code from the [guidelines for Google Sign-In for Websites](https://developers.google.com/identity/sign-in/web/). I [integrated Google Sign-In](https://developers.google.com/identity/sign-in/web/sign-in) with the HTML and JavaScript below. I put the `<head>` code inside *layout.html*, and the `<body>` code inside *login.html*.
 
   ```html
-  <html lang="en">
   <head>
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
@@ -915,53 +910,159 @@ Git commit at this point: Debug database names and JSON endpoints ff3517e
       };
     </script>
   </body>
-</html>
   ```
 
 - The code retrieves user data and generates a token.
-- What do I do about `content="YOUR_CLIENT_ID.apps.googleusercontent.com"`? Do I set that as a variable, and pass it in with Jinja?
-- I reviewed the "c$50 finance" Flask app from cs50 pset07, but they didn't use Google Sign-In, so it wasn't helpful at this point.
-
-##### Authenticate with a backend server
-
+- What do I do about `content="YOUR_CLIENT_ID.apps.googleusercontent.com"`? Do I set that as a variable, and pass it in with Jinja? I decided to just delete it.
 - [Authenticate with a backend server](https://developers.google.com/identity/sign-in/web/backend-auth) using the Google API Client Library.
 - Google says:
   >Rather than writing your own code to perform these verification steps, we strongly recommend using a Google API client library for your platform, or calling our tokeninfo validation endpoint.
 - Sounds good to me.
+- I tried dropping the code chunks into my application, but the `google-auth` documentation wasn't clear enough. I decided to go back to the outdated `oauth2client` authentication method, because at least it works.
 
-  ```python
-  from google.oauth2 import id_token
-  from google.auth.transport import requests
+#### Back to oauth2client
 
-  # (Receive token by HTTPS POST)
-  # ...
+- I decided to go back to the outdated `oauth2client` authentication method, because at least it works, and I have some examples to follow. `google-auth` was too complicated, and the documentation wasn't clear enough. If I re-did it from scratch, I would also try [`authlib`](https://docs.authlib.org/en/latest/index.html), because the documentation includes examples for Flask.
+- When I click login, I now get:
 
-  try:
-      # Specify the CLIENT_ID of the app that accesses the backend:
-      idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+  ```text
+  RuntimeError: The session is unavailable because no secret key was set.
+  Set the secret_key on the application to something unique and secret.
 
-      # Or, if multiple clients access the backend server:
-      # idinfo = id_token.verify_oauth2_token(token, requests.Request())
-      # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
-      #     raise ValueError('Could not verify audience.')
-
-      if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-          raise ValueError('Wrong issuer.')
-
-      # If auth request is from a G Suite domain:
-      # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
-      #     raise ValueError('Wrong hosted domain.')
-
-      # ID token is valid. Get the user's Google Account ID from the decoded token.
-      userid = idinfo['sub']
-  except ValueError:
-      # Invalid token
-      pass
+  File "/vagrant/flask-catalog/application.py", line 196, in login
+    login_session['state'] = state
   ```
 
-#### Other fixes
+- I don't understand this error. I verified that I am generating a `state` variable hash in the browser console, but it looks like I'm not generating a `login_session`:
 
-- The error appears to partially result from me not properly inputting my client ID and secret.
+  ```text
+  >>> print(state)
+  L9JN9HKIOWQ9CGX1PJ37HBIJUAB8H2EW
+  >>> print(login_session)
+  <NullSession {}>
+  ```
+
+- I'm not sure if this is okay or not. I'm not logged in yet, so it makes sense that I wouldn't have `login_session`.
+- I commented out `login_session['state'] = state`, tried again, and... I got something!
+
+  ![Screenshot of login page after getting Google Sign-In button to show up](img/Screen-shot-2018-04-09-at-12.53.37-AM.png)
+
+- It looks like I don't need `login_session['state'] = state`, or the secret key.
+- Clicking login returns an error. At least the error is with Google now. Getting somewhere.
+
+  ![Screenshot of Google Sign-In error](img/Screen-shot-2018-04-09-at-12.54.52-AM.png)
+
+- The app didn't show up at all when I changed the host from '0.0.0.0' to 'localhost'.
+
+  ```python
+  # If this file is called as a standalone program:
+  if __name__ == '__main__':
+      # Run the Flask app on port 8000 and enable debugging
+      app.run(host='localhost', port=8000, debug=True)
+  ```
+
+  The browser returned:
+
+  >The connection was reset
+  >
+  >The connection to the server was reset while the page was loading.
+  >
+  >The site could be temporarily unavailable or too busy. Try again in a few moments.
+  >
+  >If you are unable to load any pages, check your computer’s network connection.
+  >
+  >If your computer or network is protected by a firewall or proxy, make sure that Firefox is permitted to access the Web.
+
+- I eventually found that there were two issues here:
+  - I needed to configure the Authorized JavaScript Origins in the Google APIs Client ID to include `http://localhost:8000`. We did go over this in the OAuth lessons.
+  - [Google doesn't accept IP addresses](https://stackoverflow.com/questions/36020374/google-permission-denied-to-generate-login-hint-for-target-domain-not-on-localh#36162748). I need to change the browser URL from `http://0.0.0.0:8000/` to `http://localhost:8000/`. I looked into ways to automatically redirect, but didn't come up with much. I think the best option is just to leave the application code the same, and manually navigate to [http://localhost:8000](http://localhost:8000).
+  - As you can see, if I attempt to log in from [http://0.0.0.0:8000](http://0.0.0.0:8000), Google returns an error:
+
+    ![Screenshot of log in from http://0.0.0.0:8000](img/Screen-shot-2018-04-09-at-5.23.04-PM.png)
+
+  - If I simply change the URL in the browser to [http://localhost:8000](http://localhost:8000), without changing the application code at all, Google is fine with it.
+
+    ![Screenshot of log in from http://localhost:8000](img/Screen-shot-2018-04-09-at-5.23.30-PM.png)
+
+- Onto the next issue. When I click my account to continue, the Google dialog disappears, but nothing happens in the app. The console traceback shows `KeyError: 'state'`. I guess I do need `login_session['state'] = state` after all. When I add `login_session['state'] = state` back to `def create_user(login_session)`, I'm back to the error I had before.
+
+  ```text
+  RuntimeError: The session is unavailable because no secret key was set.
+  Set the secret_key on the application to something unique and secret.
+
+  File "/vagrant/flask-catalog/application.py", line 196, in login
+    login_session['state'] = state
+  ```
+
+- I found that I simply had to change the order of terms, so that `app.run()` was last.
+
+  ```python
+  # If this file is called as a standalone program:
+  if __name__ == '__main__':
+      # Run the Flask app on port 8000 and enable debugging
+      app.secret_key = 'super secret key'
+      app.run(host='0.0.0.0', port=8000, debug=True)
+  ```
+
+- Now I am able to click through to the Google login again.
+
+Git commit at this point: Debug login page
+
+#### First successful login
+
+- I tried moving the JavaScript from *login.html* to a separate file, *static/js/g-signin.js*, and modifying *login.html* to say `<script src="../static/js/g-signin.js"></script>`. It looks like it wasn't properly getting access to the template tags. I will need to keep the JS inline in the HTML. This is an annoying lack of continuity between Flask and JavaScript.
+
+  ```text
+  10.0.2.2 - - [11/Apr/2018 21:04:51] "POST /gconnect?state={{%20STATE%20}} HTTP/1.1" 401 -
+  ```
+
+- After I moved the JavaScript back inline in login.html, and clicked log in, I got this message:
+
+  ```text
+  oauth2client.clientsecrets.InvalidClientSecretsError: Missing property "redirect_uris" in a client type of "web".
+  ```
+
+- I added a redirect URI on the Google API Dashboard back to [http://localhost:8000](http://localhost:8000), and re-downloaded the client secrets file, which now contained the redirect URI.
+- I also had to remove references to profile photos here.
+- When I click login now, I see a message, "Welcome, Brendon Smith!" and I am redirected to the homepage at [http://localhost:8000](http://localhost:8000). **First successful login!**
+- The message formatting is awkward. It is coming from this part of `def gconnect():`
+
+  ```python
+  output = ''
+  output += '<h1>Welcome, '
+  output += login_session['username']
+  output += '!</h1>'
+  output += '<img src="'
+  ```
+
+- There should be a cleaner way of displaying the welcome message. Why isn't this flashed?
+- I at least adjusted it to `h3`.
+
+  ![Screenshot of homepage after login, with text reformatted](img/Screen-shot-2018-04-11-at-6.46.38-PM.png)
+
+#### Debugging the login session
+
+- After login, I am registered as a user in the database. Logging in again prints a line in the terminal saying I'm registered. Good.
+- It's not picking up the Google profile picture. I commented out the code that references the user picture.
+- After redirection, I do see some text at the bottom of the screen, strangely with a bullet point. This does not persist after clicking.
+- It hides the login button while logging in, but not after log in.
+- I don't see the buttons to edit the database.
+- Although I don't see the buttons, the add item and add category pages are there.
+- Attempting to visit pages for editing items and categories returns a SQL error.
+
+  ```text
+  File "/usr/local/lib/python3.5/dist-packages/flask/app.py", line 1598, in dispatch_request
+  return self.view_functions[rule.endpoint](**req.view_args)
+  File "/vagrant/flask-catalog/application.py", line 95, in show_category
+  .filter_by(name=category)
+  File "/usr/local/lib/python3.5/dist-packages/sqlalchemy/orm/query.py", line 2843, in one
+  raise orm_exc.NoResultFound("No row was found for one()")
+  sqlalchemy.orm.exc.NoResultFound: No row was found for one()
+  ```
+
+- This doesn't make any sense, for two reasons:
+  - I have the redirect in the JavaScript set to `window.location.href = "{{ url_for('home') }}"`
+  - The `show_category` function and the category pages work fine.
 
 ## Comments
 
@@ -976,11 +1077,14 @@ Git commit at this point: Debug database names and JSON endpoints ff3517e
 
 - Build the app in a systematic way
 - Keep the application code structured
-- Understand the Flask syntax
-- Follow all the similar variable names being used everywhere.
+- Coordinate changes among the functions, app routes, and templates
+- Follow all the similar variable names being used everywhere
+- Integrate Flask and JavaScript
 
 **Time commitment:**
 
 - It took ~50 hours over a week (end of March 2018) to build the initial version of the app (up to the :face_palm: stage).
+- It took ~30 hours to debug the pages and JSON.
+- It took ~30 hours to debug the login.
 
 [(Back to TOC)](#table-of-contents)
