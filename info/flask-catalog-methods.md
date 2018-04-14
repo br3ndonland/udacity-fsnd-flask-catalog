@@ -1,4 +1,4 @@
-# Project methods
+# Computational narrative
 
 <a href="https://www.udacity.com/">
     <img src="https://s3-us-west-1.amazonaws.com/udacity-content/rebrand/svg/logo.min.svg" width="300" alt="Udacity logo svg">
@@ -11,6 +11,8 @@ Udacity Full Stack Web Developer Nanodegree program
 Brendon Smith
 
 br3ndonland
+
+Python Flask web app with SQL database and Google Sign-In
 
 ## Table of Contents
 
@@ -1006,8 +1008,6 @@ Git commit at this point: Debug database names and JSON endpoints ff3517e
 
 - Now I am able to click through to the Google login again.
 
-Git commit at this point: Debug login page
-
 #### First successful login
 
 - I tried moving the JavaScript from *login.html* to a separate file, *static/js/g-signin.js*, and modifying *login.html* to say `<script src="../static/js/g-signin.js"></script>`. It looks like it wasn't properly getting access to the template tags. I will need to keep the JS inline in the HTML. This is an annoying lack of continuity between Flask and JavaScript.
@@ -1040,14 +1040,17 @@ Git commit at this point: Debug login page
 
   ![Screenshot of homepage after login, with text reformatted](img/Screen-shot-2018-04-11-at-6.46.38-PM.png)
 
+Git commit at this point: Debug login page
+
 #### Debugging the login session
 
 - After login, I am registered as a user in the database. Logging in again prints a line in the terminal saying I'm registered. Good.
 - It's not picking up the Google profile picture. I commented out the code that references the user picture.
-- After redirection, I do see some text at the bottom of the screen, strangely with a bullet point. This does not persist after clicking.
-- It hides the login button while logging in, but not after log in.
-- I don't see the buttons to edit the database.
+- After redirection, I do see some text at the bottom of the screen, but it does not persist after clicking.
+- The login button is still visible after login.
+- The buttons for adding, editing, and deleting items are not visible.
 - Although I don't see the buttons, the add item and add category pages are there.
+- Submitting information to add an item or category returns an error.
 - Attempting to visit pages for editing items and categories returns a SQL error.
 
   ```text
@@ -1060,9 +1063,26 @@ Git commit at this point: Debug login page
   sqlalchemy.orm.exc.NoResultFound: No row was found for one()
   ```
 
-- This doesn't make any sense, for two reasons:
-  - I have the redirect in the JavaScript set to `window.location.href = "{{ url_for('home') }}"`
-  - The `show_category` function and the category pages work fine.
+  - *FACEPALM 2.0!!!*
+  - This doesn't make any sense, for two reasons:
+    - I have the redirect in the JavaScript set to
+
+      ```javascript
+      window.location.href = "{{ url_for('home') }}"
+      ```
+
+    - The `show_category` function and the category pages work fine.
+  - I got around this by copying the SQLAlchemy code from the `show_item()` function into the `edit_item()` function.
+  - I also commented out the requirement that only the creator of the item can edit, just for testing purposes.
+  - Finally got to see the edit item page!
+
+    ![Screenshot after revealing the edit item page](img/Screen-shot-2018-04-14-at-1.47.32-PM.png)
+
+  - My pic of Arnold and Franco disappeared, but I'll get that back.
+  - Submitting the page still returns an error, like the add category and add item pages.
+- Next, *FLASK, WHERE'S MY SESSION?* Why is my login state not persisting? Or is it?
+- Next, I will figure out why posting info to the database returns an error.
+  - TODO
 
 ## Comments
 
@@ -1079,12 +1099,12 @@ Git commit at this point: Debug login page
 - Keep the application code structured
 - Coordinate changes among the functions, app routes, and templates
 - Follow all the similar variable names being used everywhere
-- Integrate Flask and JavaScript
+- Integrate Flask and JavaScript. As much as I appreciate Python, it seems like I'm just avoiding JavaScript and should just be coding everything in JavaScript instead of Python.
 
 **Time commitment:**
 
 - It took ~50 hours over a week (end of March 2018) to build the initial version of the app (up to the :face_palm: stage).
 - It took ~30 hours to debug the pages and JSON.
-- It took ~30 hours to debug the login.
+- It took ~70 hours to debug the login.
 
 [(Back to TOC)](#table-of-contents)
