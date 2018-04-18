@@ -93,7 +93,7 @@ def show_category(category):
     # Query database with SQLAlchemy to show selected category and items
     category = (session.query(Categories)
                 .filter_by(name=category)
-                .one())
+                .all())
     category_items = (session.query(Items)
                       .filter_by(category_id=category.id)
                       .order_by(Items.name)
@@ -165,6 +165,7 @@ CLIENT_SECRET = json.loads(open('client_secrets.json', 'r')
 redirect_uris = json.loads(open('client_secrets.json', 'r')
                            .read())['web']['redirect_uris']
 
+
 @app.route('/login')
 def login():
     """App route function to log in and generate token."""
@@ -180,7 +181,7 @@ def login():
 # GConnect login
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    """App route function for Google GConnect login."""
+    """App route function for Google Sign-In."""
     # Confirm that client and server tokens match
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -198,11 +199,10 @@ def gconnect():
             json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-
-    # Check that the access token is valid.
+    # Verify that the access token is valid in general.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
-           % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={}'
+           .format(access_token))
     resp = requests.get(url=url)
     result = json.loads(resp.text)
     # If there was an error in the access token info, abort.
@@ -210,15 +210,17 @@ def gconnect():
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
-
     # Verify that the access token is valid for the user.
-    gplus_id = credentials.id_token['sub']
-    if result['user_id'] != gplus_id:
+    user_id = credentials.id_token['sub']
+    print('Google User ID is {}.'.format(user_id))
+    print('Result from Google access token is {}.'.format(result))
+    if result['user_id'] != user_id:
         response = make_response(
             json.dumps("Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-
+    else:
+        print('Access token valid for the user.')
     # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
@@ -226,67 +228,58 @@ def gconnect():
         print("Token's client ID does not match app's.")
         response.headers['Content-Type'] = 'application/json'
         return response
-
     stored_credentials = login_session.get('credentials')
-    stored_gplus_id = login_session.get('gplus_id')
-    if stored_credentials is not None and gplus_id == stored_gplus_id:
+    stored_user_id = login_session.get('user_id')
+    if stored_credentials is not None and user_id == stored_user_id:
+        print('User is already connected.')
         response = make_response(json.dumps(
             'Users is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
-
+    else:
+        print('Access token valid for this app.')
     # Store the access token in the session for later use.
-    # login_session['credentials'] = credentials._token_uri
-    # login_session['gplus_id'] = gplus_id
-
+    login_session['credentials'] = credentials.token_uri
+    login_session['user_id'] = user_id
     # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
-
     data = answer.json()
-
-    login_session['username'] = data['name']
-    # login_session['picture'] = data['picture']
+    login_session['name'] = data['name']
     login_session['email'] = data['email']
-
-    # Create new user if user does not already exist
+    # Verify contents of login_session
+    print('login_session object currently contains: {}'.format(login_session))
+    # Check database for user
     user = session.query(Users).filter_by(email=data['email']).first()
     if user:
-        print('{} already exists.'.format(user.email))
+        print('{} already exists.'.format(data['email']))
+    # Create new user if user does not already exist
     else:
-        new_user = Users(name=data['name'], email=data['email'])
-        # picture_url=data['picture']
+        new_user = Users(name=login_session['name'], email=login_session['email'],user_id=login_session['user_id'])
         session.add(new_user)
         session.commit()
-
+        print('New user {} added to database.'.format(data['email']))
     output = ''
     output += '<h3 class="font-weight-light">Welcome, '
-    output += login_session['username']
+    output += login_session['name']
     output += '!</h3>'
     output += '<img src="'
-    # output += login_session['picture']
-    flash('Logged in as {}'.format(login_session['username']))
-    print('Logged in as {}'.format(login_session['username']))
+    flash('Logged in as {}'.format(login_session['email']))
+    print('Logged in as {}'.format(login_session['email']))
     print('Done!')
     return output
 
 
 def create_user(login_session):
     """Create new user based on login info."""
-    new_user = Users(name=login_session['username'],
+    new_user = Users(name=login_session['name'],
                      email=login_session['email'],
-                     photo=login_session['photo'])
+                     user_id=login_session['user_id'])
     session.add(new_user)
     session.commit()
     user = session.query(Users).filter_by(email=login_session['email']).one()
     return user.id
-
-
-def get_user_id(user_id):
-    """Get user ID."""
-    user = session.query(Users).filter_by(id=user_id).one()
-    return user
 
 
 def get_user_email(email):
@@ -298,57 +291,19 @@ def get_user_email(email):
         return None
 
 
-@app.route('/gdisconnect')
-def gdisconnect():
-    """App route function to disconnect from Google login."""
-
-    try:
-        access_token = login_session['credentials']
-    except KeyError:
-        flash('Failed to get access token')
-        return redirect('/')
-
-    print('GDisconnect access token is {}'.format(access_token))
-    print('Users name is {}'.format(login_session['username']))
-    if access_token is None:
-        print('Access Token is None')
-        response = make_response(
-            json.dumps('Current user not connected.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
-    url = ('https://accounts.google.com/o/oauth2/revoke?token=%s'
-           % login_session['credentials'])
-    print(url)
-    resp = requests.get(url=url)
-    print('Result is {}'.format(resp))
-
-    del login_session['credentials']
-    del login_session['gplus_id']
-    del login_session['username']
-    del login_session['email']
-    # del login_session['picture']
-
-    flash('Successfully logged out.')
-
-    return redirect('/')
-
-
 """
 App route functions available after login
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 """
 
 
 @app.route('/add-category', methods=['GET', 'POST'])
 def add_category():
     """App route function to create categories with POST requests."""
-
     # Verify user is logged in. If not, redirect to login page.
-    if 'username' not in login_session:
+    if 'name' not in login_session:
         flash('Please log in.')
-        return redirect('/login')
-
+        return redirect(url_for('gconnect'))
     if request.method == 'POST':
         # Flash messages for incomplete item info
         if not request.form['name']:
@@ -357,16 +312,13 @@ def add_category():
         if not request.form['description']:
             flash('Please add a description')
             return redirect(url_for('add_category'))
-
         # If user is logged in, and all info provided, add item
         new_category = Categories(name=request.form['name'],
-                                  user_id=login_session['user_id'])
+                                  email=login_session['email'])
         session.add(new_category)
         session.commit()
-
         # Return to page for category
         return redirect(url_for('show_category'))
-
     else:
         # Get all categories
         categories = session.query(Categories).all()
@@ -377,12 +329,10 @@ def add_category():
 @app.route('/add-item', methods=['GET', 'POST'])
 def add_item():
     """App route function to create items with POST requests."""
-
     # Verify user is logged in. If not, redirect to login page.
-    if 'username' not in login_session:
+    if 'name' not in login_session:
         flash('Please log in.')
-        return redirect('/login')
-
+        return redirect(url_for('login'))
     if request.method == 'POST':
         # Flash messages for incomplete item info
         if not request.form['name']:
@@ -391,7 +341,6 @@ def add_item():
         if not request.form['description']:
             flash('Please add a description')
             return redirect(url_for('add_item'))
-
         # If user is logged in, and all info provided, add item
         new_item = Items(name=request.form['name'],
                          description=request.form['description'],
@@ -399,10 +348,8 @@ def add_item():
                          user_id=login_session['user_id'])
         session.add(new_item)
         session.commit()
-
         # Return to page for the item's category
         return redirect(url_for('show_category'))
-
     else:
         # Get all categories
         categories = session.query(Categories).all()
@@ -410,28 +357,27 @@ def add_item():
         return render_template('add_item.html', categories=categories)
 
 
-@app.route('/<string:category>/<string:category_item>/edit',
+@app.route('/<string:category>/<string:item>/edit',
            methods=['GET', 'POST'])
-def edit_item(category_id, item_id):
+def edit_item(category, item):
     """App route function to edit an item."""
-
     # Verify user is logged in. If not, redirect to login page.
-    if 'username' not in login_session:
+    if 'name' not in login_session:
         flash('Please log in.')
-        return redirect('/login')
-
+        return redirect(url_for('login'))
     # Get item to edit
-    item = session.query(Items).filter_by(id=item_id).first()
-
+    category = (session.query(Categories)
+                .filter_by(name=category)
+                .one())
+    item = (session.query(Items)
+            .filter_by(name=item.replace('-', ' '), category_id=category.id)
+            .one())
     # Only allow item creator to edit. If not, redirect to login.
-    item_category = session.query(Categories).filter_by(id=item_id).first()
     item_creator = get_user_id(Items.user_id)
     if item_creator.id != login_session['user_id']:
-        return redirect('/login')
-
+        return redirect(url_for('login'))
     # Get categories
     categories = session.query(Categories).all()
-
     # Show item to edit, or redirect
     if request.method == 'POST':
         if request.form['name']:
@@ -440,9 +386,9 @@ def edit_item(category_id, item_id):
             Items.description = request.form['description']
         if request.form['category']:
             Items.category_id = request.form['category']
-        return redirect(url_for('show_item',
-                                category_id=item_category.category_id,
-                                item_id=item.id))
+        return redirect(url_for('show_item.html',
+                                item=item,
+                                category=category))
     else:
         # Render webpage
         return render_template('edit_item.html',
@@ -450,25 +396,21 @@ def edit_item(category_id, item_id):
                                item=item)
 
 
-@app.route('/<string:category>/<string:category_item>/delete',
+@app.route('/<string:category>/<string:item>/delete',
            methods=['GET', 'POST'])
 def delete_item(category_id, item_id):
     """App route function to delete an item."""
-
     # Verify user is logged in. If not, redirect to login page.
-    if 'username' not in login_session:
+    if 'name' not in login_session:
         flash('Please log in.')
-        return redirect('/login')
-
+        return redirect(url_for('login'))
     # Get item to edit
     item = session.query(Items).filter_by(id=item_id).first()
-
     # Only allow item creator to edit. If not, redirect to login.
     item_category = session.query(Categories).filter_by(id=item_id).first()
     item_creator = get_user_id(Items.user_id)
     if item_creator.id != login_session['user_id']:
-        return redirect('/login')
-
+        return redirect(url_for('login'))
     # Show item to delete, or redirect
     if request.method == 'POST':
         session.delete(item)
@@ -478,6 +420,42 @@ def delete_item(category_id, item_id):
     else:
         # Render webpage
         return render_template('delete_item.html', item=item)
+
+
+"""
+Logout
+~~~~~~
+"""
+
+@app.route('/logout')
+@app.route('/gdisconnect')
+def gdisconnect():
+    """App route function to disconnect from Google login."""
+    try:
+        access_token = login_session['credentials']
+    except KeyError:
+        flash('Failed to get access token')
+        return redirect(url_for('home'))
+    print('GDisconnect access token is {}'.format(access_token))
+    print("User's name is {}".format(login_session['name']))
+    if access_token is None:
+        print('Access Token is None')
+        response = make_response(
+            json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    # Ask Google server to revoke access token
+    # url = ('https://accounts.google.com/o/oauth2/revoke?token=%s'
+    #        % access_token)
+    # print(url)
+    # resp = requests.get(url=url)
+    # print('Result is {}'.format(resp))
+    del login_session['credentials']
+    del login_session['user_id']
+    del login_session['name']
+    del login_session['email']
+    flash('Successfully logged out.')
+    return redirect(url_for('home'))
 
 
 # If this file is called as a standalone program:

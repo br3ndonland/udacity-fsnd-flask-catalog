@@ -153,5 +153,10 @@ I wrote the program in a Linux virtual machine with the following components:
 
 - Navigate to [http://localhost:8000](http://localhost:8000) in a web browser. **Note that Google will reject sign-in from [http://0.0.0.0:8000](http://0.0.0.0:8000).**
 - Log in, and enjoy!
+- The virtual machine ssh connection can be closed with
+
+  ```bash
+  $ logout
+  ```
 
 [(Back to TOC)](#table-of-contents)

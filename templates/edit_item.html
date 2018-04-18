@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
   <header>
-    <h2 class="font-weight-light">Add New Item</h2>
+    <h2 class="font-weight-light">Edit Item</h2>
   </header>
   <div class="form-group">
     <form method="post">
@@ -21,8 +21,8 @@
         {% endfor %}
       </select>
       <div class="btn-group" role="group" aria-label="Submission buttons">
-        <button type="button submit" class="btn btn-secondary">Edit</button>
-        <a class="btn btn-secondary" href="{{ url_for('/') }}" role="button">Cancel</a>
+        <button type="button submit" class="btn btn-primary">Edit</button>
+        <a class="btn btn-secondary" href="{{ url_for('home') }}" role="button">Cancel</a>
       </div>
     </form>
   </div>

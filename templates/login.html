@@ -35,10 +35,10 @@
         success: function (result) {
           // Handle or verify the server response if necessary.
           if (result) {
-            $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+            $('#result').html('<h2 class="font-weight-light">Login Successful!</h2></br>' + result + '</br>Redirecting...')
             setTimeout(function () {
               window.location.href = "{{ url_for('home') }}"
-            }, 4000)
+            }, 1000)
           } else if (authResult['error']) {
             console.log('There was an error: ' + authResult['error'])
           } else {

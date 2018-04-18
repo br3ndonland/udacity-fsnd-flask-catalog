@@ -28,7 +28,7 @@ class Users(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
-    photo = Column(String(250))
+    user_id = Column(String(250), nullable=False)
 
 
 class Categories(Base):
@@ -37,7 +37,7 @@ class Categories(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'))
+    creator_db_id = Column(Integer, ForeignKey('users.id'))
     user = relationship(Users)
 
     @property
@@ -61,7 +61,7 @@ class Items(Base):
     category_id = Column(Integer, ForeignKey('categories.id'))
     category = relationship(Categories)
     date_created = Column(DateTime, default=datetime.datetime.now())
-    user_id = Column(Integer, ForeignKey('users.id'))
+    creator_db_id = Column(Integer, ForeignKey('users.id'))
     user = relationship(Users)
 
     @property

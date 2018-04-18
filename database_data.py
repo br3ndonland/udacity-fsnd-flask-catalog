@@ -42,7 +42,8 @@ Populate database
 # Example user
 example_user = Users(name='Bongo Strudel',
                      email='big.bad.bongo@hotmail.com',
-                     photo='https://picsum.photos/300/?random')
+                     # Google user_id is 21 numbers
+                     user_id='123456789123456789123')
 session.add(example_user)
 session.commit()
 
