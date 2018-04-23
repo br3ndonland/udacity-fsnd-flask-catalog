@@ -58,6 +58,9 @@ App route functions available prior to login
 @app.route('/')
 def home():
     """App route function for the homepage."""
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
                   .order_by(Categories.name)
@@ -69,7 +72,8 @@ def home():
     # Render webpage
     return render_template('index.html',
                            categories=categories,
-                           recent_items=recent_items)
+                           recent_items=recent_items,
+                           login_status=login_status)
 
 
 @app.route('/json')
@@ -86,6 +90,9 @@ def catalog_json():
 @app.route('/<string:category>')
 def show_category(category):
     """App route function to display all items in a specific category."""
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
                   .order_by(Categories.name)
@@ -96,7 +103,7 @@ def show_category(category):
                 .all())
     category_items = (session.query(Items)
                       .filter_by(category_id=category.id)
-                      .order_by(Items.name)
+                      # .order_by(Items.name)
                       .all())
     category_items_count = (session.query(Items)
                             .filter_by(category_id=category.id)
@@ -106,7 +113,8 @@ def show_category(category):
                            categories=categories,
                            category_name=category.name,
                            category_items=category_items,
-                           category_items_count=category_items_count)
+                           category_items_count=category_items_count,
+                           login_status=login_status)
 
 
 @app.route('/<string:category>/json')
@@ -127,6 +135,9 @@ def show_category_json(category):
 @app.route('/<string:category>/<string:item>')
 def show_item(category, item):
     """App route function to display an item."""
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
     # Query database with SQLAlchemy to show selected category and item
     category = (session.query(Categories)
                 .filter_by(name=category)
@@ -137,7 +148,8 @@ def show_item(category, item):
     # Render webpage
     return render_template('show_item.html',
                            item=item,
-                           category=category)
+                           category=category,
+                           login_status=login_status)
 
 
 @app.route('/<string:category>/<string:item>/json')
@@ -256,7 +268,8 @@ def gconnect():
         print('{} already exists.'.format(data['email']))
     # Create new user if user does not already exist
     else:
-        new_user = Users(name=login_session['name'], email=login_session['email'],user_id=login_session['user_id'])
+        new_user = Users(
+            name=login_session['name'], email=login_session['email'], user_id=login_session['user_id'])
         session.add(new_user)
         session.commit()
         print('New user {} added to database.'.format(data['email']))
@@ -286,7 +299,16 @@ def get_user_email(email):
     """Get user email."""
     try:
         user = session.query(Users).filter_by(email=email).one()
-        return user.id
+        return user.email
+    except Exception:
+        return None
+
+
+def get_user_id(user_id):
+    """Get user id."""
+    try:
+        user = session.query(Users).filter_by(user_id=user_id).one()
+        return user.user_id
     except Exception:
         return None
 
@@ -301,9 +323,9 @@ App route functions available after login
 def add_category():
     """App route function to create categories with POST requests."""
     # Verify user is logged in. If not, redirect to login page.
-    if 'name' not in login_session:
+    if 'user_id' not in login_session:
         flash('Please log in.')
-        return redirect(url_for('gconnect'))
+        return redirect(url_for('login'))
     if request.method == 'POST':
         # Flash messages for incomplete item info
         if not request.form['name']:
@@ -330,7 +352,7 @@ def add_category():
 def add_item():
     """App route function to create items with POST requests."""
     # Verify user is logged in. If not, redirect to login page.
-    if 'name' not in login_session:
+    if 'user_id' not in login_session:
         flash('Please log in.')
         return redirect(url_for('login'))
     if request.method == 'POST':
@@ -362,7 +384,7 @@ def add_item():
 def edit_item(category, item):
     """App route function to edit an item."""
     # Verify user is logged in. If not, redirect to login page.
-    if 'name' not in login_session:
+    if 'user_id' not in login_session:
         flash('Please log in.')
         return redirect(url_for('login'))
     # Get item to edit
@@ -401,7 +423,7 @@ def edit_item(category, item):
 def delete_item(category_id, item_id):
     """App route function to delete an item."""
     # Verify user is logged in. If not, redirect to login page.
-    if 'name' not in login_session:
+    if 'user_id' not in login_session:
         flash('Please log in.')
         return redirect(url_for('login'))
     # Get item to edit
@@ -427,6 +449,7 @@ Logout
 ~~~~~~
 """
 
+
 @app.route('/logout')
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -444,12 +467,6 @@ def gdisconnect():
             json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    # Ask Google server to revoke access token
-    # url = ('https://accounts.google.com/o/oauth2/revoke?token=%s'
-    #        % access_token)
-    # print(url)
-    # resp = requests.get(url=url)
-    # print('Result is {}'.format(resp))
     del login_session['credentials']
     del login_session['user_id']
     del login_session['name']
