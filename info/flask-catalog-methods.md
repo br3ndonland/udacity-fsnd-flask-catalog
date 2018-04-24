@@ -1122,13 +1122,12 @@ Git commit at this point: Debug login page
   - I had also previously gotten `KeyError: 'gplus_id'` when logging out.
   - After working on the `gconnect()` function, I was able to successfully log out by browsing to [http://localhost:8000/logout](http://localhost:8000/logout).
   - I may actually not need to worry about rejecting the access token, because it doesn't appear to be stored on my side. Google may have changed their authentication methods since the course was recorded. I wouldn't be surprised.
-- After correcting logout, I have a new SQLAlchemy database error when I go to a category page.
-  - I changed `.one()` to `.all()`, which probably caused this.
 - Buttons:
-  - Get navbar links to show up after login
-  - Add buttons for edit and delete on pages for the items?- Next, I will figure out why posting info to the database returns an error.
-  - TODO
-- When not logged in, attempting to visit the edit item page should return an error.
+  - Get navbar links to change after login
+    - I fixed this feature by adding a `login_status` object, then using `{% if login_status %}` on layout.html for the buttons to be available after login.
+  - Add edit and delete buttons on item pages
+    - I used the same strategy to add edit and delete buttons on the pages for each item.
+- Posting info to the database (through add, edit or delete) returns a 400 bad request error.
   - TODO
 
 ## Comments
