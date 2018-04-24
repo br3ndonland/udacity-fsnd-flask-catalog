@@ -99,11 +99,11 @@ def show_category(category):
                   .all())
     # Query database with SQLAlchemy to show selected category and items
     category = (session.query(Categories)
-                .filter_by(name=category)
-                .all())
+                .filter_by(name=category.replace('-', ' '))
+                .one())
     category_items = (session.query(Items)
                       .filter_by(category_id=category.id)
-                      # .order_by(Items.name)
+                      .order_by(Items.name)
                       .all())
     category_items_count = (session.query(Items)
                             .filter_by(category_id=category.id)
@@ -121,7 +121,7 @@ def show_category(category):
 def show_category_json(category):
     """App route function to provide category data in JSON format."""
     category = (session.query(Categories)
-                .filter_by(name=category)
+                .filter_by(name=category.replace('-', ' '))
                 .one())
     category_items = (session.query(Items)
                       .filter_by(category_id=category.id)
@@ -339,8 +339,8 @@ def add_category():
                                   email=login_session['email'])
         session.add(new_category)
         session.commit()
-        # Return to page for category
-        return redirect(url_for('show_category'))
+        # Return to homepage
+        return redirect(url_for('home'))
     else:
         # Get all categories
         categories = session.query(Categories).all()
@@ -370,8 +370,8 @@ def add_item():
                          user_id=login_session['user_id'])
         session.add(new_item)
         session.commit()
-        # Return to page for the item's category
-        return redirect(url_for('show_category'))
+        # Return to homepage
+        return redirect(url_for('home'))
     else:
         # Get all categories
         categories = session.query(Categories).all()
@@ -394,9 +394,11 @@ def edit_item(category, item):
     item = (session.query(Items)
             .filter_by(name=item.replace('-', ' '), category_id=category.id)
             .one())
+    creator = (session.query(Users)
+               .filter_by(id=item.creator_db_id)
+               .one())
     # Only allow item creator to edit. If not, redirect to login.
-    item_creator = get_user_id(Items.user_id)
-    if item_creator.id != login_session['user_id']:
+    if creator.user_id != login_session['user_id']:
         return redirect(url_for('login'))
     # Get categories
     categories = session.query(Categories).all()
@@ -420,25 +422,30 @@ def edit_item(category, item):
 
 @app.route('/<string:category>/<string:item>/delete',
            methods=['GET', 'POST'])
-def delete_item(category_id, item_id):
+def delete_item(category, item):
     """App route function to delete an item."""
     # Verify user is logged in. If not, redirect to login page.
     if 'user_id' not in login_session:
         flash('Please log in.')
         return redirect(url_for('login'))
     # Get item to edit
-    item = session.query(Items).filter_by(id=item_id).first()
+    category = (session.query(Categories)
+                .filter_by(name=category)
+                .one())
+    item = (session.query(Items)
+            .filter_by(name=item.replace('-', ' '), category_id=category.id)
+            .one())
+    creator = (session.query(Users)
+               .filter_by(id=item.creator_db_id)
+               .one())
     # Only allow item creator to edit. If not, redirect to login.
-    item_category = session.query(Categories).filter_by(id=item_id).first()
-    item_creator = get_user_id(Items.user_id)
-    if item_creator.id != login_session['user_id']:
+    if creator.user_id != login_session['user_id']:
         return redirect(url_for('login'))
     # Show item to delete, or redirect
     if request.method == 'POST':
         session.delete(item)
         session.commit()
-        return redirect(url_for('show_category',
-                                category_id=item_category.category_id))
+        return redirect(url_for('home'))
     else:
         # Render webpage
         return render_template('delete_item.html', item=item)

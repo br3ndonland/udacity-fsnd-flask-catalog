@@ -1129,6 +1129,17 @@ Git commit at this point: Debug login page
     - I used the same strategy to add edit and delete buttons on the pages for each item.
 - Posting info to the database (through add, edit or delete) returns a 400 bad request error.
   - TODO
+- I have a new SQLAlchemy database error when I go to a category page.
+  - I started having a problem with the `.filter_by(category_id=category.id)` line.
+  - The problem was actually with the `category` object. I was selecting `.all()` when I needed `.one()`.
+
+    ```python
+    category = (session.query(Categories)
+                .filter_by(name=category.replace('-', ' '))
+                .one())
+    ```
+
+  - I checked out the [SQLAlchemy Query API docs](http://docs.sqlalchemy.org/en/latest/orm/query.html) and the [Object Relational Tutorial](http://docs.sqlalchemy.org/en/latest/orm/tutorial.html).
 
 ## Comments
 
