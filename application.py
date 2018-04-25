@@ -268,8 +268,9 @@ def gconnect():
         print('{} already exists.'.format(data['email']))
     # Create new user if user does not already exist
     else:
-        new_user = Users(
-            name=login_session['name'], email=login_session['email'], user_id=login_session['user_id'])
+        new_user = Users(name=login_session['name'],
+                         email=login_session['email'],
+                         user_id=login_session['user_id'])
         session.add(new_user)
         session.commit()
         print('New user {} added to database.'.format(data['email']))
@@ -295,20 +296,31 @@ def create_user(login_session):
     return user.id
 
 
-def get_user_email(email):
-    """Get user email."""
-    try:
-        user = session.query(Users).filter_by(email=email).one()
-        return user.email
-    except Exception:
-        return None
-
-
 def get_user_id(user_id):
     """Get user id."""
     try:
         user = session.query(Users).filter_by(user_id=user_id).one()
         return user.user_id
+    except Exception:
+        return None
+
+def get_user_db_id(user_id):
+    """Get user's database id, based on the user id in the login session."""
+    try:
+        user = session.query(Users).filter_by(user_id=user_id).one()
+        return user.id
+    except Exception:
+        return None
+
+
+def get_category_creator_db_id(category):
+    """Get the database id of the user that created a category."""
+    try:
+        category = (session.query(Categories)
+                    .filter_by(name=category.replace('-', ' '))
+                    .one())
+        print(category)
+        return category.creator_db_id
     except Exception:
         return None
 
@@ -318,44 +330,159 @@ App route functions available after login
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 
-
 @app.route('/add-category', methods=['GET', 'POST'])
 def add_category():
     """App route function to create categories with POST requests."""
-    # Verify user is logged in. If not, redirect to login page.
-    if 'user_id' not in login_session:
+    # Verify user login. If not, redirect to login page.
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
+    else:
         flash('Please log in.')
         return redirect(url_for('login'))
     if request.method == 'POST':
+        # Get form fields
+        new_category_name = request.form['new_category_name']
+        # Get user's database ID for the item's database entry
+        user_db_id = get_user_db_id(login_session['user_id'])
+        print("Current user's database primary key id is {}"
+              .format(user_db_id))
         # Flash messages for incomplete item info
-        if not request.form['name']:
-            flash('Please add category name')
+        if not request.form['new_category_name']:
+            flash('Please add category name.')
             return redirect(url_for('add_category'))
-        if not request.form['description']:
-            flash('Please add a description')
-            return redirect(url_for('add_category'))
-        # If user is logged in, and all info provided, add item
-        new_category = Categories(name=request.form['name'],
-                                  email=login_session['email'])
+        # If user is logged in, and all info provided, add category
+        new_category = Categories(
+            name=new_category_name,
+            creator_db_id=user_db_id)
         session.add(new_category)
         session.commit()
+        print('Category {} successfully created.'.format(new_category_name))
         # Return to homepage
         return redirect(url_for('home'))
     else:
-        # Get all categories
-        categories = session.query(Categories).all()
         # Render webpage
-        return render_template('add_category.html', categories=categories)
+        return render_template('add_category.html',
+                               login_status=login_status)
 
+
+@app.route('/<string:category>/edit', methods=['GET', 'POST'])
+def edit_category(category):
+    """App route function to edit categories."""
+    # Verify user login. If not, redirect to login page.
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
+    else:
+        flash('Please log in.')
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        # Get category to edit
+        category = (session.query(Categories)
+                    .filter_by(name=category.replace('-', ' '))
+                    .one())
+        # Get form fields
+        edit_category_name = request.form['edit_category_name']
+        # Get user's database ID
+        user_db_id = get_user_db_id(login_session['user_id'])
+        # Get database ID of category creator
+        creator_db_id = get_category_creator_db_id(category)
+        print("Current user's database primary key id is {}"
+              .format(user_db_id))
+        print("Category creator's database primary key id is {}."
+              .format(creator_db_id))
+        # Only allow creator to edit. If not, redirect to login.
+        if user_db_id != creator_db_id:
+            return redirect(url_for('login'))
+        # Flash messages for incomplete item info
+        if not request.form['edit_category_name']:
+            flash('Please identify category.')
+            return redirect(url_for('edit_category'))
+        # If user is logged in, and all info provided, edit category
+        edit_category = Categories(
+            name=edit_category_name,
+            creator_db_id=creator_db_id,
+            login_status=login_status)
+        session.add(edit_category)
+        session.commit()
+        print('Category {} successfully edited.'.format(edit_category.name))
+        flash('Category {} successfully edited.'.format(edit_category.name))
+        # Return to homepage
+        return redirect(url_for('home'))
+    else:
+        # Render webpage
+        return render_template('edit_category.html',
+                               category_name=category.name,
+                               category=category,
+                               login_status=login_status)
+
+
+@app.route('/<string:category>/delete', methods=['GET', 'POST'])
+def delete_category(category):
+    """App route function to delete categories."""
+    # Verify user login. If not, redirect to login page.
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
+    else:
+        flash('Please log in.')
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        # Get category to edit
+        category = (session.query(Categories)
+                    .filter_by(name=category.replace('-', ' '))
+                    .one())
+        # Get form fields
+        delete_category_name = request.form['delete_category_name']
+        # Get user's database ID
+        user_db_id = get_user_db_id(login_session['user_id'])
+        # Get database ID of category creator
+        creator_db_id = get_category_creator_db_id('category')
+        print("Current User's database primary key id is {}"
+              .format(user_db_id))
+        print("Category creator's database primary key id is {}."
+              .format(creator_db_id))
+        # Only allow creator to edit. If not, redirect to login.
+        if user_db_id != creator_db_id:
+            return redirect(url_for('login'))
+        # Flash messages for incomplete item info
+        if not request.form['edit_category_name']:
+            flash('Please identify category.')
+            return redirect(url_for('edit_category'))
+        # If user is logged in, and all info provided, delete category
+        edit_category = Categories(
+            name=delete_category_name,
+            creator_db_id=creator_db_id,
+            login_status=login_status)
+        session.add(edit_category)
+        session.commit()
+        print('Category {} successfully edited.'.format(edit_category.name))
+        flash('Category {} successfully edited.'.format(edit_category.name))
+        # Return to homepage
+        return redirect(url_for('home'))
+    else:
+        # Render webpage
+        return render_template('delete_category.html',
+                               category=category,
+                               login_status=login_status)
 
 @app.route('/add-item', methods=['GET', 'POST'])
 def add_item():
     """App route function to create items with POST requests."""
-    # Verify user is logged in. If not, redirect to login page.
-    if 'user_id' not in login_session:
+    # Verify user login. If not, redirect to login page.
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
+    else:
         flash('Please log in.')
         return redirect(url_for('login'))
     if request.method == 'POST':
+        # Get item entries
+        name = request.form['name']
+        url = request.form['url']
+        photo_url = request.form['photo url']
+        description = request.form['description']
+        category = request.form['category']
         # Flash messages for incomplete item info
         if not request.form['name']:
             flash('Please add item name')
@@ -364,27 +491,36 @@ def add_item():
             flash('Please add a description')
             return redirect(url_for('add_item'))
         # If user is logged in, and all info provided, add item
-        new_item = Items(name=request.form['name'],
-                         description=request.form['description'],
-                         category_id=request.form['category'],
-                         user_id=login_session['user_id'])
+        new_item = Items(name=name,
+                         url=url,
+                         photo_url=photo_url,
+                         description=description,
+                         category=category,
+                         login_status=login_status)
         session.add(new_item)
         session.commit()
+        print('{} created'.format(new_item.name))
+        flash('{} created'.format(new_item.name))
         # Return to homepage
         return redirect(url_for('home'))
     else:
         # Get all categories
         categories = session.query(Categories).all()
         # Render webpage
-        return render_template('add_item.html', categories=categories)
+        return render_template('add_item.html',
+                               categories=categories,
+                               login_status=login_status)
 
 
 @app.route('/<string:category>/<string:item>/edit',
            methods=['GET', 'POST'])
 def edit_item(category, item):
     """App route function to edit an item."""
-    # Verify user is logged in. If not, redirect to login page.
-    if 'user_id' not in login_session:
+    # Verify user login. If not, redirect to login page.
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
+    else:
         flash('Please log in.')
         return redirect(url_for('login'))
     # Get item to edit
@@ -412,7 +548,8 @@ def edit_item(category, item):
             Items.category_id = request.form['category']
         return redirect(url_for('show_item.html',
                                 item=item,
-                                category=category))
+                                category=category,
+                                login_status=login_status))
     else:
         # Render webpage
         return render_template('edit_item.html',
@@ -424,8 +561,11 @@ def edit_item(category, item):
            methods=['GET', 'POST'])
 def delete_item(category, item):
     """App route function to delete an item."""
-    # Verify user is logged in. If not, redirect to login page.
-    if 'user_id' not in login_session:
+    # Verify user login. If not, redirect to login page.
+    login_status = None
+    if 'user_id' in login_session:
+        login_status = True
+    else:
         flash('Please log in.')
         return redirect(url_for('login'))
     # Get item to edit
@@ -448,7 +588,9 @@ def delete_item(category, item):
         return redirect(url_for('home'))
     else:
         # Render webpage
-        return render_template('delete_item.html', item=item)
+        return render_template('delete_item.html',
+                               item=item,
+                               login_status=login_status)
 
 
 """
@@ -466,8 +608,7 @@ def gdisconnect():
     except KeyError:
         flash('Failed to get access token')
         return redirect(url_for('home'))
-    print('GDisconnect access token is {}'.format(access_token))
-    print("User's name is {}".format(login_session['name']))
+    print("User's name was {}".format(login_session['name']))
     if access_token is None:
         print('Access Token is None')
         response = make_response(
@@ -478,6 +619,7 @@ def gdisconnect():
     del login_session['user_id']
     del login_session['name']
     del login_session['email']
+    print('Successfully logged out.')
     flash('Successfully logged out.')
     return redirect(url_for('home'))
 

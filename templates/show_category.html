@@ -10,7 +10,7 @@
     <ul>
       {% for category in categories %}
         <li>
-          <a href="{{ url_for('show_category', category=category.name) | replace('%20', '%2D') }}">
+          <a href="{{ url_for('show_category', category=category_name) | replace('%20', '%2D') }}">
             {{ category.name }}
           </a>
         </li>
@@ -24,6 +24,10 @@
       <h3 class="font-weight-light">Items in {{ category_name }}</h3>
     </header>
     <span class="text-muted"><em>{{ category_items_count }} items</em></span>
+    {% if login_status %}
+      <a class="btn btn-warning mt-1" role="button" href="{{ url_for('edit_category', category=category_name) }}">Edit</a>
+      <a class="btn btn-danger mt-1" role="button" href="{{ url_for('delete_category', category=category_name) }}">Delete</a>
+    {% endif %}
   </div>
   <div class="col-sm-7">
     <ul>
@@ -44,5 +48,7 @@
       <a href="{{ url_for('show_category_json', category=category_name) }}"><em>Show {{ category_name }} JSON</em></a>
     </ul>
   </div>
+    <div>
+    </div>
 </div>
 {% endblock %}
