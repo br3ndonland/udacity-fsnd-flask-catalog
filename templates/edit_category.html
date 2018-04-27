@@ -2,15 +2,14 @@
 {% block content %}
 <div class="container">
   <header>
-    <h2 class="font-weight-light">Delete item</h2>
+    <h2 class="font-weight-light">Edit category</h2>
   </header>
   <div class="form-group">
     <form method="post">
-      <h3>{{ item }}</h3>
-      <p class="font-italic text-danger">Are you sure you want to delete {{ item }}?</p>
-      <input type="text" name="delete_item_name" placeholder="Verify item name">
+      <h3>{{ category_name }}</h3>
+      <input type="text" name="edit_category_name" placeholder="New name here">
       <div class="btn-group" role="group" aria-label="Submission buttons">
-        <button type="submit" class="btn btn-danger">Delete</button>
+        <button type="submit" class="btn btn-warning">Edit</button>
         <a class="btn btn-secondary" href="{{ url_for('home') }}" role="button">Cancel</a>
       </div>
     </form>

@@ -9,7 +9,7 @@
   <div class="col-sm-7">
     <article>
       <section>
-        <img src="{{ item.photo }}" alt="Item photo" class="img-fluid rounded">
+        <img src="{{ item.photo_url }}" alt="Item photo" class="img-fluid rounded">
       </section>
       <section>
         {{ item.description }}
@@ -23,10 +23,10 @@
           <a class="btn btn-secondary mt-1" role="button" href="{{ url_for('show_category', category=item.category.name) }}">Back to {{ item.category.name }}</a>
         </div>
         {% if login_status %}
-        <div>
-          <a class="btn btn-warning mt-1" role="button" href="{{ url_for('edit_item', category=item.category.name, item=item.name) }}">Edit</a>
-          <a class="btn btn-danger mt-1" role="button" href="{{ url_for('delete_item', category=item.category.name, item=item.name) }}">Delete</a>
-        </div>
+          <div>
+            <a class="btn btn-warning mt-1" role="button" href="{{ url_for('edit_item', category=item.category.name, item=item.name) }}">Edit</a>
+            <a class="btn btn-danger mt-1" role="button" href="{{ url_for('delete_item', category=item.category.name, item=item.name) }}">Delete</a>
+          </div>
         {% endif %}
       </section>
     </article>

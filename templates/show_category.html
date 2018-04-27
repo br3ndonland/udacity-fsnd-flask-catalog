@@ -10,7 +10,7 @@
     <ul>
       {% for category in categories %}
         <li>
-          <a href="{{ url_for('show_category', category=category_name) | replace('%20', '%2D') }}">
+          <a href="{{ url_for('show_category', category=category.name) | replace('%20', '%2D') }}">
             {{ category.name }}
           </a>
         </li>

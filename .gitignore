@@ -109,6 +109,7 @@ venv.bak/
 .DS_Store
 client_secrets.json
 misc
+*.db
 *.sublime-project
 *.sublime-workspace
 *.code-workspace

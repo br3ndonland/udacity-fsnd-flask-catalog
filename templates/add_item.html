@@ -7,17 +7,17 @@
   <div class="form-group">
     <form method="post">
       <h3>Name</h3>
-        <input style="min-width: 200px;" type="text" name="name" value="">
+        <input type="text" name="name" placeholder="Enter item name">
       <h3>URL</h3>
-        <input style="min-width: 200px;" type="text" name="url" value="">
+        <input type="text" name="url" placeholder="Enter item URL">
       <h3>Photo URL</h3>
-        <input style="min-width: 200px;" type="text" name="photo" value="">
+        <input type="text" name="photo_url" placeholder="Enter item photo URL">
       <h3>Description</h3>
-        <input style="min-width: 200px;" type="text" name="description" value="">
+        <input type="text" name="description" placeholder="Enter item description">
       <h3>Category</h3>
         <select name="item_category">
           {% for category in categories %}
-          <option value="{{ category.name }}">{{ category.name }}</option>
+            <option value="{{ category.name }}">{{ category.name }}</option>
           {% endfor %}
         </select>
       <div class="btn-group" role="group" aria-label="Submission buttons">

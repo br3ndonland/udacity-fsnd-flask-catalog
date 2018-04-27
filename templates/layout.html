@@ -26,19 +26,19 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbarNav navbar-nav mr-auto">
           {% if login_status %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('gdisconnect') }}">Logout</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('add_item') }}">Add item</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('add_category') }}">Add category</a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('gdisconnect') }}">Logout</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('add_item') }}">Add item</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('add_category') }}">Add category</a>
+            </li>
           {% else %}
-          <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-          </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+            </li>
           {% endif %}
         </ul>
       </div>
@@ -61,7 +61,7 @@
           {% endwith %}
         </div>
         <div class="col-sm-4 mt-1">
-          <img src="../static/img/arnold-schwarzenegger-encyclopedia-232.png" alt="Picture of Arnold Schwarzenegger and Franco Columbu doing incline dumbbell curls" class="img-fluid rounded">
+          <img src="/static/img/arnold-schwarzenegger-encyclopedia-232.png" alt="Picture of Arnold Schwarzenegger and Franco Columbu doing incline dumbbell curls" class="img-fluid rounded">
         </div>
       </div>
     </div>
@@ -85,7 +85,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
   <!-- Google Sign-In platform -->
   <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script>
     // Calculate current year for footer
     var currentYear = new Date().getFullYear();

@@ -59,7 +59,7 @@ App route functions available prior to login
 def home():
     """App route function for the homepage."""
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
@@ -91,7 +91,7 @@ def catalog_json():
 def show_category(category):
     """App route function to display all items in a specific category."""
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
@@ -136,7 +136,7 @@ def show_category_json(category):
 def show_item(category, item):
     """App route function to display an item."""
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     # Query database with SQLAlchemy to show selected category and item
     category = (session.query(Categories)
@@ -263,17 +263,18 @@ def gconnect():
     # Verify contents of login_session
     print('login_session object currently contains: {}'.format(login_session))
     # Check database for user
-    user = session.query(Users).filter_by(email=data['email']).first()
+    user = (session.query(Users)
+            .filter_by(email=login_session['email'])
+            .first())
     if user:
         print('{} already exists.'.format(data['email']))
     # Create new user if user does not already exist
     else:
         new_user = Users(name=login_session['name'],
-                         email=login_session['email'],
-                         user_id=login_session['user_id'])
+                         email=login_session['email'])
         session.add(new_user)
         session.commit()
-        print('New user {} added to database.'.format(data['email']))
+        print('New user {} added to database.'.format(login_session['email']))
     output = ''
     output += '<h3 class="font-weight-light">Welcome, '
     output += login_session['name']
@@ -285,29 +286,36 @@ def gconnect():
     return output
 
 
+# Standalone function in case user needs to be created without GConnect
 def create_user(login_session):
     """Create new user based on login info."""
     new_user = Users(name=login_session['name'],
-                     email=login_session['email'],
-                     user_id=login_session['user_id'])
+                     email=login_session['email'])
     session.add(new_user)
     session.commit()
     user = session.query(Users).filter_by(email=login_session['email']).one()
     return user.id
 
 
-def get_user_id(user_id):
-    """Get user id."""
+"""
+App route functions available after login
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
+
+# Helper functions
+def get_user_email(email):
+    """Get user email from database."""
     try:
-        user = session.query(Users).filter_by(user_id=user_id).one()
-        return user.user_id
+        user = session.query(Users).filter_by(email=email).one()
+        return user.email
     except Exception:
         return None
 
-def get_user_db_id(user_id):
-    """Get user's database id, based on the user id in the login session."""
+
+def get_user_db_id(email):
+    """Get user's database id, based on the email in the login session."""
     try:
-        user = session.query(Users).filter_by(user_id=user_id).one()
+        user = session.query(Users).filter_by(email=email).one()
         return user.id
     except Exception:
         return None
@@ -319,23 +327,29 @@ def get_category_creator_db_id(category):
         category = (session.query(Categories)
                     .filter_by(name=category.replace('-', ' '))
                     .one())
-        print(category)
         return category.creator_db_id
     except Exception:
         return None
 
 
-"""
-App route functions available after login
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
+def get_item_creator_db_id(item):
+    """Get the database id of the user that created an item."""
+    try:
+        item = (session.query(Items)
+                .filter_by(name=item.replace('-', ' '))
+                .one())
+        return item.creator_db_id
+    except Exception:
+        return None
 
+
+# App route functions
 @app.route('/add-category', methods=['GET', 'POST'])
 def add_category():
     """App route function to create categories with POST requests."""
     # Verify user login. If not, redirect to login page.
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     else:
         flash('Please log in.')
@@ -344,8 +358,8 @@ def add_category():
         # Get form fields
         new_category_name = request.form['new_category_name']
         # Get user's database ID for the item's database entry
-        user_db_id = get_user_db_id(login_session['user_id'])
-        print("Current user's database primary key id is {}"
+        user_db_id = get_user_db_id(login_session['email'])
+        print("Current user's database primary key id is {}."
               .format(user_db_id))
         # Flash messages for incomplete item info
         if not request.form['new_category_name']:
@@ -371,49 +385,46 @@ def edit_category(category):
     """App route function to edit categories."""
     # Verify user login. If not, redirect to login page.
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     else:
         flash('Please log in.')
         return redirect(url_for('login'))
     if request.method == 'POST':
-        # Get category to edit
+        # Query database with SQLAlchemy and store query as an object
         category = (session.query(Categories)
                     .filter_by(name=category.replace('-', ' '))
                     .one())
         # Get form fields
         edit_category_name = request.form['edit_category_name']
         # Get user's database ID
-        user_db_id = get_user_db_id(login_session['user_id'])
+        user_db_id = get_user_db_id(login_session['email'])
         # Get database ID of category creator
-        creator_db_id = get_category_creator_db_id(category)
-        print("Current user's database primary key id is {}"
+        creator_db_id = get_category_creator_db_id(category.name)
+        print("Current user's database primary key id is {}."
               .format(user_db_id))
         print("Category creator's database primary key id is {}."
               .format(creator_db_id))
+        print('Category to edit is "{}".'.format(category.name))
         # Only allow creator to edit. If not, redirect to login.
         if user_db_id != creator_db_id:
+            flash('Only the creator can edit. Please log in as creator.')
             return redirect(url_for('login'))
         # Flash messages for incomplete item info
         if not request.form['edit_category_name']:
             flash('Please identify category.')
             return redirect(url_for('edit_category'))
-        # If user is logged in, and all info provided, edit category
-        edit_category = Categories(
-            name=edit_category_name,
-            creator_db_id=creator_db_id,
-            login_status=login_status)
-        session.add(edit_category)
+        # Overwrite object with new info for database
+        category.name = edit_category_name
+        print('Category name for database is "{}".'.format(category.name))
+        session.add(category)
         session.commit()
-        print('Category {} successfully edited.'.format(edit_category.name))
-        flash('Category {} successfully edited.'.format(edit_category.name))
         # Return to homepage
         return redirect(url_for('home'))
     else:
         # Render webpage
         return render_template('edit_category.html',
-                               category_name=category.name,
-                               category=category,
+                               category_name=category,
                                login_status=login_status)
 
 
@@ -422,89 +433,112 @@ def delete_category(category):
     """App route function to delete categories."""
     # Verify user login. If not, redirect to login page.
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     else:
         flash('Please log in.')
         return redirect(url_for('login'))
     if request.method == 'POST':
-        # Get category to edit
+        # Query database with SQLAlchemy and store queries as objects
         category = (session.query(Categories)
                     .filter_by(name=category.replace('-', ' '))
                     .one())
+        category_items = (session.query(Items)
+                      .filter_by(category_id=category.id)
+                      .order_by(Items.name)
+                      .all())
         # Get form fields
         delete_category_name = request.form['delete_category_name']
         # Get user's database ID
-        user_db_id = get_user_db_id(login_session['user_id'])
+        user_db_id = get_user_db_id(login_session['email'])
         # Get database ID of category creator
-        creator_db_id = get_category_creator_db_id('category')
-        print("Current User's database primary key id is {}"
+        creator_db_id = get_category_creator_db_id(category.name)
+        print("Current user's database primary key id is {}."
               .format(user_db_id))
         print("Category creator's database primary key id is {}."
               .format(creator_db_id))
+        print('Category to delete is "{}".'.format(category.name))
+        print('Items to delete:')
+        for item in category_items:
+            print(item.name)
         # Only allow creator to edit. If not, redirect to login.
         if user_db_id != creator_db_id:
+            flash('Only the creator can edit. Please log in as creator.')
             return redirect(url_for('login'))
         # Flash messages for incomplete item info
-        if not request.form['edit_category_name']:
+        if not request.form['delete_category_name']:
             flash('Please identify category.')
-            return redirect(url_for('edit_category'))
-        # If user is logged in, and all info provided, delete category
-        edit_category = Categories(
-            name=delete_category_name,
-            creator_db_id=creator_db_id,
-            login_status=login_status)
-        session.add(edit_category)
+            return redirect(url_for('delete_category'))
+        # Make sure user correctly entered category name to delete
+        if category.name != delete_category_name:
+            flash('Please correctly enter category name.')
+            return redirect(url_for('delete_category'))
+        session.delete(category)
+        for item in category_items:
+            session.delete(item)
         session.commit()
-        print('Category {} successfully edited.'.format(edit_category.name))
-        flash('Category {} successfully edited.'.format(edit_category.name))
         # Return to homepage
         return redirect(url_for('home'))
     else:
         # Render webpage
         return render_template('delete_category.html',
-                               category=category,
+                               category_name=category,
                                login_status=login_status)
+
 
 @app.route('/add-item', methods=['GET', 'POST'])
 def add_item():
     """App route function to create items with POST requests."""
     # Verify user login. If not, redirect to login page.
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     else:
         flash('Please log in.')
         return redirect(url_for('login'))
     if request.method == 'POST':
-        # Get item entries
+        # Get form fields
         name = request.form['name']
         url = request.form['url']
-        photo_url = request.form['photo url']
+        photo_url = request.form['photo_url']
         description = request.form['description']
-        category = request.form['category']
+        category = request.form['item_category']
+        # Retrieve the database ID of the selected category
+        category_id = (session.query(Categories)
+                       .filter_by(name=category)
+                       .one())
+        # Get user's database ID for the item's database entry
+        user_db_id = get_user_db_id(login_session['email'])
+        print("Current user's database primary key id is {}."
+              .format(user_db_id))
+        print('Database ID of category is {}'.format(category_id))
         # Flash messages for incomplete item info
         if not request.form['name']:
             flash('Please add item name')
             return redirect(url_for('add_item'))
+        if not request.form['url']:
+            flash('Please add item URL')
+            return redirect(url_for('add_item'))
+        if not request.form['photo_url']:
+            flash('Please add item photo URL')
+            return redirect(url_for('add_item'))
         if not request.form['description']:
             flash('Please add a description')
             return redirect(url_for('add_item'))
-        # If user is logged in, and all info provided, add item
+        # Create object with form field info to add to database
         new_item = Items(name=name,
                          url=url,
                          photo_url=photo_url,
                          description=description,
-                         category=category,
-                         login_status=login_status)
+                         category_id=category_id.id,
+                         creator_db_id=user_db_id)
         session.add(new_item)
         session.commit()
-        print('{} created'.format(new_item.name))
-        flash('{} created'.format(new_item.name))
+        print('Item "{}" created'.format(new_item.name))
         # Return to homepage
         return redirect(url_for('home'))
     else:
-        # Get all categories
+        # Query database with SQLAlchemy to display categories on page
         categories = session.query(Categories).all()
         # Render webpage
         return render_template('add_item.html',
@@ -518,43 +552,80 @@ def edit_item(category, item):
     """App route function to edit an item."""
     # Verify user login. If not, redirect to login page.
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     else:
         flash('Please log in.')
         return redirect(url_for('login'))
-    # Get item to edit
-    category = (session.query(Categories)
-                .filter_by(name=category)
-                .one())
-    item = (session.query(Items)
-            .filter_by(name=item.replace('-', ' '), category_id=category.id)
-            .one())
-    creator = (session.query(Users)
-               .filter_by(id=item.creator_db_id)
-               .one())
-    # Only allow item creator to edit. If not, redirect to login.
-    if creator.user_id != login_session['user_id']:
-        return redirect(url_for('login'))
-    # Get categories
+    # Query database with SQLAlchemy to display categories on page
     categories = session.query(Categories).all()
-    # Show item to edit, or redirect
     if request.method == 'POST':
+        # Query database with SQLAlchemy and store queries as objects
+        category = (session.query(Categories)
+                    .filter_by(name=category.replace('-', ' '))
+                    .one())
+        item = (session.query(Items)
+                .filter_by(name=item.replace('-', ' '))
+                .one())
+        # Get form fields submitted by user, or retain item info
         if request.form['name']:
-            Items.name = request.form['name']
+            name = request.form['name']
+        else:
+            name = item.name
+        if request.form['url']:
+            url = request.form['url']
+        else:
+            url = item.url
+        if request.form['photo_url']:
+            photo_url = request.form['photo_url']
+        else:
+            photo_url = item.photo_url
         if request.form['description']:
-            Items.description = request.form['description']
-        if request.form['category']:
-            Items.category_id = request.form['category']
-        return redirect(url_for('show_item.html',
-                                item=item,
-                                category=category,
-                                login_status=login_status))
+            description = request.form['description']
+        else:
+            description = item.description
+        category = request.form['item_category']
+        # Retrieve the database ID of the item's category
+        category_id = session.query(Categories).filter_by(name=category).one()
+        # Get user's database ID
+        user_db_id = get_user_db_id(login_session['email'])
+        # Get database ID of creator
+        creator_db_id = get_item_creator_db_id(item.name)
+        print("Current user's database primary key id is {}."
+              .format(user_db_id))
+        print("Item creator's database primary key id is {}."
+              .format(creator_db_id))
+        print('Item to edit is "{}".'.format(item.name))
+        # Only allow creator to edit. If not, redirect to login.
+        if user_db_id != creator_db_id:
+            flash('Only the creator can edit. Please log in as creator.')
+            return redirect(url_for('login'))
+        # Store edits in an object
+        edited_item = Items(name=name,
+                            url=url,
+                            photo_url=photo_url,
+                            description=description,
+                            category_id=category_id.id,
+                            creator_db_id=user_db_id)
+        # Overwrite item object with new info from edited_item object
+        item.name = edited_item.name
+        item.url = edited_item.url
+        item.photo_url = edited_item.photo_url
+        item.description = edited_item.description
+        item.category_id = edited_item.category_id
+        session.add(item)
+        session.commit()
+        print('Item "{}" edited'.format(edited_item.name))
+        # Return to homepage
+        return redirect(url_for('home'))
     else:
+        # Query database with SQLAlchemy to display categories on page
+        categories = session.query(Categories).all()
         # Render webpage
         return render_template('edit_item.html',
                                categories=categories,
-                               item=item)
+                               item=item,
+                               login_status=login_status)
 
 
 @app.route('/<string:category>/<string:item>/delete',
@@ -563,28 +634,35 @@ def delete_item(category, item):
     """App route function to delete an item."""
     # Verify user login. If not, redirect to login page.
     login_status = None
-    if 'user_id' in login_session:
+    if 'email' in login_session:
         login_status = True
     else:
         flash('Please log in.')
         return redirect(url_for('login'))
-    # Get item to edit
-    category = (session.query(Categories)
-                .filter_by(name=category)
-                .one())
-    item = (session.query(Items)
-            .filter_by(name=item.replace('-', ' '), category_id=category.id)
-            .one())
-    creator = (session.query(Users)
-               .filter_by(id=item.creator_db_id)
-               .one())
-    # Only allow item creator to edit. If not, redirect to login.
-    if creator.user_id != login_session['user_id']:
-        return redirect(url_for('login'))
-    # Show item to delete, or redirect
     if request.method == 'POST':
+        # Query database with SQLAlchemy and store queries as objects
+        category = (session.query(Categories)
+                    .filter_by(name=category)
+                    .one())
+        item = (session.query(Items)
+                .filter_by(name=item.replace('-', ' '), category_id=category.id)
+                .one())
+        # Get user's database ID
+        user_db_id = get_user_db_id(login_session['email'])
+        # Get database ID of creator
+        creator_db_id = get_item_creator_db_id(item.name)
+        print("Current user's database primary key id is {}."
+              .format(user_db_id))
+        print("Item creator's database primary key id is {}."
+              .format(creator_db_id))
+        print('Item to delete is "{}".'.format(item.name))
+        # Only allow creator to edit. If not, redirect to login.
+        if user_db_id != creator_db_id:
+            flash('Only the creator can edit. Please log in as creator.')
+            return redirect(url_for('login'))
         session.delete(item)
         session.commit()
+        # Return to homepage
         return redirect(url_for('home'))
     else:
         # Render webpage

@@ -12,6 +12,8 @@ Brendon Smith
 
 br3ndonland
 
+Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
+
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://choosealicense.com/)
 
 ## Table of Contents
@@ -21,41 +23,48 @@ br3ndonland
 - [Repository contents](#repository-contents)
 - [Instructions](#instructions)
   - [Generate credentials](#generate-credentials)
-  - [Install virtual machine](#install-virtual-machine)
-  - [Run virtual machine](#run-virtual-machine)
+  - [Set up environment](#set-up-environment)
   - [Run application](#run-application)
+- [Tips](#tips)
 
 ## Description
 
 - This is a [RESTful](https://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/) web application created with [Python 3](https://docs.python.org/3/) and the Python micro-framework [Flask](http://flask.pocoo.org/).
+- The app is called "Brendon's Bodybuilding Bazaar" and features some items useful for bodybuilding.
 - The app's [SQLite](https://sqlite.org/index.html) database contains a catalog of items and associated information. The database is created by running [database_setup.py](database_setup.py) and populated by running [database_data.py](database_data.py).
 - The SQLite database is accessed by [SQLAlchemy](http://www.sqlalchemy.org/) from within the Python code in [application.py](application.py).
 - The main application code is located in [application.py](application.py). This file controls the app, with Flask routing functions to render the pages of the web application and access app content.
 - Authentication is performed with a hybrid flow. The [deprecated `oauth2client` library](https://google-auth.readthedocs.io/en/latest/oauth2client-deprecation.html) was used for consistency with the Udacity Vagrant virtual machine configuration. Future implementations should consider using [`google-auth`](https://google-auth.readthedocs.io/en/latest/index.html) or [`authlib`](https://docs.authlib.org/en/latest/index.html).
 - Python code has been formatted according to the [PEP 8](http://pep8.org/) specification. Comments and spacing keep the code as organized and readable as possible.
 - Markdown documents in the repository have been formatted in a standard style, based on suggestions from [vscode-markdownlint](https://github.com/DavidAnson/vscode-markdownlint).
-- The application pages are styled with [Bootstrap 4.0.0](https://getbootstrap.com/docs/4.0/getting-started/introduction/), a library of HTML, CSS, and JavaScript components.
+- The application pages are styled with [Bootstrap 4](https://getbootstrap.com), a library of HTML, CSS, and JavaScript components.
 - The homepage displays item categories, the items most recently added to the database, and a login button.
 
-  ![Homepage](info/img/flask-catalog-index.png)
+  ![Homepage](static/img/flask-catalog-index.png)
 
 - Clicking on a category name displays the items in the category.
 
-  ![Category page](info/img/flask-catalog-show-category.png)
+  ![Category page](static/img/flask-catalog-show-category.png)
 
 - Clicking on an item provides a photo, description, and link.
 
-  ![Item page](info/img/flask-catalog-show-item.png)
+  ![Item page](static/img/flask-catalog-show-item.png)
 
-- JSON data for each page can be accessed by clicking the JSON links on each page, which append `/json` to the URL.
+- JSON data for each page can be accessed by clicking the JSON links, which append `/json` to the URL.
 
-  ![Homepage JSON](info/img/flask-catalog-index-json.png)
+  ![Homepage JSON](static/img/flask-catalog-index-json.png)
 
 - Clicking log in allows the user to authenticate with Google.
 
-  ![Login page](info/img/flask-catalog-login.png)
+  ![Login page](static/img/flask-catalog-login.png)
 
-- Users who are logged in can add items, and the creator of each item can edit or delete it.
+- Users who are logged in can add items and categories. The creator of each item or category can also edit or delete it.
+
+  ![Edit category page](static/img/flask-catalog-edit-category.png)
+
+- The app is fully responsive thanks to Bootstrap.
+
+  ![Item page on iPhone 6S simulated with Firefox developer tools](static/img/flask-catalog-show-item-iPhone-6S.png)
 
 [(Back to TOC)](#table-of-contents)
 
@@ -63,14 +72,14 @@ br3ndonland
 
 - [info/](info)
   - [img/](info/img) - Images used in documentation.
-  - [flask-catalog-methods.md](flask-catalog-methods.md) - Step-by-step computational narrative detailing the app creation process.
+  - [flask-catalog-methods.md](flask-catalog-methods.md) - Computational narrative detailing the app creation process.
   - [flask-catalog-udacity-docs.md](flask-catalog-udacity-docs.md) - Udacity documentation for the project.
 - [static/](static)
   - [img/](static/img) - Images used in the main application.
 - [templates/](templates) - HTML webpage templates.
-- [application.py](application.py) - Main Flask app file.
-- [database_data.py](database_data.py) - Python file used to populate database.
-- [database_setup.py](database_setup.py) - Python file used to configure database.
+- [application.py](application.py) - Main Flask app Python file.
+- [database_data.py](database_data.py) - Python file used to populate the database.
+- [database_setup.py](database_setup.py) - Python file used to configure the database.
 - [README.md](README.md) - This file, a concise description of the project.
 
 [(Back to TOC)](#table-of-contents)
@@ -87,23 +96,49 @@ br3ndonland
   - Web application
   - Set a name. I set mine as "Brendon's Bodybuilding Bazaar".
   - Restrictions: Add `http://localhost:8000` to the Authorized JavaScript origins and Redirects.
-- Download JSON and save in application directory as *client_secrets.json*.
+- Download JSON credentials and save in application directory as *client_secrets.json*.
 
-### Install virtual machine
+### Set up environment
+
+The application can be run by setting up either a virtual environment or a virtual machine. Instructions for each option are provided below.
+
+#### Virtual environment
+
+[Pipenv](https://docs.pipenv.org/) can be used to manage a Python virtual environment for this project.
+
+```shell
+pip install pipenv
+cd <path>/udacity-fsnd-p4-flask-catalog
+pipenv install
+```
+
+Pipenv will create a virtual environment and install the specified packages.
+
+#### Virtual machine
 
 A virtual machine can be used to run the code from an operating system with a defined configuration. The virtual machine has all the dependencies needed to run the application.
 
+#### Configure virtual machine
+
 I wrote the program in a Linux virtual machine with the following components:
 
-- Oracle [VirtualBox](https://www.virtualbox.org/wiki/Downloads) Version 5.2.6 r120293 (Qt5.6.3)
+- Oracle [VirtualBox](https://www.virtualbox.org) Version 5.2.10 r122088 (Qt5.6.3)
   - Software that runs special containers called virtual machines, like Vagrant.
-- [Vagrant](https://www.vagrantup.com/) 2.0.1 with Ubuntu 16.04.3 LTS (GNU/Linux 4.4.0-75-generic i686)
+  - Updates to the program need to be [downloaded directly](https://www.virtualbox.org/wiki/Downloads).
+- [Vagrant](https://www.vagrantup.com/) 2.0.4 with Ubuntu 16.04.4 LTS (GNU/Linux 4.4.0-75-generic x86_64)
   - Software that provides the Linux operating system in a defined configuration, allowing it to run identically across many personal computers. Linux can then be run as a virtual machine with VirtualBox.
-- [Udacity Virtual Machine configuration](https://github.com/udacity/fullstack-nanodegree-vm)
+  - Updates to the program need to be [downloaded directly](https://www.vagrantup.com/downloads.html).
+- [Udacity virtual machine configuration](https://github.com/udacity/fullstack-nanodegree-vm)
   - Repository from Udacity that configures Vagrant.
-  - My personal fork of the configuration is also available on [GitHub](https://github.com/br3ndonland/fullstack-nanodegree-vm) if needed.
+  - Some of the necessary Python modules in the Udacity virtual machine configuration are only included for Python 2, and not Python 3. If needed, install the modules with `pip`:
 
-### Run virtual machine
+    ```bash
+    $ pip3 install sqlalchemy --user
+    $ pip3 install flask --user
+    $ pip3 install oauth2client --user
+    ```
+
+#### Run virtual machine
 
 - Clone the application repository into the *vagrant/* virtual machine directory.
 - Start the virtual machine and log into vagrant:
@@ -125,14 +160,15 @@ I wrote the program in a Linux virtual machine with the following components:
     $ vagrant ssh
     ```
 
+  - After logging into the virtual machine, change into the application directory:
+
+    ```bash
+    $ vagrant@vagrant:~$ cd /vagrant/flask-catalog
+    ```
+
 ### Run application
 
-- After logging into the virtual machine, change into the application directory:
-
-  ```bash
-  $ vagrant@vagrant:~$ cd /vagrant/flask-catalog
-  ```
-
+- Change into the application directory on the command line.
 - Create the database:
 
   ```bash
@@ -145,6 +181,8 @@ I wrote the program in a Linux virtual machine with the following components:
   $ python3 database_data.py
   ```
 
+  The program will prompt the user for their name and email. The user will be entered into the database and registered as the creator of the categories and items in *database_setup.py*. If the user or items already exist in the database, no duplicates are added, and the user is notified in the terminal.
+
 - Start the application:
 
   ```bash
@@ -153,10 +191,15 @@ I wrote the program in a Linux virtual machine with the following components:
 
 - Navigate to [http://localhost:8000](http://localhost:8000) in a web browser. **Note that Google will reject sign-in from [http://0.0.0.0:8000](http://0.0.0.0:8000).**
 - Log in, and enjoy!
-- The virtual machine ssh connection can be closed with
 
-  ```bash
-  $ logout
-  ```
+## Tips
+
+Here are some tips if you have to code a Flask app like this:
+
+- **Develop iteratively.** Develop the app in stages, with functioning deliverables at each stage. See the [lesson on agile](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/1-foundations/fsf-4-agile.md) in the [Udacity Full Stack Foundations course](https://www.udacity.com/course/full-stack-foundations--ud088) for one example of the iterative development process.
+- **Use clear, specific object names.** Between database table column names, variable names, and HTML templates, it gets very difficult to keep everything straight.
+- **Follow the objects.** Objects created in the main Python application code are referenced in other parts of the app, and it's important to make sure the names match up. For successful POST requests, be sure to match object names used in the app route function form field references (`request.form['new_category_name']` for example) with the corresponding input name used for the form submission field in the HTML template (`<input type="text" name="new_category_name">` for this example).
+- **When in doubt, make an object.** If you're unsure how to access information from the database or another part of the app, make an object, call the information with the object, and reference the object in downstream operations. For example, I made the `login_status` object to help track the user's login session, and I made several other objects to store the results of SQLAlchemy queries.
+- **Read the docs.** It's always important to read documentation, especially for this project, because the lessons didn't provide adequate preparation for building this app. The [Flask docs](http://flask.pocoo.org/) and [Stack Overflow Flask tag](https://stackoverflow.com/questions/tagged/flask) were helpful.
 
 [(Back to TOC)](#table-of-contents)

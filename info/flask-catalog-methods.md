@@ -12,7 +12,7 @@ Brendon Smith
 
 br3ndonland
 
-Python Flask web app with SQL database and Google Sign-In
+Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
 ## Table of Contents
 
@@ -36,11 +36,20 @@ Python Flask web app with SQL database and Google Sign-In
 - [Templates](#templates)
 - [Style](#style)
   - [HTML and CSS](#html-and-css)
-- [First look](#first-look)
-- [Debugging](#debugging)
+- [First look facepalm](#first-look-facepalm)
+- [Debugging app views](#debugging-app-views)
   - [Debugging pages](#debugging-pages)
   - [Debugging JSON](#debugging-json)
   - [Debugging authentication](#debugging-authentication)
+  - [Debugging the login session](#debugging-the-login-session)
+  - [Category page display](#category-page-display)
+- [Debugging CRUD functions](#debugging-crud-functions)
+  - [Add categories](#add-categories)
+  - [Edit and delete categories](#edit-and-delete-categories)
+  - [Add items](#add-items)
+  - [Edit and delete items](#edit-and-delete-items)
+  - [Revisiting database population](#revisiting-database-population)
+  - [Virtual environment with `pipenv`](#virtual-environment-with-pipenv)
 - [Comments](#comments)
 
 ## Environment and documentation setup
@@ -98,7 +107,7 @@ I already had the vagrant virtual machine environment installed and ready to go.
 
 #### SQLAlchemy imports
 
-As we did in lesson 6, I will perform CRUD operations with SQLAlchemy on an SQLite database. The SQL database is established within [database_setup.py](database_setup.py). I also read through the SQLite instructions in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/schema/), but I may not need the schema.sql file.
+As we did in lesson 6, I will perform CRUD operations with SQLAlchemy on an SQLite database. The SQL database is established within [database_setup.py](database_setup.py). I checked out the [SQLAlchemy Query API docs](http://docs.sqlalchemy.org/en/latest/orm/query.html) and the [Object Relational Tutorial](http://docs.sqlalchemy.org/en/latest/orm/tutorial.html). I also read through the SQLite instructions in the [Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/schema/), but I may not need the schema.sql file.
 
 We first import the necessary modules:
 
@@ -129,7 +138,7 @@ Finally, we use SQLAlchemy to create the SQLite database:
 Base.metadata.create_all(engine)
 ```
 
-Git commit at this point: Set up database 7844cbb
+Git commit at this point: "Set up database" 7844cbb
 
 ### database_data.py
 
@@ -160,7 +169,7 @@ I knew from experience that Python concatenates adjacent strings, so I broke the
 
 I included website and image URLs, and commented them out, in case I want to use them in the future.
 
-Git commit at this point: Create item catalog 0dd29ab
+Git commit at this point: "Create item catalog" 0dd29ab
 
 ### Database creation
 
@@ -260,7 +269,7 @@ class Item(Base):
 
 ```
 
-Git commit at this point: Debug database item timestamping 695e7bb
+Git commit at this point: "Debug database item timestamping" 695e7bb
 
 ### Database population
 
@@ -350,7 +359,7 @@ def show_category_json(category_id):
 
 ### Next steps
 
-Git commit at this point: Create app routes 0bcddf7
+Git commit at this point: "Create app routes" 0bcddf7
 
 **I thought about how to proceed. I could have built the HTML templates and tested the app, but decided to proceed with authentication and build the front-end later.**
 
@@ -360,9 +369,14 @@ Git commit at this point: Create app routes 0bcddf7
 
 ### Getting started
 
-I followed the [OAuth lessons](https://www.udacity.com/course/authentication-authorization-oauth--ud330) to implement sign-in. The Udacity materials are, of course, poorly formatted and outdated, and didn't prepare me for the project. The course code exists, confusingly, in two repos: [OAuth2.0](https://github.com/udacity/OAuth2.0) and [ud330](https://github.com/udacity/ud330/blob/master/Lesson2/step2/project.py). The code in ud330 is formatted a little better than the OAuth repo.
-
-I turned to [my notes](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/10-13-oauth/fsnd03_10-13-oauth.md) and re-watched the OAuth lessons to implement Google and Facebook sign-in.
+- I followed the [OAuth lessons](https://www.udacity.com/course/authentication-authorization-oauth--ud330) to implement sign-in.
+- The Udacity materials are, of course, poorly formatted and outdated, and didn't prepare me for the project.
+- The course code exists, confusingly, in two repos: [OAuth2.0](https://github.com/udacity/OAuth2.0) and [ud330](https://github.com/udacity/ud330/blob/master/Lesson2/step2/project.py). The code in ud330 is formatted a little better than the OAuth repo.
+- The vagrant virtual machine includes `oauth2client` for authentication, but [`oauth2client` has been deprecated](https://google-auth.readthedocs.io/en/latest/oauth2client-deprecation.html). Yet another outdated piece of code from Udacity.
+- Armin Ronacher's [Flask-OAuth](https://github.com/mitsuhiko/flask-oauth) is no longer maintained. He points users to [Flask-Dance](https://github.com/singingwolfboy/flask-dance), which is at an early stage of development. [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) was another replacement for Flask-OAuth, but is "not maintained well" either.
+- There is a newer authentication module, [`authlib`](https://docs.authlib.org/en/latest/#), with instructions for Flask. This seems like the way to go.
+- Google offers [`google-auth`](https://google-auth.readthedocs.io/en/latest/index.html) as a replacement. Google's documentation is confusing and not thorough. They mix instructions for the old and new modules together without clearly explaining which is being referenced.
+- I decided to stick with `oauth2client` for consistency with the virtual machine.
 
 ### Google
 
@@ -425,7 +439,7 @@ import requests
 
 I then created the GConnect and GDisconnect app routes.
 
-Git commit at this point: Add Google login 4d3d016
+Git commit at this point: "Add Google login" 4d3d016
 
 ### Facebook
 
@@ -463,7 +477,7 @@ We were only required to implement one third-party login. Facebook login would p
   - I extended the base template.
   - I based the Google sign-in part of the template on [ud330/Lesson2/step3/templates/login.html](https://github.com/udacity/ud330/blob/master/Lesson2/step3/templates/login.html).
 
-Git commit at this point: Create templates 5d1febd
+Git commit at this point: "Create templates" 5d1febd
 
 [(Back to TOC)](#table-of-contents)
 
@@ -471,15 +485,14 @@ Git commit at this point: Create templates 5d1febd
 
 ### HTML and CSS
 
-I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
+I imported [Bootstrap](https://getbootstrap.com/) 4 for styling. I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
 
-## First look
+## First look facepalm
 
 - Here's what the app looked like when I started it up for the first time:
 
-  ![Screenshot of app after initial startup](img/Screen-Shot-2018-03-29-at-3.44.23-PM.png)
+  ![Screenshot of app at first look facepalm](img/Screen-Shot-2018-03-29-at-3.44.23-PM.png)
 
-- :face_palm: 🤦
 - Categories and items aren't listed.
 - Clicking Categories just stays at the same page.
 - Clicking login returns an error:
@@ -491,9 +504,11 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
   Set the secret_key on the application to something unique and secret.
   ```
 
+:face_palm: 🤦
+
 [(Back to TOC)](#table-of-contents)
 
-## Debugging
+## Debugging app views
 
 ### Debugging pages
 
@@ -585,7 +600,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4.0.0 for styling. I used Boot
 
 - **Alright! Looking a lot better!**
 
-Git commit at this point: Debug homepage 6b21f07
+Git commit at this point: "Debug homepage" 6b21f07
 
 #### show_category.html
 
@@ -676,7 +691,7 @@ Git commit at this point: Debug homepage 6b21f07
 
   ![Screenshot of item page on simulated Apple iPhone 6S](img/Screen-Shot-2018-04-04-at-02.53.52.png)
 
-Git commit at this point: Debug home, category, and item pages 84ee802
+Git commit at this point: "Debug home, category, and item pages" 84ee802
 
 ### Debugging JSON
 
@@ -840,17 +855,16 @@ Git commit at this point: Debug home, category, and item pages 84ee802
 
   ![Screenshot of item page on simulated Apple iPhone 6S after adding JSON link](img/Screen-Shot-2018-04-04-at-18.08.56.png)
 
-Git commit at this point: Debug database names and JSON endpoints ff3517e
+Git commit at this point: "Debug database names and JSON endpoints" ff3517e
 
 ### Debugging authentication
 
 #### Deciding how to proceed
 
 - Next, I need to debug the login.
-- To add to my [frustration and confusion](#getting-started), when I switched to vscode, the linter was picking up the `oauth2client` import. This is because [`oauth2client` has been deprecated](https://google-auth.readthedocs.io/en/latest/oauth2client-deprecation.html). Yet another outdated piece of code from Udacity.
+- I considered switching to a non-deprecated authentication module.
 - I could use [`authlib`](https://docs.authlib.org/en/latest/#).
 - Google offers [`google-auth`](https://google-auth.readthedocs.io/en/latest/index.html) as a replacement.
-- I reviewed the "c$50 finance" Flask app from cs50 pset07, but they didn't use Google Sign-In, so it wasn't helpful at this point.
 - I asked my Udacity mentor, and he recommended either `authlib` or `google-auth`.
 
 #### google-auth
@@ -1040,75 +1054,43 @@ Git commit at this point: Debug database names and JSON endpoints ff3517e
 
   ![Screenshot of homepage after login, with text reformatted](img/Screen-shot-2018-04-11-at-6.46.38-PM.png)
 
-Git commit at this point: Debug login page
+Git commit at this point: "Debug login page" dbc4cbe
 
-#### Debugging the login session
+### Debugging the login session
 
 - After login, I am registered as a user in the database. Logging in again prints a line in the terminal saying I'm registered. Good.
-- It's not picking up the Google profile picture. I commented out the code that references the user picture.
-- After redirection, I do see some text at the bottom of the screen, but it does not persist after clicking.
-- The login button is still visible after login.
-- The buttons for adding, editing, and deleting items are not visible.
-- Although I don't see the buttons, the add item and add category pages are there.
-- Submitting information to add an item or category returns an error.
-- Attempting to visit pages for editing items and categories returns a SQL error.
+- There were lots of not-so-good things happening also though. *FACEPALM 2.0!!!*
+  - It's not picking up the Google profile picture. I commented out the code that references the user picture.
+  - After redirection, I do see some text at the bottom of the screen, but it does not persist after clicking.
+  - The login button is still visible after login.
+  - The buttons for adding, editing, and deleting items are not visible.
+  - Although I don't see the buttons, the add item and add category pages are there.
+  - Submitting information to add an item or category returns an error.
+  - Attempting to visit pages for editing items and categories returns a SQL error.
 
-  ```text
-  File "/usr/local/lib/python3.5/dist-packages/flask/app.py", line 1598, in dispatch_request
-  return self.view_functions[rule.endpoint](**req.view_args)
-  File "/vagrant/flask-catalog/application.py", line 95, in show_category
-  .filter_by(name=category)
-  File "/usr/local/lib/python3.5/dist-packages/sqlalchemy/orm/query.py", line 2843, in one
-  raise orm_exc.NoResultFound("No row was found for one()")
-  sqlalchemy.orm.exc.NoResultFound: No row was found for one()
-  ```
+    ```text
+    File "/usr/local/lib/python3.5/dist-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+    File "/vagrant/flask-catalog/application.py", line 95, in show_category
+    .filter_by(name=category)
+    File "/usr/local/lib/python3.5/dist-packages/sqlalchemy/orm/query.py", line 2843, in one
+    raise orm_exc.NoResultFound("No row was found for one()")
+    sqlalchemy.orm.exc.NoResultFound: No row was found for one()
+    ```
 
-  - *FACEPALM 2.0!!!*
-  - This doesn't make any sense, for two reasons:
-    - I have the redirect in the JavaScript set to
-
-      ```javascript
-      window.location.href = "{{ url_for('home') }}"
-      ```
-
-    - The `show_category` function and the category pages work fine.
-  - I got around this by copying the SQLAlchemy code from the `show_item()` function into the `edit_item()` function.
+  - The `show_category` function and the category pages work fine.
+  - I got around the SQLAlchemy error by copying the SQLAlchemy code from the `show_item()` function into the `edit_item()` function.
   - I also commented out the requirement that only the creator of the item can edit, just for testing purposes.
   - Finally got to see the edit item page!
 
     ![Screenshot after revealing the edit item page](img/Screen-shot-2018-04-14-at-1.47.32-PM.png)
 
-  - My pic of Arnold and Franco disappeared, but I'll get that back.
+  - My pic of Arnold and Franco disappeared. I was using a relative URL to retrieve the pic. Converting to an absolute URL brought it back.
+  - Git commit at this point: "Update edit item page" 875f8dc
   - Submitting the page still returns an error, like the add category and add item pages.
 - Next, *FLASK, WHERE'S MY SESSION?* Why is my login state not persisting? Or is it? It might still be there, and I just need to make the flash message persist.
-  - I added `print()` statements throughout the `login()` function to figure out why I was getting confused. **A source of confusion was the `user_id` object I was using.** Google returns a `user_id` in `login_session`, that seems to be an integer uniquely identifying the user. I was also using `user_id` to refer to the ID of the item creator in the database. I changed the database code in
-  - I figured out that there was no `user_id` variable was mismatched between the login_session and database by stepping into the Flask console. Printing `login_session` returns a JSON object that includes `'name'` and `'email'` but not `'user_id'` or `'gplus_id'`.
-
-    ```text
-    File "/vagrant/flask-catalog/application.py", line 375, in edit_item
-    if item_creator.id != login_session['user_id']:
-    [console ready]
-
-    >>> print(login_session)
-    <SecureCookieSession {
-      'credentials': 'https://accounts.google.com/o/oauth2/token',
-      'email': 'brendon.w.smith@gmail.com',
-      'state': '09IDZ688VNON66XYUFBJ5OGNFGLY0402',
-      'username': 'Brendon Smith'
-      }>
-
-    >>> print(login_session['email'])
-    brendon.w.smith@gmail.com
-
-    >>> print(login_session[user_id])
-    Traceback (most recent call last):
-    File "<debugger>", line 1, in <module>
-    print(login_session[user_id])
-    NameError: name 'user_id' is not defined
-    ```
-
-  - Remember that `state` is the token generated by Flask, and `client_id` comes from Google in the *client_secrets.json* file.
-  - It looks like Google does send some sort of ID, called `user_id` in the access token JSON, like a token, that we pick up with `gplus_id = credentials.id_token['sub']`. It's not the user's email or username, so calling it `gplus_id` is misleading. I changed it to `user_id`. It seems to be the same ID each time, so it's probably an unique integer Google stores to represent each user.
+  - I added `print()` statements throughout the `login()` function to figure out why I was getting confused.
+  - **A source of confusion was the `user_id` object I was using.** Google returns a mystical `user_id` in `login_session`, that seems to be an integer uniquely identifying the user, and that we pick up with `user_id = credentials.id_token['sub']`. I considered adding the `user_id` to the `users` table in the database, to help identify users, but decided not to, because of how difficult the `user_id` is to find. I couldn't find this integer listed or explained on the Google API Dashboard. In addition to the `user_id` in `login_session`, I was also using the name `user_id` for the database. I used it as a foreign key in the categories and items tables, to refer to the database ID (primary key) of the item creator. I changed the database column title in *database_setup.py* from `user_id` to `creator_db_id` to reduce confusion.
   - Next, I started getting another error:
 
     ```text
@@ -1116,22 +1098,41 @@ Git commit at this point: Debug login page
         print('New user {} added to database.'.format(user.email))
     AttributeError: 'NoneType' object has no attribute 'email'
     ```
-  - I debugged this by changing `user.email` to `data['email']`. This makes sense. If the user isn't in the database yet, there's no `user.email` entry. The `data['email']` is what comes in directly from Google. I could also probably use `login_session['email']`, because the login session has been established at that point.
+
+  - I debugged this by changing `user.email` to `data['email']`. This makes sense. If the user isn't in the database yet, there's no `user.email` entry. The `data['email']` is what comes in directly from Google. I could also use `login_session['email']`, because the login session has been established at that point.
 - Logout
-  - Logging out returns a 400 bad request from Google. It is not sending the correct access token.
-  - I had also previously gotten `KeyError: 'gplus_id'` when logging out.
+  - Logging out returns a 400 bad request from Google.
   - After working on the `gconnect()` function, I was able to successfully log out by browsing to [http://localhost:8000/logout](http://localhost:8000/logout).
   - I may actually not need to worry about rejecting the access token, because it doesn't appear to be stored on my side. Google may have changed their authentication methods since the course was recorded. I wouldn't be surprised.
-- Buttons:
-  - Get navbar links to change after login
-    - I fixed this feature by adding a `login_status` object, then using `{% if login_status %}` on layout.html for the buttons to be available after login.
-  - Add edit and delete buttons on item pages
-    - I used the same strategy to add edit and delete buttons on the pages for each item.
-- Posting info to the database (through add, edit or delete) returns a 400 bad request error.
-  - TODO
+  - Git commit at this point: "Debug login and logout functions" b337082
+    - Add print statements for debugging
+    - Remove token validation
+    - Distinguish user_id variables from database and google
+    - Add Google user_id as column in Users database table
+  - Note that I later removed user_id as column in Users database table.
+- Get navbar links to change after login
+  - I fixed this feature by adding a `login_status` object, which would be `None` without login and `True` after login, then using `{% if login_status %}` on layout.html.
+  - I also had to add the `login_status` to the `render_template` function when rendering the page, so the login would be recognized on each page.
+
+    ```python
+    return render_template('index.html',
+                            categories=categories,
+                            recent_items=recent_items,
+                            login_status=login_status)
+    ```
+
+  - Git commit at this point: "Change navbar links based on login status" 5d3e292
+- Add edit and delete buttons on item pages
+  - I used the same strategy to add edit and delete buttons on the pages for each item.
+  - Git commit at this point: "Display item edit and delete buttons when logged in" 6110b72
+
+[(Back to TOC)](#table-of-contents)
+
+### Category page display
+
 - I have a new SQLAlchemy database error when I go to a category page.
   - I started having a problem with the `.filter_by(category_id=category.id)` line.
-  - The problem was actually with the `category` object. I was selecting `.all()` when I needed `.one()`.
+  - The problem was actually with the `category` object. I was selecting `.all()` when I needed `.one()`. I had previously changed `.one()` to `.all()` in the Git commit "Debug login and logout functions" b337082, to avoid the SQLAlchemy error I was getting. Changing it back to `one()` solved the problem.
 
     ```python
     category = (session.query(Categories)
@@ -1139,31 +1140,231 @@ Git commit at this point: Debug login page
                 .one())
     ```
 
-  - I checked out the [SQLAlchemy Query API docs](http://docs.sqlalchemy.org/en/latest/orm/query.html) and the [Object Relational Tutorial](http://docs.sqlalchemy.org/en/latest/orm/tutorial.html).
+  - Git commit at this point: "Debug category page display" 2feb338
+
+## Debugging CRUD functions
+
+### Add categories
+
+- Posting info to the database (through add, edit or delete) returns a 400 Bad Request error.
+  - This was a tough problem to solve. I started by working on the `add_category()` function and page, because they were the simplest. There's only one field, the name.
+  - This [Stack Overflow](https://stackoverflow.com/questions/14105452/what-is-the-cause-of-the-bad-request-error-when-submitting-form-in-flask-applica#14113958) post steered me in the right direction.
+  - There were **two keys** to successful POST requests:
+    1. **Matching the form field name** obtained in *application.py* using
+
+        ```python
+        new_category_name = request.form['new_category_name']
+        ```
+
+        with the input name in the *add_category.html* template.
+
+        ```html
+        <input type="text" name="new_category_name" placeholder="Enter name here">
+        ```
+
+        Using a split editor window enabled me to view the Python and HTML side-by-side. This screenshot shows vscode with the Material theme, Palenight variant, and the IBM Plex Mono font, on my 11" MacBook Air screen.
+
+        ![Building the add category function with a split editor](img/Screen-shot-2018-04-27-at-12.37.46-PM.png)
+
+    2. **Creating an object to retrieve the user's database ID.** I wasn't sure how to do this at first. I needed to use `login_session(user_id)` to query the database, and return the user's `id` (their primary key in the SQLite database), so that it can be added to the database when the category is created. I created a `get_db_id(user_id)` function, meaning that it accepts `login_session(user_id)` as an argument and returns the primary key `id` from the database.
+  - Git commit at this point: Enable addition of categories f449368
+
+### Edit and delete categories
+
+- I created an app route function for editing categories, and another for deleting categories, with the corresponding HTML templates.
+- For these app route functions, I needed to verify both the database id of the user currently logged in, and the database id of the creator of the category. The current user's id was easy because I had already written code for that in the `add_category()` function. The creator's id was more difficult to obtain. Eventually, I realized that I was querying the database for all information on the category to edit, and then attempting to pass `category` to `get_category_creator_db_id` as an argument, when I just needed the name. I changed `category` to `category.name`, and got the expected output from my print debugging statements in the terminal.
+
+  ```python
+  creator_db_id = get_category_creator_db_id(category.name)
+  ```
+
+  ```text
+  Current user's database primary key id is 1.
+  Category creator's database primary key id is 1.
+  ```
+
+- The next challenge when editing categories was figuring out how to write the edit to the database. SQLAlchemy only has `session.add()` and `session.delete()` commands. I originally had `session.add()` for the `edit_category()` function, but this was adding a new category instead of editing one.
+- I referred to the [SQLAlchemy docs](http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#adding-and-updating-objects) and my notes from the Full Stack Foundations CRUD lesson in *fsf-1-crud.md*.
+- There is a four step process:
+    1. Query database with SQLAlchemy and store query as an object
+    2. Overwrite the information in the object with the new information to add to the database
+    3. Add to SQLAlchemy database session with `session.add()`.
+    4. Commit to SQLAlchemy database session with `session.commit()`.
+- I made a few minor adjustments to the code and it worked!
+- I only had to make minor modifications to the `edit_category(category)` function to create the `delete_category(category)` function. When deleting a category, I decided to also delete all the items in the category. Otherwise, the item doesn't have a category, and clicking on it throws a SQLAlchemy error.
+
+### Add items
+
+- I expanded on the `add_category()` function to create the `add_item()` function. The function doesn't require an argument, because it's creating a new database entry from nothing.
+- Again, the two keys here were to match form field names in the *application.py* Python code with the `<input>` field names in the *add_item.html* template (see [notes on adding categories above](#add-categories)).
+
+  ![Screenshot of new item added to database](img/Screen-shot-2018-04-27-add-item.png)
+
+### Edit and delete items
+
+- The challenge when writing the `edit_item()` function was to selectively edit the item's database entry. If the user only wants to edit the name, retrieve the new name or else leave the entry the same.
+- I accomplished this by using SQLAlchemy to query the database for the item's information, then using if... else statements. If info was submitted through the form fields in the HTML template, then update, else just use the current info.
+
+  ```python
+    item = (session.query(Items)
+          .filter_by(name=item.replace('-', ' '))
+          .one())
+  # Get form fields submitted by user, or retain item info
+  if request.form['name']:
+      name = request.form['name']
+  else:
+      name = item.name
+  ```
+
+- I then set up an object, and sent it to the database
+
+  ```python
+  # Overwrite object with new info for database
+  edited_item = Items(name=name,
+                      url=url,
+                      photo=photo_url,
+                      description=description,
+                      category_id=category_id.id,
+                      creator_db_id=user_db_id)
+  session.add(edited_item)
+  session.commit()
+  ```
+
+- It didn't behave quite as expected. The function was just adding a new database entry, instead of overwriting the previous one.
+- I realized `edited_item = Items()` was actually referring to the Class function used to created the database table, and not overwriting the `item` object.
+- I needed to first store the edits in an object, then overwrite the `item` object with the new info.
+
+  ```python
+  # Store edits in an object
+  edited_item = Items(name=name,
+                      url=url,
+                      photo_url=photo_url,
+                      description=description,
+                      category_id=category_id.id,
+                      creator_db_id=user_db_id)
+  # Overwrite item object with new info from edited_item object
+  item.name = edited_item.name
+  item.url = edited_item.url
+  item.photo_url = edited_item.photo_url
+  item.description = edited_item.description
+  item.category_id = edited_item.category_id
+  session.add(item)
+  session.commit()
+  ```
+
+### Revisiting database population
+
+- I had previously just hardcoded a dummy user into *database_data.py* for the sake of example. Instead of creating a dummy user, or hardcoding the user's actual name and email, I wanted to prompt the user for their info. This would allow the user to edit the database entries after running *database_data.py*.
+- I was able to get the `input()` prompts and database addition done fairly easily.
+- The user input could be a problem if the user has logged into the app before running *database_data.py*. In this case, the user would be in the database, but running *database_data.py* would add them again. The program needs to query the database for the users, and only add the user if they're not in the database.
+- Adding this condition was a little difficult. As before, I struggled to understand what type of data SQLAlchemy was retrieving from the database.
+- I tried to query the database with the [`exists()` method](http://docs.sqlalchemy.org/en/latest/orm/query.html#sqlalchemy.orm.query.Query.exists), which is supposed to return a simple Boolean `True` if the entry is found in the database.
+- I had to iterate on this for a while, just hammering away repeatedly.
+- There were **two keys** to getting this working:
+      1. Selecting just one column from a database table in the format `session.query(Table.column)`. In this case, `session.query(Users.email)`.
+      2. Basing the `if` statement simply on existence of the object, rather than trying to extract information from the object. In this case, `if user_email_in_db:`
+- The successful code looked like this:
+
+  ```python
+  # User
+  # Request input from user
+  print("Provide credentials to be used when populating the database")
+  user_name = input('Please enter your name: ')
+  user_email = input('Please enter your email address: ')
+  # Query database for user email
+  user_email_in_db = (session.query(Users.email)
+                      .filter_by(email=user_email)
+                      .all())
+  if user_email_in_db:
+      print('User {} already in database'.format(user_email))
+      user = Users(name=user_name, email=user_email)
+  else:
+      # Create new user
+      new_user = Users(name=user_name, email=user_email)
+      session.add(new_user)
+      session.commit()
+      print('User {} successfully added to database.'.format(new_user.email))
+      user = new_user
+  ```
+
+- Next, I wanted to build in a similar check for the categories and items being added to the database. I set up helper functions to check the database for the category or item. I then renamed each category object to "category", and each item object to "item", to simplify the code.
+- The result was a smashing success! If the database has already been populated, no duplicates are added, and the user is notified in the terminal.
+
+  ```text
+  vagrant@vagrant:/vagrant/flask-catalog$ python3 database_setup.py
+  Database created.
+
+  vagrant@vagrant:/vagrant/flask-catalog$ python3 database_data.py
+
+  Provide credentials to be used when populating the database
+  Please enter your name: Brendon Smith
+  Please enter your email address: brendon.w.smith@gmail.com
+  User brendon.w.smith@gmail.com successfully added to database.
+  Category "Equipment" added to database.
+  Category "Accessories" added to database.
+  Item "Hoist Dual Action Leg Press" added to database.
+  Item "Hoist Power Cage" added to database.
+  Item "Pro Monster Mini Resistance Band" added to database.
+  Item "Fat Gripz" added to database.
+  Item "RumbleRoller" added to database.
+  Item "SlingShot Hip Circle 2.0" added to database.
+  Database population complete.
+
+  vagrant@vagrant:/vagrant/flask-catalog$ python3 database_data.py
+
+  Provide credentials to be used when populating the database
+  Please enter your name: Brendon Smith
+  Please enter your email address: brendon.w.smith@gmail.com
+  User brendon.w.smith@gmail.com already in database
+  Category "Equipment" already in database.
+  Category "Accessories" already in database.
+  Item "Hoist Dual Action Leg Press" already in database.
+  Item "Hoist Power Cage" already in database.
+  Item "Pro Monster Mini Resistance Band" already in database.
+  Item "Fat Gripz" already in database.
+  Item "RumbleRoller" already in database.
+  Item "SlingShot Hip Circle 2.0" already in database.
+  Database population complete.
+
+  vagrant@vagrant:/vagrant/flask-catalog$
+  ```
+
+### Virtual environment with `pipenv`
+
+```shell
+pip install pipenv
+cd <path>/udacity-fsnd-p4-flask-catalog
+pipenv install --three
+```
+
+[(Back to TOC)](#table-of-contents)
 
 ## Comments
 
 **The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
 
-- [SQLAlchemy](http://www.sqlalchemy.org/)
+- [SQLAlchemy](http://www.sqlalchemy.org/): What type of data the query would return, and how to extract from it.
 - [Jinja](http://jinja.pocoo.org/docs/2.10/)
 - [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
 - [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
 
 **In general, I found it difficult to:**
 
-- Build the app in a systematic way
-- Keep the application code structured
-- Coordinate changes among the functions, app routes, and templates
-- Follow all the similar variable names being used everywhere
+- Build the app in a systematic way.
+- Keep the application code structured. **Flask didn't seem to scale well.**
+- Coordinate changes among the functions, app routes, and templates.
+- Follow all the similar variable names being used everywhere.
+- Debug. It would be helpful to be able to debug on the command line at any point, not just when there is an error. I couldn't really follow the [instructions for the Flask CLI](http://flask.pocoo.org/docs/0.12/cli/). I built many `print()` statements into *application.py* to help with debugging.
 - Integrate Flask and JavaScript. As much as I appreciate Python, it seems like I'm just avoiding JavaScript and should just be coding everything in JavaScript instead of Python.
+- Keep in mind that Flask is only at version 0.12. It needs more development.
 
-It would have been better to build the app according to the agile iterative development process lesson (see [fsnd03_09-agile.md](https://github.com/br3ndonland/udacity-fsnd/blob/master/04-web-apps/06-09-foundations/fsnd03_09-agile.md)), but the lessons were so poorly organized that I didn't really think about it, and the [introductory info for this project](#info) didn't even mention the agile lesson.
+It would have been **better to build the app according to the agile iterative development process** lesson (see [my notes on the agile lesson](https://github.com/br3ndonland/udacity-fsnd/blob/master/4-web-apps/full-stack-foundations/fsf-4-agile.md)), but the lessons were so poorly organized that I didn't really think about it, and the [introductory info for this project](#info) didn't even mention the agile lesson.
 
 **Time commitment:**
 
 - It took ~50 hours over a week (end of March 2018) to build the initial version of the app (up to the :face_palm: stage).
 - It took ~30 hours to debug the pages and JSON.
 - It took ~70 hours to debug the login.
+- It took ~50 hours for further debugging.
 
 [(Back to TOC)](#table-of-contents)
