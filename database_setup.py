@@ -28,7 +28,6 @@ class Users(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
-    user_id = Column(String(250), nullable=False)
 
 
 class Categories(Base):
@@ -56,9 +55,9 @@ class Items(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
     url = Column(String(250))
-    photo = Column(String(250))
+    photo_url = Column(String(250))
     description = Column(String(250))
-    category_id = Column(Integer, ForeignKey('categories.id'))
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
     category = relationship(Categories)
     date_created = Column(DateTime, default=datetime.datetime.now())
     creator_db_id = Column(Integer, ForeignKey('users.id'))
@@ -81,3 +80,7 @@ engine = create_engine('sqlite:///catalog.db')
 
 # Create database
 Base.metadata.create_all(engine)
+
+if __name__ == '__main__':
+    # Print results to the command line
+    print('Database created.', '\n')
