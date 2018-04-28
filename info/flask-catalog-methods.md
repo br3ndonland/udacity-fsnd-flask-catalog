@@ -42,7 +42,6 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
   - [Debugging JSON](#debugging-json)
   - [Debugging authentication](#debugging-authentication)
   - [Debugging the login session](#debugging-the-login-session)
-  - [Category page display](#category-page-display)
 - [Debugging CRUD functions](#debugging-crud-functions)
   - [Add categories](#add-categories)
   - [Edit and delete categories](#edit-and-delete-categories)
@@ -175,7 +174,7 @@ Git commit at this point: "Create item catalog" 0dd29ab
 
 When I first tried to create the database by running
 
-```bash
+```shell
 $ python3 database_setup.py
 ```
 
@@ -466,7 +465,7 @@ We were only required to implement one third-party login. Facebook login would p
 
 - I started by quickly creating the files I knew I needed on the command line:
 
-  ```bash
+  ```shell
   touch layout.html categories.html category.html item.html add_item.html edit_item.html delete_item.html login.html
   ```
 
@@ -479,13 +478,13 @@ We were only required to implement one third-party login. Facebook login would p
 
 Git commit at this point: "Create templates" 5d1febd
 
-[(Back to TOC)](#table-of-contents)
-
 ## Style
 
 ### HTML and CSS
 
 I imported [Bootstrap](https://getbootstrap.com/) 4 for styling. I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
+
+[(Back to TOC)](#table-of-contents)
 
 ## First look facepalm
 
@@ -693,6 +692,8 @@ Git commit at this point: "Debug homepage" 6b21f07
 
 Git commit at this point: "Debug home, category, and item pages" 84ee802
 
+[(Back to TOC)](#table-of-contents)
+
 ### Debugging JSON
 
 - I revised the JSON pages in accordance with the new app route functions.
@@ -857,6 +858,8 @@ Git commit at this point: "Debug home, category, and item pages" 84ee802
 
 Git commit at this point: "Debug database names and JSON endpoints" ff3517e
 
+[(Back to TOC)](#table-of-contents)
+
 ### Debugging authentication
 
 #### Deciding how to proceed
@@ -873,7 +876,7 @@ Git commit at this point: "Debug database names and JSON endpoints" ff3517e
 - It was difficult to navigate the documentation.
 - I installed `google-auth` with
 
-  ```bash
+  ```shell
   $ pip install --upgrade google-auth
   ```
 
@@ -1056,6 +1059,8 @@ Git commit at this point: "Debug database names and JSON endpoints" ff3517e
 
 Git commit at this point: "Debug login page" dbc4cbe
 
+[(Back to TOC)](#table-of-contents)
+
 ### Debugging the login session
 
 - After login, I am registered as a user in the database. Logging in again prints a line in the terminal saying I'm registered. Good.
@@ -1125,12 +1130,7 @@ Git commit at this point: "Debug login page" dbc4cbe
 - Add edit and delete buttons on item pages
   - I used the same strategy to add edit and delete buttons on the pages for each item.
   - Git commit at this point: "Display item edit and delete buttons when logged in" 6110b72
-
-[(Back to TOC)](#table-of-contents)
-
-### Category page display
-
-- I have a new SQLAlchemy database error when I go to a category page.
+- I had a new SQLAlchemy database error when I go to a category page.
   - I started having a problem with the `.filter_by(category_id=category.id)` line.
   - The problem was actually with the `category` object. I was selecting `.all()` when I needed `.one()`. I had previously changed `.one()` to `.all()` in the Git commit "Debug login and logout functions" b337082, to avoid the SQLAlchemy error I was getting. Changing it back to `one()` solved the problem.
 
@@ -1141,6 +1141,8 @@ Git commit at this point: "Debug login page" dbc4cbe
     ```
 
   - Git commit at this point: "Debug category page display" 2feb338
+
+[(Back to TOC)](#table-of-contents)
 
 ## Debugging CRUD functions
 
@@ -1191,7 +1193,9 @@ Git commit at this point: "Debug login page" dbc4cbe
     3. Add to SQLAlchemy database session with `session.add()`.
     4. Commit to SQLAlchemy database session with `session.commit()`.
 - I made a few minor adjustments to the code and it worked!
-- I only had to make minor modifications to the `edit_category(category)` function to create the `delete_category(category)` function. When deleting a category, I decided to also delete all the items in the category. Otherwise, the item doesn't have a category, and clicking on it throws a SQLAlchemy error.
+- I only had to make minor modifications to the `edit_category(category)` function to create the `delete_category(category)` function.
+  - When deleting a category, I decided to also delete all the items in the category. Otherwise, the item doesn't have a category, and clicking on it throws a SQLAlchemy error.
+  - I originally had a form field on the delete category page, where the user would verify the name of the category to be deleted (like on GitHub). This worked when the name was spelled correctly (case-sensitive), but was throwing an error when the name was not spelled correctly or missing. I suspect this was because it was trying to build the `url_for('delete_category')` with the incorrect name, but I'm not sure. I could redirect back to the previous page. I decided to just simplify it and remove the form field. Clicking delete sends the POST request.
 
 ### Add items
 
@@ -1251,6 +1255,8 @@ Git commit at this point: "Debug login page" dbc4cbe
   session.add(item)
   session.commit()
   ```
+
+- As with `delete_category(category)` app route function, I simplified the `delete_item(category, item)` function by removing the form field from `delete_item.html` and having the delete button directly submit the POST request.
 
 ### Revisiting database population
 

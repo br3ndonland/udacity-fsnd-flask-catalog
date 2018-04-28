@@ -140,7 +140,7 @@ def show_item(category, item):
         login_status = True
     # Query database with SQLAlchemy to show selected category and item
     category = (session.query(Categories)
-                .filter_by(name=category)
+                .filter_by(name=category.replace('-', ' '))
                 .one())
     item = (session.query(Items)
             .filter_by(name=item.replace('-', ' '), category_id=category.id)
@@ -156,7 +156,7 @@ def show_item(category, item):
 def show_item_json(category, item):
     """App route function to provide item data in JSON format."""
     category = (session.query(Categories)
-                .filter_by(name=category)
+                .filter_by(name=category.replace('-', ' '))
                 .one())
     item = (session.query(Items)
             .filter_by(name=item.replace('-', ' '))
@@ -225,7 +225,8 @@ def gconnect():
     # Verify that the access token is valid for the user.
     user_id = credentials.id_token['sub']
     print('Google User ID is {}.'.format(user_id))
-    print('Result from Google access token is {}.'.format(result))
+    print('Result from Google access token is:', '\n', '{}.'
+          .format(result))
     if result['user_id'] != user_id:
         response = make_response(
             json.dumps("Token's user ID doesn't match given user ID."), 401)
@@ -261,7 +262,8 @@ def gconnect():
     login_session['name'] = data['name']
     login_session['email'] = data['email']
     # Verify contents of login_session
-    print('login_session object currently contains: {}'.format(login_session))
+    print('login_session object currently contains:', '\n', '{}'
+          .format(login_session))
     # Check database for user
     user = (session.query(Users)
             .filter_by(email=login_session['email'])
@@ -280,8 +282,8 @@ def gconnect():
     output += login_session['name']
     output += '!</h3>'
     output += '<img src="'
-    flash('Logged in as {}'.format(login_session['email']))
-    print('Logged in as {}'.format(login_session['email']))
+    flash('Logged in as {}.'.format(login_session['email']))
+    print('Logged in as {}.'.format(login_session['email']))
     print('Done!')
     return output
 
@@ -302,47 +304,6 @@ App route functions available after login
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 
-# Helper functions
-def get_user_email(email):
-    """Get user email from database."""
-    try:
-        user = session.query(Users).filter_by(email=email).one()
-        return user.email
-    except Exception:
-        return None
-
-
-def get_user_db_id(email):
-    """Get user's database id, based on the email in the login session."""
-    try:
-        user = session.query(Users).filter_by(email=email).one()
-        return user.id
-    except Exception:
-        return None
-
-
-def get_category_creator_db_id(category):
-    """Get the database id of the user that created a category."""
-    try:
-        category = (session.query(Categories)
-                    .filter_by(name=category.replace('-', ' '))
-                    .one())
-        return category.creator_db_id
-    except Exception:
-        return None
-
-
-def get_item_creator_db_id(item):
-    """Get the database id of the user that created an item."""
-    try:
-        item = (session.query(Items)
-                .filter_by(name=item.replace('-', ' '))
-                .one())
-        return item.creator_db_id
-    except Exception:
-        return None
-
-
 # App route functions
 @app.route('/add-category', methods=['GET', 'POST'])
 def add_category():
@@ -358,7 +319,9 @@ def add_category():
         # Get form fields
         new_category_name = request.form['new_category_name']
         # Get user's database ID for the item's database entry
-        user_db_id = get_user_db_id(login_session['email'])
+        user_db_id = (session.query(Users)
+                      .filter_by(email=login_session['email'])
+                      .one()).id
         print("Current user's database primary key id is {}."
               .format(user_db_id))
         # Flash messages for incomplete item info
@@ -398,9 +361,11 @@ def edit_category(category):
         # Get form fields
         edit_category_name = request.form['edit_category_name']
         # Get user's database ID
-        user_db_id = get_user_db_id(login_session['email'])
+        user_db_id = (session.query(Users)
+                      .filter_by(email=login_session['email'])
+                      .one()).id
         # Get database ID of category creator
-        creator_db_id = get_category_creator_db_id(category.name)
+        creator_db_id = category.creator_db_id
         print("Current user's database primary key id is {}."
               .format(user_db_id))
         print("Category creator's database primary key id is {}."
@@ -447,12 +412,12 @@ def delete_category(category):
                       .filter_by(category_id=category.id)
                       .order_by(Items.name)
                       .all())
-        # Get form fields
-        delete_category_name = request.form['delete_category_name']
         # Get user's database ID
-        user_db_id = get_user_db_id(login_session['email'])
+        user_db_id = (session.query(Users)
+                      .filter_by(email=login_session['email'])
+                      .one()).id
         # Get database ID of category creator
-        creator_db_id = get_category_creator_db_id(category.name)
+        creator_db_id = category.creator_db_id
         print("Current user's database primary key id is {}."
               .format(user_db_id))
         print("Category creator's database primary key id is {}."
@@ -465,14 +430,6 @@ def delete_category(category):
         if user_db_id != creator_db_id:
             flash('Only the creator can edit. Please log in as creator.')
             return redirect(url_for('login'))
-        # Flash messages for incomplete item info
-        if not request.form['delete_category_name']:
-            flash('Please identify category.')
-            return redirect(url_for('delete_category'))
-        # Make sure user correctly entered category name to delete
-        if category.name != delete_category_name:
-            flash('Please correctly enter category name.')
-            return redirect(url_for('delete_category'))
         session.delete(category)
         for item in category_items:
             session.delete(item)
@@ -505,13 +462,15 @@ def add_item():
         category = request.form['item_category']
         # Retrieve the database ID of the selected category
         category_id = (session.query(Categories)
-                       .filter_by(name=category)
+                       .filter_by(name=category.replace('-', ' '))
                        .one())
-        # Get user's database ID for the item's database entry
-        user_db_id = get_user_db_id(login_session['email'])
+        # Retrieve user's database ID for the item's database entry
+        user_db_id = (session.query(Users)
+                      .filter_by(email=login_session['email'])
+                      .one()).id
         print("Current user's database primary key id is {}."
               .format(user_db_id))
-        print('Database ID of category is {}'.format(category_id))
+        print('Database ID of category is {}.'.format(category_id.id))
         # Flash messages for incomplete item info
         if not request.form['name']:
             flash('Please add item name')
@@ -534,7 +493,7 @@ def add_item():
                          creator_db_id=user_db_id)
         session.add(new_item)
         session.commit()
-        print('Item "{}" created'.format(new_item.name))
+        print('Item "{}" created.'.format(new_item.name))
         # Return to homepage
         return redirect(url_for('home'))
     else:
@@ -586,11 +545,15 @@ def edit_item(category, item):
             description = item.description
         category = request.form['item_category']
         # Retrieve the database ID of the item's category
-        category_id = session.query(Categories).filter_by(name=category).one()
+        category_id = (session.query(Categories)
+                       .filter_by(name=category.replace('-', ' '))
+                       .one())
         # Get user's database ID
-        user_db_id = get_user_db_id(login_session['email'])
+        user_db_id = (session.query(Users)
+                      .filter_by(email=login_session['email'])
+                      .one()).id
         # Get database ID of creator
-        creator_db_id = get_item_creator_db_id(item.name)
+        creator_db_id = item.creator_db_id
         print("Current user's database primary key id is {}."
               .format(user_db_id))
         print("Item creator's database primary key id is {}."
@@ -615,7 +578,7 @@ def edit_item(category, item):
         item.category_id = edited_item.category_id
         session.add(item)
         session.commit()
-        print('Item "{}" edited'.format(edited_item.name))
+        print('Item "{}" edited.'.format(edited_item.name))
         # Return to homepage
         return redirect(url_for('home'))
     else:
@@ -642,15 +605,18 @@ def delete_item(category, item):
     if request.method == 'POST':
         # Query database with SQLAlchemy and store queries as objects
         category = (session.query(Categories)
-                    .filter_by(name=category)
+                    .filter_by(name=category.replace('-', ' '))
                     .one())
         item = (session.query(Items)
-                .filter_by(name=item.replace('-', ' '), category_id=category.id)
+                .filter_by(name=item
+                .replace('-', ' '), category_id=category.id)
                 .one())
         # Get user's database ID
-        user_db_id = get_user_db_id(login_session['email'])
+        user_db_id = (session.query(Users)
+                      .filter_by(email=login_session['email'])
+                      .one()).id
         # Get database ID of creator
-        creator_db_id = get_item_creator_db_id(item.name)
+        creator_db_id = item.creator_db_id
         print("Current user's database primary key id is {}."
               .format(user_db_id))
         print("Item creator's database primary key id is {}."
@@ -686,7 +652,7 @@ def gdisconnect():
     except KeyError:
         flash('Failed to get access token')
         return redirect(url_for('home'))
-    print("User's name was {}".format(login_session['name']))
+    print("User's name was {}.".format(login_session['name']))
     if access_token is None:
         print('Access Token is None')
         response = make_response(

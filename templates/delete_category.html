@@ -9,7 +9,6 @@
       <h3>{{ category_name }}</h3>
       <p class="font-italic text-danger">Are you sure you want to delete {{ category_name }}?</p>
       <p class="font-italic text-danger">Danger: This will also delete all items in the category!</p>
-      <input type="text" name="delete_category_name" placeholder="Verify category name">
       <div class="btn-group" role="group" aria-label="Submission buttons">
         <button type="submit" class="btn btn-danger">Delete</button>
         <a class="btn btn-secondary" href="{{ url_for('home') }}" role="button">Cancel</a>

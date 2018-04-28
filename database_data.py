@@ -47,7 +47,7 @@ user_email_in_db = (session.query(Users.email)
                     .filter_by(email=user_email)
                     .all())
 if user_email_in_db:
-    print('User {} already in database'.format(user_email))
+    print('User {} already in database.'.format(user_email))
     user = Users(name=user_name, email=user_email)
 else:
     # Create new user
