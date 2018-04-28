@@ -302,7 +302,7 @@ App route functions available after login
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 
-# App route functions
+
 @app.route('/add-category', methods=['GET', 'POST'])
 def add_category():
     """App route function to create categories with POST requests."""
@@ -326,7 +326,7 @@ def add_category():
         if not request.form['new_category_name']:
             flash('Please add category name.')
             return redirect(url_for('add_category'))
-                # Query database for item name
+            # Query database for item name
         category_name_in_db = (session.query(Categories.name)
                                .filter_by(name=new_category_name)
                                .all())
@@ -418,9 +418,9 @@ def delete_category(category):
                     .filter_by(name=category.replace('-', ' '))
                     .one())
         category_items = (session.query(Items)
-                      .filter_by(category_id=category.id)
-                      .order_by(Items.name)
-                      .all())
+                          .filter_by(category_id=category.id)
+                          .order_by(Items.name)
+                          .all())
         # Get user's database ID
         user_db_id = (session.query(Users)
                       .filter_by(email=login_session['email'])
@@ -627,7 +627,7 @@ def delete_item(category, item):
                     .one())
         item = (session.query(Items)
                 .filter_by(name=item
-                .replace('-', ' '), category_id=category.id)
+                           .replace('-', ' '), category_id=category.id)
                 .one())
         # Get user's database ID
         user_db_id = (session.query(Users)
