@@ -174,7 +174,7 @@ I wrote the program in a Linux virtual machine with the following components:
   - After logging into the virtual machine, change into the application directory:
 
     ```shell
-    vagrant@vagrant:~$ cd /vagrant/flask-catalog
+    vagrant@vagrant:~$ cd /vagrant/udacity-fsnd-p4-flask-catalog
     ```
 
 ### Run application

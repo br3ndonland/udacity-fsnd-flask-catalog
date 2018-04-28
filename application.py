@@ -482,6 +482,15 @@ def add_item():
         if not request.form['description']:
             flash('Please add a description')
             return redirect(url_for('add_item'))
+        # Query database for item name
+        item_name_in_db = (session.query(Items.name)
+                           .filter_by(name=name)
+                           .all())
+        # If the item name is already in the database, don't add
+        if item_name_in_db:
+            print('Item name "{}" already in database.'.format(name))
+            flash('Item name "{}" already in database.'.format(name))
+            return redirect(url_for('add_item'))
         # Create object with form field info to add to database
         new_item = Items(name=name,
                          url=url,
