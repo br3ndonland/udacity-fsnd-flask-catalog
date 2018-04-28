@@ -326,6 +326,17 @@ def add_category():
         if not request.form['new_category_name']:
             flash('Please add category name.')
             return redirect(url_for('add_category'))
+                # Query database for item name
+        category_name_in_db = (session.query(Categories.name)
+                               .filter_by(name=new_category_name)
+                               .all())
+        # If the category name is already in the database, don't add
+        if category_name_in_db:
+            print('Category name "{}" already in database.'
+                  .format(new_category_name))
+            flash('Category name "{}" already in database.'
+                  .format(new_category_name))
+            return redirect(url_for('add_category'))
         # If user is logged in, and all info provided, add category
         new_category = Categories(
             name=new_category_name,
