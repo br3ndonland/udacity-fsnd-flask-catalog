@@ -29,15 +29,15 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
 ## Description
 
-- This is a [RESTful](https://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/) web application created with [Python 3](https://docs.python.org/3/) and the Python micro-framework [Flask](http://flask.pocoo.org/). The app is called "Brendon's Bodybuilding Bazaar" and features some items useful for bodybuilding.
-- The app's [SQLite](https://sqlite.org/index.html) database contains a catalog of items and associated information. The database is created by running [database_setup.py](database_setup.py) and populated by running [database_data.py](database_data.py).
+- This is a [RESTful](https://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/) web application created with [Python 3](https://docs.python.org/3/) and the Python micro-framework [Flask](http://flask.pocoo.org/).
+- The app's [SQLite](https://sqlite.org/index.html) database contains a catalog of items and associated information. The app is called "Brendon's Bodybuilding Bazaar" and features items useful for bodybuilding. The database is created by running [database_setup.py](database_setup.py) and populated by running [database_data.py](database_data.py).
 - The SQLite database is accessed by [SQLAlchemy](http://www.sqlalchemy.org/) from within the Python code in [application.py](application.py).
 - The main application code is located in [application.py](application.py). This file controls the app, with Flask routing functions to render the pages of the web application and access app content.
 - Authentication is performed with a hybrid flow. The [deprecated `oauth2client` library](https://google-auth.readthedocs.io/en/latest/oauth2client-deprecation.html) was used for consistency with the Udacity Vagrant virtual machine configuration. Future implementations should consider using [`google-auth`](https://google-auth.readthedocs.io/en/latest/index.html) or [`authlib`](https://docs.authlib.org/en/latest/index.html).
 - Python code has been formatted according to the [PEP 8](http://pep8.org/) specification. Comments and spacing keep the code as organized and readable as possible.
 - Markdown documents in the repository have been formatted in a standard style, based on suggestions from [vscode-markdownlint](https://github.com/DavidAnson/vscode-markdownlint).
 - The application pages are styled with [Bootstrap 4](https://getbootstrap.com), a library of HTML, CSS, and JavaScript components.
-- The homepage displays item categories, the items most recently added to the database, and a login button.
+- The homepage displays a navbar, the item categories, the items most recently added to the database, and an awesome classic picture of Arnold Schwarzenegger and Franco Columbu.
 
   ![Homepage](static/img/flask-catalog-index.png)
 
@@ -76,9 +76,13 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 - [static/](static)
   - [img/](static/img) - Images used in the main application.
 - [templates/](templates) - HTML webpage templates.
+- [.gitignore](.gitignore) - Instructions to Git to exclude certain files from commits.
 - [application.py](application.py) - Main Flask app Python file.
 - [database_data.py](database_data.py) - Python file used to populate the database.
 - [database_setup.py](database_setup.py) - Python file used to configure the database.
+- [LICENSE](LICENSE) - This file describes how the repository can be used by others. I have provided the repository under the MIT license, a permissive and widely-used license. See the [choose a license page](https://choosealicense.com/) for more info on licenses.
+- [Pipfile](Pipfile): List of Python dependencies for the Pipenv virtual environment.
+- [Pipfile.lock](Pipfile.lock): An extended version of the Pipfile containing hashes and other specific information for Pipenv.
 - [README.md](README.md) - This file, a concise description of the project.
 
 [(Back to TOC)](#table-of-contents)
