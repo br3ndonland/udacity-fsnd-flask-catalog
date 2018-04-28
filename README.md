@@ -29,8 +29,7 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
 ## Description
 
-- This is a [RESTful](https://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/) web application created with [Python 3](https://docs.python.org/3/) and the Python micro-framework [Flask](http://flask.pocoo.org/).
-- The app is called "Brendon's Bodybuilding Bazaar" and features some items useful for bodybuilding.
+- This is a [RESTful](https://ruben.verborgh.org/blog/2012/08/24/rest-wheres-my-state/) web application created with [Python 3](https://docs.python.org/3/) and the Python micro-framework [Flask](http://flask.pocoo.org/). The app is called "Brendon's Bodybuilding Bazaar" and features some items useful for bodybuilding.
 - The app's [SQLite](https://sqlite.org/index.html) database contains a catalog of items and associated information. The database is created by running [database_setup.py](database_setup.py) and populated by running [database_data.py](database_data.py).
 - The SQLite database is accessed by [SQLAlchemy](http://www.sqlalchemy.org/) from within the Python code in [application.py](application.py).
 - The main application code is located in [application.py](application.py). This file controls the app, with Flask routing functions to render the pages of the web application and access app content.
@@ -62,7 +61,7 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
   ![Edit category page](static/img/flask-catalog-edit-category.png)
 
-- The app is fully responsive thanks to Bootstrap.
+- The app is fully responsive, thanks to Bootstrap.
 
   ![Item page on iPhone 6S simulated with Firefox developer tools](static/img/flask-catalog-show-item-iPhone-6S.png)
 
@@ -102,17 +101,25 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
 The application can be run by setting up either a virtual environment or a virtual machine. Instructions for each option are provided below.
 
+#### Major dependencies
+
+- Python 3
+- Flask
+- Requests
+- SQLAlchemy
+
 #### Virtual environment
 
-[Pipenv](https://docs.pipenv.org/) can be used to manage a Python virtual environment for this project.
+[Pipenv](https://docs.pipenv.org/) can be used to manage a Python virtual environment for this project. The user must first install Pipenv via Homebrew or pip. After changing into the project directory, running `pipenv install` will prompt Pipenv to read the Pipfile and install dependencies. The virtual environment can then be activated with `pipenv shell`, which spawns a subshell for the virtual environment. The subshell can be exited by simply entering `exit`.
 
 ```shell
-pip install pipenv
+pip install --user pipenv
 cd <path>/udacity-fsnd-p4-flask-catalog
 pipenv install
+pipenv shell
 ```
 
-Pipenv will create a virtual environment and install the specified packages.
+Proceed to the [run application instructions below](#run-application).
 
 #### Virtual machine
 
@@ -132,10 +139,10 @@ I wrote the program in a Linux virtual machine with the following components:
   - Repository from Udacity that configures Vagrant.
   - Some of the necessary Python modules in the Udacity virtual machine configuration are only included for Python 2, and not Python 3. If needed, install the modules with `pip`:
 
-    ```bash
-    $ pip3 install sqlalchemy --user
-    $ pip3 install flask --user
-    $ pip3 install oauth2client --user
+    ```shell
+    pip3 install sqlalchemy --user
+    pip3 install flask --user
+    pip3 install oauth2client --user
     ```
 
 #### Run virtual machine
@@ -144,49 +151,48 @@ I wrote the program in a Linux virtual machine with the following components:
 - Start the virtual machine and log into vagrant:
   - Change into the vagrant directory on the command line (wherever you have it stored):
 
-    ```bash
-    $ cd <path>/fullstack-nanodegree-vm/vagrant
+    ```shell
+    cd <path>/fullstack-nanodegree-vm/vagrant
     ```
 
   - Start Vagrant (only necessary once per terminal session):
 
-    ```bash
-    $ vagrant up
+    ```shell
+    vagrant up
     ```
 
   - Log in to Ubuntu:
 
-    ```bash
-    $ vagrant ssh
+    ```shell
+    vagrant ssh
     ```
 
   - After logging into the virtual machine, change into the application directory:
 
-    ```bash
-    $ vagrant@vagrant:~$ cd /vagrant/flask-catalog
+    ```shell
+    vagrant@vagrant:~$ cd /vagrant/flask-catalog
     ```
 
 ### Run application
 
-- Change into the application directory on the command line.
 - Create the database:
 
-  ```bash
-  $ python3 database_setup.py
+  ```shell
+  python3 database_setup.py
   ```
 
 - Populate the database:
 
-  ```bash
-  $ python3 database_data.py
+  ```shell
+  python3 database_data.py
   ```
 
   The program will prompt the user for their name and email. The user will be entered into the database and registered as the creator of the categories and items in *database_setup.py*. If the user or items already exist in the database, no duplicates are added, and the user is notified in the terminal.
 
 - Start the application:
 
-  ```bash
-  $ python3 application.py
+  ```shell
+  python3 application.py
   ```
 
 - Navigate to [http://localhost:8000](http://localhost:8000) in a web browser. **Note that Google will reject sign-in from [http://0.0.0.0:8000](http://0.0.0.0:8000).**

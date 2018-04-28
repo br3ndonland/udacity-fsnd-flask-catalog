@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 Udacity Full Stack Web Developer Nanodegree program (FSND)
 Project 4. Flask Item Catalog App

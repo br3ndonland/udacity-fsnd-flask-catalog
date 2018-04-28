@@ -1337,10 +1337,16 @@ Git commit at this point: "Debug login page" dbc4cbe
 
 ### Virtual environment with `pipenv`
 
+Pipenv was very easy to set up. The [thoughtbot blog post](https://robots.thoughtbot.com/how-to-manage-your-python-projects-with-pipenv) helped me get up and running in a few minutes.
+
 ```shell
 pip install pipenv
 cd <path>/udacity-fsnd-p4-flask-catalog
 pipenv install --three
+pipenv install flask
+pipenv install requests
+pipenv install sqlalchemy
+pipenv shell
 ```
 
 [(Back to TOC)](#table-of-contents)
