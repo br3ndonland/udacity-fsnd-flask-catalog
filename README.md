@@ -69,10 +69,14 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
 ## Repository contents
 
+- [.vscode](.vscode)
+  - [launch.json](.vscode/launch.json): Configuration file for debugging from within vscode.
+  - [settings.json](.vscode/settings.json): vscode settings override for this repository.
 - [info/](info)
   - [img/](info/img) - Images used in documentation.
-  - [flask-catalog-methods.md](flask-catalog-methods.md) - Computational narrative detailing the app creation process.
-  - [flask-catalog-udacity-docs.md](flask-catalog-udacity-docs.md) - Udacity documentation for the project.
+  - [flask-catalog-methods.md](info/flask-catalog-methods.md) - Computational narrative detailing the app creation process.
+  - [flask-catalog-review.md](info/flask-catalog-review.md) - Code review.
+  - [flask-catalog-udacity-docs.md](info/flask-catalog-udacity-docs.md) - Udacity documentation for the project.
 - [static/](static)
   - [img/](static/img) - Images used in the main application.
 - [templates/](templates) - HTML webpage templates.
@@ -114,14 +118,15 @@ The application can be run by setting up either a virtual environment or a virtu
 
 #### Virtual environment
 
-[Pipenv](https://docs.pipenv.org/) can be used to manage a Python virtual environment for this project. The user must first install Pipenv via Homebrew or pip. After changing into the project directory, running `pipenv install` will prompt Pipenv to read the Pipfile and install dependencies. The virtual environment can then be activated with `pipenv shell`, which spawns a subshell for the virtual environment. The subshell can be exited by simply entering `exit`.
+[Pipenv](https://docs.pipenv.org/) can be used to manage a Python virtual environment for this project. The user must first install Pipenv via Homebrew or pip. After changing into the project directory, running `pipenv install` will prompt Pipenv to read the Pipfile and install dependencies.
 
 ```shell
 pip install --user pipenv
 cd <path>/udacity-fsnd-p4-flask-catalog
 pipenv install
-pipenv shell
 ```
+
+The virtual environment can then be activated with `pipenv shell`, which spawns a subshell for the virtual environment. Python files can be run from the Pipenv subshell prompt. The subshell can be exited by simply entering `exit`.
 
 Proceed to the [run application instructions below](#run-application).
 
