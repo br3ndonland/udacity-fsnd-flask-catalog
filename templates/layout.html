@@ -20,12 +20,12 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark rounded-bottom mb-1">
       <a class="navbar-brand h1" href="{{ url_for('home') }}">Brendon's Bodybuilding Bazaar</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbarNav navbar-nav mr-auto">
-          {% if login_status %}
+      {% if login_status %}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbarNav navbar-nav mr-auto">
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('gdisconnect') }}">Logout</a>
             </li>
@@ -35,19 +35,19 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('add_category') }}">Add category</a>
             </li>
-          {% else %}
-            <span class="g-signin" id="signinButton"
-              data-scope="openid email"
-              data-clientid="{{ CLIENT_ID }}"
-              data-redirecturi="postmessage"
-              data-accesstype="offline"
-              data-cookiepolicy="single_host_origin"
-              data-callback="signInCallback"
-              data-approvalprompt="force">
-            </span>
-          {% endif %}
           </ul>
         </div>
+      {% else %}
+        <span class="g-signin" id="signinButton"
+          data-scope="openid email"
+          data-clientid="{{ CLIENT_ID }}"
+          data-redirecturi="postmessage"
+          data-accesstype="offline"
+          data-cookiepolicy="single_host_origin"
+          data-callback="signInCallback"
+          data-approvalprompt="force">
+        </span>
+      {% endif %}
     </nav>
   </header>
   <!-- Main page content -->

@@ -53,7 +53,11 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
   ![Homepage JSON](static/img/flask-catalog-index-json.png)
 
-- Clicking Sign In allows the user to authenticate with Google. Users who are logged in can add items and categories. The creator of each item or category can also edit or delete it.
+- Clicking Sign In allows the user to authenticate with Google.
+
+  ![Google Sign-In](img/flask-catalog-login.png)
+
+- Users who are logged in can add items and categories. The creator of each item or category can also edit or delete it.
 
   ![Edit category page](static/img/flask-catalog-edit-category.png)
 
@@ -124,7 +128,7 @@ pipenv install
 
 The virtual environment can then be activated with `pipenv shell`, which spawns a subshell for the virtual environment. Python files can be run from the Pipenv subshell prompt. The subshell can be exited by simply entering `exit`.
 
-The vscode configuration is also included to specify the virtual environment and enable debugging from within vscode. Instead of running the Python files from an external terminal, simply open each file, browse to Debug in vscode (Shift+Cmd+D), and run. At the time this application was written (April 2018), support for Pipenv within vscode was still [under active development](https://github.com/Microsoft/vscode-python/issues/1238).
+The vscode configuration is also included to specify the virtual environment and enable debugging from within vscode. At the time this application was written (April 2018), support for Pipenv within vscode was still [under active development](https://github.com/Microsoft/vscode-python/issues/1238).
 
 Proceed to the [run application instructions below](#run-application).
 
