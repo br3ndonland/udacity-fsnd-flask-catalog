@@ -53,11 +53,7 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
   ![Homepage JSON](static/img/flask-catalog-index-json.png)
 
-- Clicking log in allows the user to authenticate with Google.
-
-  ![Login page](static/img/flask-catalog-login.png)
-
-- Users who are logged in can add items and categories. The creator of each item or category can also edit or delete it.
+- Clicking Sign In allows the user to authenticate with Google. Users who are logged in can add items and categories. The creator of each item or category can also edit or delete it.
 
   ![Edit category page](static/img/flask-catalog-edit-category.png)
 
