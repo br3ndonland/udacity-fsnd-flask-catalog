@@ -49,6 +49,8 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
   - [Edit and delete items](#edit-and-delete-items)
   - [Revisiting database population](#revisiting-database-population)
   - [Virtual environment with `pipenv`](#virtual-environment-with-pipenv)
+- [Review](#review)
+- [Post-review](#post-review)
 - [Comments](#comments)
 
 ## Environment and documentation setup
@@ -1350,6 +1352,16 @@ pipenv shell
 ```
 
 [(Back to TOC)](#table-of-contents)
+
+## Review
+
+See [flask-catalog-review.md](flask-catalog-review.md). I got the Udacity code review back within a few hours. I passed with no corrections needed! The reviewer said, "I really commend you for this project." YES!
+
+## Post-review
+
+- Added review to repo and updated links in README
+- Added vscode debug configuration to enable running and debugging of the app within vscode
+- Moved the Google Sign-In button to the navbar. I had to pass the client id and state to all the pre-login pages, so that the user could log in from any page.
 
 ## Comments
 

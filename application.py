@@ -56,9 +56,14 @@ App route functions available prior to login
 @app.route('/')
 def home():
     """App route function for the homepage."""
+    # Detect login status
     login_status = None
     if 'email' in login_session:
         login_status = True
+    # Generate state token for Google Sign-In
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in range(32))
+    login_session['state'] = state
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
                   .order_by(Categories.name)
@@ -71,7 +76,9 @@ def home():
     return render_template('index.html',
                            categories=categories,
                            recent_items=recent_items,
-                           login_status=login_status)
+                           login_status=login_status,
+                           CLIENT_ID=CLIENT_ID,
+                           STATE=state)
 
 
 @app.route('/json')
@@ -88,9 +95,12 @@ def catalog_json():
 @app.route('/<string:category>')
 def show_category(category):
     """App route function to display all items in a specific category."""
+    # Detect login status
     login_status = None
     if 'email' in login_session:
         login_status = True
+    # Provide state token to enable Google Sign-In
+    state = login_session['state']
     # Query database with SQLAlchemy to show all categories
     categories = (session.query(Categories)
                   .order_by(Categories.name)
@@ -112,7 +122,9 @@ def show_category(category):
                            category_name=category.name,
                            category_items=category_items,
                            category_items_count=category_items_count,
-                           login_status=login_status)
+                           login_status=login_status,
+                           CLIENT_ID=CLIENT_ID,
+                           STATE=state)
 
 
 @app.route('/<string:category>/json')
@@ -133,9 +145,12 @@ def show_category_json(category):
 @app.route('/<string:category>/<string:item>')
 def show_item(category, item):
     """App route function to display an item."""
+    # Detect login status
     login_status = None
     if 'email' in login_session:
         login_status = True
+    # Provide state token to enable Google Sign-In
+    state = login_session['state']
     # Query database with SQLAlchemy to show selected category and item
     category = (session.query(Categories)
                 .filter_by(name=category.replace('-', ' '))
@@ -147,7 +162,9 @@ def show_item(category, item):
     return render_template('show_item.html',
                            item=item,
                            category=category,
-                           login_status=login_status)
+                           login_status=login_status,
+                           CLIENT_ID=CLIENT_ID,
+                           STATE=state)
 
 
 @app.route('/<string:category>/<string:item>/json')
@@ -176,19 +193,7 @@ redirect_uris = json.loads(open('client_secrets.json', 'r')
                            .read())['web']['redirect_uris']
 
 
-@app.route('/login')
-def login():
-    """App route function to log in and generate token."""
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in range(32))
-    login_session['state'] = state
-    # Render webpage
-    return render_template('login.html',
-                           CLIENT_ID=CLIENT_ID,
-                           STATE=state)
-
-
-# GConnect login
+# Google Sign-In
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     """App route function for Google Sign-In."""
@@ -244,7 +249,7 @@ def gconnect():
     if stored_credentials is not None and user_id == stored_user_id:
         print('User is already connected.')
         response = make_response(json.dumps(
-            'Users is already connected.'), 200)
+            'User is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
@@ -275,11 +280,8 @@ def gconnect():
         session.add(new_user)
         session.commit()
         print('New user {} added to database.'.format(login_session['email']))
-    output = ''
-    output += '<h3 class="font-weight-light">Welcome, '
-    output += login_session['name']
-    output += '!</h3>'
-    output += '<img src="'
+    output = ('<h3 class="font-weight-light">Welcome, {}!</h3>'
+              .format(login_session['name']))
     flash('Logged in as {}.'.format(login_session['email']))
     print('Logged in as {}.'.format(login_session['email']))
     print('Done!')
@@ -312,7 +314,7 @@ def add_category():
         login_status = True
     else:
         flash('Please log in.')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     if request.method == 'POST':
         # Get form fields
         new_category_name = request.form['new_category_name']
@@ -361,7 +363,7 @@ def edit_category(category):
         login_status = True
     else:
         flash('Please log in.')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     if request.method == 'POST':
         # Query database with SQLAlchemy and store query as an object
         category = (session.query(Categories)
@@ -383,7 +385,7 @@ def edit_category(category):
         # Only allow creator to edit. If not, redirect to login.
         if user_db_id != creator_db_id:
             flash('Only the creator can edit. Please log in as creator.')
-            return redirect(url_for('login'))
+            return redirect(url_for('home'))
         # Flash messages for incomplete item info
         if not request.form['edit_category_name']:
             flash('Please identify category.')
@@ -411,7 +413,7 @@ def delete_category(category):
         login_status = True
     else:
         flash('Please log in.')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     if request.method == 'POST':
         # Query database with SQLAlchemy and store queries as objects
         category = (session.query(Categories)
@@ -438,7 +440,7 @@ def delete_category(category):
         # Only allow creator to edit. If not, redirect to login.
         if user_db_id != creator_db_id:
             flash('Only the creator can edit. Please log in as creator.')
-            return redirect(url_for('login'))
+            return redirect(url_for('home'))
         session.delete(category)
         for item in category_items:
             session.delete(item)
@@ -461,7 +463,7 @@ def add_item():
         login_status = True
     else:
         flash('Please log in.')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     if request.method == 'POST':
         # Get form fields
         name = request.form['name']
@@ -533,7 +535,7 @@ def edit_item(category, item):
         login_status = True
     else:
         flash('Please log in.')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     # Query database with SQLAlchemy to display categories on page
     categories = session.query(Categories).all()
     if request.method == 'POST':
@@ -580,7 +582,7 @@ def edit_item(category, item):
         # Only allow creator to edit. If not, redirect to login.
         if user_db_id != creator_db_id:
             flash('Only the creator can edit. Please log in as creator.')
-            return redirect(url_for('login'))
+            return redirect(url_for('home'))
         # Store edits in an object
         edited_item = Items(name=name,
                             url=url,
@@ -619,7 +621,7 @@ def delete_item(category, item):
         login_status = True
     else:
         flash('Please log in.')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     if request.method == 'POST':
         # Query database with SQLAlchemy and store queries as objects
         category = (session.query(Categories)
@@ -643,7 +645,7 @@ def delete_item(category, item):
         # Only allow creator to edit. If not, redirect to login.
         if user_db_id != creator_db_id:
             flash('Only the creator can edit. Please log in as creator.')
-            return redirect(url_for('login'))
+            return redirect(url_for('home'))
         session.delete(item)
         session.commit()
         # Return to homepage
