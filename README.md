@@ -16,9 +16,8 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://choosealicense.com/)
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
-- [Table of Contents](#table-of-contents)
 - [Description](#description)
 - [Repository contents](#repository-contents)
 - [Instructions](#instructions)
@@ -65,7 +64,7 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
   ![Item page on iPhone 6S simulated with Firefox developer tools](static/img/flask-catalog-show-item-iPhone-6S.png)
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Repository contents
 
@@ -73,23 +72,25 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
   - [launch.json](.vscode/launch.json): Configuration file for running and debugging Python files from within vscode.
   - [settings.json](.vscode/settings.json): vscode settings override for this repository.
 - [info/](info)
-  - [img/](info/img) - Images used in documentation.
-  - [flask-catalog-methods.md](info/flask-catalog-methods.md) - Computational narrative detailing the app creation process.
-  - [flask-catalog-review.md](info/flask-catalog-review.md) - Code review.
-  - [flask-catalog-udacity-docs.md](info/flask-catalog-udacity-docs.md) - Udacity documentation for the project.
+  - [img/](info/img): Images used in documentation.
+  - [flask-catalog-methods.md](info/flask-catalog-methods.md): Computational narrative detailing the app creation process.
+  - [flask-catalog-review.md](info/flask-catalog-review.md): Code review.
+  - [flask-catalog-udacity-docs.md](info/flask-catalog-udacity-docs.md): Udacity documentation for the project.
 - [static/](static)
-  - [img/](static/img) - Images used in the main application.
-- [templates/](templates) - HTML webpage templates.
-- [.gitignore](.gitignore) - Instructions to Git to exclude certain files from commits.
-- [application.py](application.py) - Main Flask app Python file.
-- [database_data.py](database_data.py) - Python file used to populate the database.
-- [database_setup.py](database_setup.py) - Python file used to configure the database.
-- [LICENSE](LICENSE) - This file describes how the repository can be used by others. I have provided the repository under the MIT license, a permissive and widely-used license. See the [choose a license page](https://choosealicense.com/) for more info on licenses.
+  - [img/](static/img): Images used in the main application.
+- [templates/](templates): HTML webpage templates.
+- [venv](venv): Files for Python virtual environment.
+- [.gitignore](.gitignore): Instructions to Git to exclude certain files from commits.
+- [application.py](application.py): Main Flask app Python file.
+- [database_data.py](database_data.py): Python file used to populate the database.
+- [database_setup.py](database_setup.py): Python file used to configure the database.
+- [LICENSE](LICENSE): This file describes how the repository can be used by others. I have provided the repository under the MIT license, a permissive and widely-used license. See the [choose a license page](https://choosealicense.com/) for more info on licenses.
 - [Pipfile](Pipfile): List of Python dependencies for the Pipenv virtual environment.
 - [Pipfile.lock](Pipfile.lock): An extended version of the Pipfile containing hashes and other specific information for Pipenv.
-- [README.md](README.md) - This file, a concise description of the project.
+- [README.md](README.md): This file, a concise description of the project.
+- [requirements.txt](requirements.txt): List of Python packages installed by pip.
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Instructions
 
@@ -97,7 +98,7 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
 - This application will require an OAuth 2.0 client ID from the Google API dashboard.
 - Log into Google.
-- Navigate to the [Google APIs dashboard credentials page](https://console.developers.google.com/apis/credentials).
+- Navigate to the [Google Cloud Platform APIs credentials page](https://console.cloud.google.com/apis/credentials).
 - Click `Create credentials` and follow the prompts.
   - OAuth Client ID
   - Web application
@@ -115,14 +116,28 @@ The application can be run by setting up either a virtual environment or a virtu
 - Flask
 - Requests
 - SQLAlchemy
+- oauth2client
 
-#### Virtual environment
+#### Virtual environment with venv
+
+Python 3 is bundled with the `venv` module for creation of virtual environments.
+
+```shell
+cd <PATH>
+python3 -m venv venv
+# activate virtual env
+. venv/bin/activate
+# install modules listed in requirements.txt
+(venv) <PATH> pip install -r requirements.txt
+```
+
+#### Virtual environment with Pipenv
 
 [Pipenv](https://docs.pipenv.org/) can be used to manage a Python virtual environment for this project. The user must first install Pipenv via Homebrew or pip. After changing into the project directory, running `pipenv install` will prompt Pipenv to read the Pipfile and install dependencies.
 
 ```shell
 pip install --user pipenv
-cd <path>/udacity-fsnd-p4-flask-catalog
+cd <PATH>/udacity-fsnd-p4-flask-catalog
 pipenv install
 ```
 
@@ -136,7 +151,7 @@ Proceed to the [run application instructions below](#run-application).
 
 A virtual machine can be used to run the code from an operating system with a defined configuration. The virtual machine has all the dependencies needed to run the application.
 
-#### Configure virtual machine
+##### Configure virtual machine
 
 I wrote the program in a Linux virtual machine with the following components:
 
@@ -156,7 +171,7 @@ I wrote the program in a Linux virtual machine with the following components:
     pip3 install oauth2client --user
     ```
 
-#### Run virtual machine
+##### Run virtual machine
 
 - Clone the application repository into the *vagrant/* virtual machine directory.
 - Start the virtual machine and log into vagrant:
@@ -219,4 +234,4 @@ Here are some tips if you have to code a Flask app like this:
 - **When in doubt, make an object.** If you're unsure how to access information from the database or another part of the app, make an object, call the information with the object, and reference the object in downstream operations. For example, I made the `login_status` object to help track the user's login session, and I made several other objects to store the results of SQLAlchemy queries.
 - **Read the docs.** It's always important to read documentation, especially for this project, because the lessons didn't provide adequate preparation for building this app. The [Flask docs](http://flask.pocoo.org/) and [Stack Overflow Flask tag](https://stackoverflow.com/questions/tagged/flask) were helpful.
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)

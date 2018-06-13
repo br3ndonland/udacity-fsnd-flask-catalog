@@ -14,9 +14,8 @@ br3ndonland
 
 Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
-- [Table of Contents](#table-of-contents)
 - [Environment and documentation setup](#environment-and-documentation-setup)
   - [Virtual machine](#virtual-machine)
   - [Info](#info)
@@ -48,7 +47,8 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
   - [Add items](#add-items)
   - [Edit and delete items](#edit-and-delete-items)
   - [Revisiting database population](#revisiting-database-population)
-  - [Virtual environment with `pipenv`](#virtual-environment-with-pipenv)
+  - [Virtual environment with pipenv](#virtual-environment-with-pipenv)
+  - [Virtual environment with venv](#virtual-environment-with-venv)
 - [Review](#review)
 - [Post-review](#post-review)
 - [Comments](#comments)
@@ -74,7 +74,7 @@ I already had the vagrant virtual machine environment installed and ready to go.
 - The **[Flask tutorial](http://flask.pocoo.org/docs/0.12/tutorial/)** gave me a helpful step-by-step outline of the app creation process.
 - **I compared the steps from the Udacity lesson and the Flask tutorial to make my own app.**
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Directory setup
 
@@ -100,7 +100,7 @@ I already had the vagrant virtual machine environment installed and ready to go.
 - I added the */static- directory for CSS and JavaScript.
 - I added the */templates- directory for the HTML webpages.
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Database setup
 
@@ -290,7 +290,7 @@ $ brew cask install db-browser-for-sqlite
 
 ![Screenshot of DB Browser for SQLite, showing successful database creation and population](img/database-population.png)
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Application
 
@@ -364,7 +364,7 @@ Git commit at this point: "Create app routes" 0bcddf7
 
 **I thought about how to proceed. I could have built the HTML templates and tested the app, but decided to proceed with authentication and build the front-end later.**
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Authentication and authorization
 
@@ -446,7 +446,7 @@ Git commit at this point: "Add Google login" 4d3d016
 
 We were only required to implement one third-party login. Facebook login would probably be more effectively implemented with JavaScript, so I opted not to include it. See the [Facebook login documentation](https://developers.facebook.com/docs/facebook-login).
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Templates
 
@@ -486,7 +486,7 @@ Git commit at this point: "Create templates" 5d1febd
 
 I imported [Bootstrap](https://getbootstrap.com/) 4 for styling. I used Bootstrap for my [portfolio website](https://br3ndonland.github.io/udacity/). It is complicated, but widely used, so I decided to use it again here. I also looked at some other minimalist frameworks like Milligram.
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## First look facepalm
 
@@ -507,7 +507,7 @@ I imported [Bootstrap](https://getbootstrap.com/) 4 for styling. I used Bootstra
 
 :face_palm: 🤦
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Debugging app views
 
@@ -694,7 +694,7 @@ Git commit at this point: "Debug homepage" 6b21f07
 
 Git commit at this point: "Debug home, category, and item pages" 84ee802
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ### Debugging JSON
 
@@ -860,7 +860,7 @@ Git commit at this point: "Debug home, category, and item pages" 84ee802
 
 Git commit at this point: "Debug database names and JSON endpoints" ff3517e
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ### Debugging authentication
 
@@ -1061,7 +1061,7 @@ Git commit at this point: "Debug database names and JSON endpoints" ff3517e
 
 Git commit at this point: "Debug login page" dbc4cbe
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ### Debugging the login session
 
@@ -1144,7 +1144,7 @@ Git commit at this point: "Debug login page" dbc4cbe
 
   - Git commit at this point: "Debug category page display" 2feb338
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
 
 ## Debugging CRUD functions
 
@@ -1337,9 +1337,9 @@ Git commit at this point: "Debug login page" dbc4cbe
   vagrant@vagrant:/vagrant/flask-catalog$
   ```
 
-### Virtual environment with `pipenv`
+### Virtual environment with pipenv
 
-Pipenv was very easy to set up. The [thoughtbot blog post](https://robots.thoughtbot.com/how-to-manage-your-python-projects-with-pipenv) helped me get up and running in a few minutes.
+- Pipenv was very easy to set up. [Kenneth Reitz's pipenv docs](https://docs.pipenv.org/) and the [thoughtbot blog post](https://robots.thoughtbot.com/how-to-manage-your-python-projects-with-pipenv) helped me get up and running in a few minutes.
 
 ```shell
 pip install pipenv
@@ -1351,7 +1351,38 @@ pipenv install sqlalchemy
 pipenv shell
 ```
 
-[(Back to TOC)](#table-of-contents)
+- I started getting strange namespace errors from Pipenv after updating to Python 3.6.5 and Flask 1.0.2. See [pipenv-error-traceback.md](info/pipenv-error-traceback.md) for details. I switched to `venv` as a more stable alternative.
+
+### Virtual environment with venv
+
+- Python 3 is bundled with the `venv` module for creation of virtual environments. It is no longer necessary to `pip install virtualenv`.
+- See the [Python 3 venv tutorial](https://docs.python.org/3/tutorial/venv.html) and the [Flask 1 docs](http://flask.pocoo.org/docs/1.0/installation/).
+
+  ```shell
+  cd <PATH>
+  python3 -m venv venv
+  # activate virtual env
+  . venv/bin/activate
+  # install required modules within virtual env
+  (venv) <PATH> pip install flask
+  (venv) <PATH> pip install requests
+  (venv) <PATH> pip install sqlalchemy
+  (venv) <PATH> pip install oauth2client
+  # generate list of packages
+  (venv) <PATH> pip freeze > requirements.txt
+  ```
+
+- Once requirements.txt has been generated, future installations are simpler:
+
+  ```shell
+  cd <PATH>
+  python3 -m venv venv
+  # activate virtual env
+  . venv/bin/activate
+  # install modules listed in requirements.txt
+  (venv) <PATH> pip install -r requirements.txt
+  ```
+
 
 ## Review
 
@@ -1362,6 +1393,7 @@ See [flask-catalog-review.md](flask-catalog-review.md). I got the Udacity code r
 - Added review to repo and updated links in README
 - Added vscode debug configuration to enable running and debugging of the app within vscode
 - Moved the Google Sign-In button to the navbar. I had to pass the client id and state to all the pre-login pages, so that the user could log in from any page.
+- I also wanted to remove the inline JavaScript. After moving the JavaScript to a separate file, it could no longer use Jinja, so `url: '/gconnect?state={{ STATE }}',` and `window.location.href = "{{ url_for('home') }}"` return those strings literally, without reading the variables passed into the HTML from Python. I found a [response on Stack Overflow](https://stackoverflow.com/a/42158426/8921994) to ["How can I pass data from Flask to JavaScript in a template?"](https://stackoverflow.com/questions/11178426/how-can-i-pass-data-from-flask-to-javascript-in-a-template#11178486) that suggested defining the variable with an inline script prior to sourcing the external script.
 
 ## Comments
 
@@ -1391,4 +1423,4 @@ It would have been **better to build the app according to the agile iterative de
 - It took ~70 hours to debug the login.
 - It took ~50 hours for further debugging.
 
-[(Back to TOC)](#table-of-contents)
+[(Back to top)](#top)
