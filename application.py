@@ -191,6 +191,7 @@ CLIENT_SECRET = json.loads(open('client_secrets.json', 'r')
                            .read())['web']['client_secret']
 redirect_uris = json.loads(open('client_secrets.json', 'r')
                            .read())['web']['redirect_uris']
+app.secret_key = CLIENT_SECRET
 
 
 # Google Sign-In
@@ -691,5 +692,4 @@ def gdisconnect():
 # If this file is called as a standalone program:
 if __name__ == '__main__':
     # Run the Flask app on port 8000 and enable debugging
-    app.secret_key = CLIENT_SECRET
     app.run(host='0.0.0.0', port=8000, debug=True)
