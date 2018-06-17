@@ -223,6 +223,7 @@ I wrote the program in a Linux virtual machine with the following components:
 
 - Navigate to [http://localhost:8000](http://localhost:8000) in a web browser. **Note that Google will reject sign-in from [http://0.0.0.0:8000](http://0.0.0.0:8000).**
 - Log in, and enjoy!
+- For my final project, I also configured a Linux Apache server to serve the app. The app is available at [http://catalog.br3ndonland.com/](http://catalog.br3ndonland.com/), and the project documentation is available in the [udacity-fsnd-p6-server](https://github.com/br3ndonland/udacity-fsnd-p6-server) repo.
 
 ## Tips
 
