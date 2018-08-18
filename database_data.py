@@ -7,10 +7,11 @@ database_data.py
 
 This file contains information used to populate the Flask app database.
 """
+import os
 
-# Import SQLAlchemy modules for database
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from database_setup import Base, Categories, Items, Users
 
 
@@ -36,10 +37,14 @@ Populate database
 """
 
 # User
-# Request input from user
-print('\n', 'Provide credentials to be used when populating the database')
-user_name = input('Please enter your name: ')
-user_email = input('Please enter your email address: ')
+if os.environ.get('USER_NAME') and os.environ.get('USER_EMAIL'):
+    user_name = os.environ.get('USER_NAME')
+    user_email = os.environ.get('USER_EMAIL')
+else:
+    # Request input from user
+    print('\n', 'Provide credentials to be used when populating the database')
+    user_name = input('Please enter your name: ')
+    user_email = input('Please enter your email address: ')
 # Query database for user email
 user_email_in_db = (session.query(Users.email)
                     .filter_by(email=user_email)

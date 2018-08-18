@@ -47,11 +47,11 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
   - [Add items](#add-items)
   - [Edit and delete items](#edit-and-delete-items)
   - [Revisiting database population](#revisiting-database-population)
-  - [Virtual environment with pipenv](#virtual-environment-with-pipenv)
-  - [Virtual environment with venv](#virtual-environment-with-venv)
+- [Comments](#comments)
 - [Review](#review)
 - [Post-review](#post-review)
-- [Comments](#comments)
+  - [Virtual environment](#virtual-environment)
+  - [Docker container](#docker-container)
 
 ## Environment and documentation setup
 
@@ -1337,23 +1337,68 @@ Git commit at this point: "Debug login page" dbc4cbe
   vagrant@vagrant:/vagrant/flask-catalog$
   ```
 
-### Virtual environment with pipenv
+[(Back to top)](#top)
+
+## Comments
+
+**The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
+
+- [SQLAlchemy](http://www.sqlalchemy.org/): What type of data the query would return, and how to extract from it.
+- [Jinja](http://jinja.pocoo.org/docs/2.10/)
+- [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
+- [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
+
+**In general, I found it difficult to:**
+
+- Build the app in a systematic way.
+- Keep the application code structured. **Flask didn't seem to scale well.**
+- Coordinate changes among the functions, app routes, and templates.
+- Follow all the similar variable names being used everywhere.
+- Debug. It would be helpful to be able to debug on the command line at any point, not just when there is an error. I couldn't really follow the [instructions for the Flask CLI](http://flask.pocoo.org/docs/0.12/cli/). I built many `print()` statements into *application.py* to help with debugging.
+- Integrate Flask and JavaScript. As much as I appreciate Python, it seems like I'm just avoiding JavaScript and should just be coding everything in JavaScript instead of Python.
+- Keep in mind that Flask is only at version 0.12. It needs more development.
+
+It would have been **better to build the app according to the agile iterative development process** lesson (see [my notes on the agile lesson](https://github.com/br3ndonland/udacity-fsnd/blob/master/4-web-apps/full-stack-foundations/fsf-4-agile.md)), but the lessons were so poorly organized that I didn't really think about it, and the [introductory info for this project](#info) didn't even mention the agile lesson.
+
+**Time commitment:**
+
+- It took ~50 hours over a week (end of March 2018) to build the initial version of the app (up to the :face_palm: stage).
+- It took ~30 hours to debug the pages and JSON.
+- It took ~70 hours to debug the login.
+- It took ~50 hours for further debugging.
+
+[(Back to top)](#top)
+
+## Review
+
+See [flask-catalog-review.md](flask-catalog-review.md). I got the Udacity code review back within a few hours. I passed with no corrections needed! The reviewer said, "I really commend you for this project." YES!
+
+## Post-review
+
+- Added review to repo and updated links in README
+- Added vscode debug configuration to enable running and debugging of the app within vscode
+- Moved the Google Sign-In button to the navbar. I had to pass the client id and state to all the pre-login pages, so that the user could log in from any page.
+- I also wanted to remove the inline JavaScript. After moving the JavaScript to a separate file, it could no longer use Jinja, so `url: '/gconnect?state={{ STATE }}',` and `window.location.href = "{{ url_for('home') }}"` return those strings literally, without reading the variables passed into the HTML from Python. I found a [response on Stack Overflow](https://stackoverflow.com/a/42158426/8921994) to ["How can I pass data from Flask to JavaScript in a template?"](https://stackoverflow.com/questions/11178426/how-can-i-pass-data-from-flask-to-javascript-in-a-template#11178486) that suggested defining the variable with an inline script prior to sourcing the external script.
+
+### Virtual environment
+
+#### pipenv
 
 - Pipenv was very easy to set up. [Kenneth Reitz's pipenv docs](https://docs.pipenv.org/) and the [thoughtbot blog post](https://robots.thoughtbot.com/how-to-manage-your-python-projects-with-pipenv) helped me get up and running in a few minutes.
 
-```shell
-pip install pipenv
-cd <path>/udacity-fsnd-p4-flask-catalog
-pipenv install --three
-pipenv install flask
-pipenv install requests
-pipenv install sqlalchemy
-pipenv shell
-```
+  ```shell
+  pip install pipenv
+  cd <path>/udacity-fsnd-p4-flask-catalog
+  pipenv install --three
+  pipenv install flask
+  pipenv install requests
+  pipenv install sqlalchemy
+  pipenv shell
+  ```
 
 - I started getting strange namespace errors from Pipenv after updating to Python 3.6.5 and Flask 1.0.2. See [pipenv-error-traceback.md](info/pipenv-error-traceback.md) for details. I switched to `venv` as a more stable alternative.
 
-### Virtual environment with venv
+#### venv
 
 - Python 3 is bundled with the `venv` module for creation of virtual environments. It is no longer necessary to `pip install virtualenv`.
 - See the [Python 3 venv tutorial](https://docs.python.org/3/tutorial/venv.html) and the [Flask 1 docs](http://flask.pocoo.org/docs/1.0/installation/).
@@ -1383,44 +1428,20 @@ pipenv shell
   (venv) <PATH> pip install -r requirements.txt
   ```
 
+### Docker container
 
-## Review
+- vscode has a [Docker extension](https://github.com/microsoft/vscode-docker) and a helpful guide to [working with Docker in vscode](https://code.visualstudio.com/docs/azure/docker).
+- I also went through the [Docker getting started docs](https://docs.docker.com/get-started), which actually feature a simple Flask app.
+- I opened the command palette and ran "Docker: Add Docker files to Workspace," which generated my *Dockerfile*, *docker-compose.yml*, and *docker-compose.debug.yml*.
+- The auto-generated files weren't completely correct. I updated the *Dockerfile* with correct info.
+- I had to update the application files to work with Docker. I previously had a terminal prompt for user info when populating the database. Docker needs this info. I added environment variables to the *Dockerfile*. I then modified the *database_data.py* and *application.py* modules to read the environment variables.
+- I built and ran the container:
 
-See [flask-catalog-review.md](flask-catalog-review.md). I got the Udacity code review back within a few hours. I passed with no corrections needed! The reviewer said, "I really commend you for this project." YES!
+  ```sh
+  docker build -t catalog .
+  docker run -d -p 80:80 catalog:latest
+  ```
 
-## Post-review
-
-- Added review to repo and updated links in README
-- Added vscode debug configuration to enable running and debugging of the app within vscode
-- Moved the Google Sign-In button to the navbar. I had to pass the client id and state to all the pre-login pages, so that the user could log in from any page.
-- I also wanted to remove the inline JavaScript. After moving the JavaScript to a separate file, it could no longer use Jinja, so `url: '/gconnect?state={{ STATE }}',` and `window.location.href = "{{ url_for('home') }}"` return those strings literally, without reading the variables passed into the HTML from Python. I found a [response on Stack Overflow](https://stackoverflow.com/a/42158426/8921994) to ["How can I pass data from Flask to JavaScript in a template?"](https://stackoverflow.com/questions/11178426/how-can-i-pass-data-from-flask-to-javascript-in-a-template#11178486) that suggested defining the variable with an inline script prior to sourcing the external script.
-
-## Comments
-
-**The lessons didn't prepare me to build the app, which made this a struggle. I didn't have a good grasp of:**
-
-- [SQLAlchemy](http://www.sqlalchemy.org/): What type of data the query would return, and how to extract from it.
-- [Jinja](http://jinja.pocoo.org/docs/2.10/)
-- [Rendering templates](http://flask.pocoo.org/docs/0.12/quickstart/#rendering-templates)
-- [URL building with `url_for`](http://flask.pocoo.org/docs/0.12/quickstart/#url-building)
-
-**In general, I found it difficult to:**
-
-- Build the app in a systematic way.
-- Keep the application code structured. **Flask didn't seem to scale well.**
-- Coordinate changes among the functions, app routes, and templates.
-- Follow all the similar variable names being used everywhere.
-- Debug. It would be helpful to be able to debug on the command line at any point, not just when there is an error. I couldn't really follow the [instructions for the Flask CLI](http://flask.pocoo.org/docs/0.12/cli/). I built many `print()` statements into *application.py* to help with debugging.
-- Integrate Flask and JavaScript. As much as I appreciate Python, it seems like I'm just avoiding JavaScript and should just be coding everything in JavaScript instead of Python.
-- Keep in mind that Flask is only at version 0.12. It needs more development.
-
-It would have been **better to build the app according to the agile iterative development process** lesson (see [my notes on the agile lesson](https://github.com/br3ndonland/udacity-fsnd/blob/master/4-web-apps/full-stack-foundations/fsf-4-agile.md)), but the lessons were so poorly organized that I didn't really think about it, and the [introductory info for this project](#info) didn't even mention the agile lesson.
-
-**Time commitment:**
-
-- It took ~50 hours over a week (end of March 2018) to build the initial version of the app (up to the :face_palm: stage).
-- It took ~30 hours to debug the pages and JSON.
-- It took ~70 hours to debug the login.
-- It took ~50 hours for further debugging.
+- The running container was visible at [http://localhost:80](http://localhost:80).
 
 [(Back to top)](#top)

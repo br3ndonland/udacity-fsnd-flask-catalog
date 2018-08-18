@@ -8,6 +8,12 @@ application.py
 This file contains the main Flask application code.
 """
 
+import json
+import os
+import random
+import requests
+import string
+
 # Import SQLAlchemy modules for database
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -20,12 +26,6 @@ from flask import session as login_session
 
 # Import authentication modules
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
-
-# Import other modules
-import json
-import random
-import requests
-import string
 
 
 """
@@ -691,5 +691,7 @@ def gdisconnect():
 
 # If this file is called as a standalone program:
 if __name__ == '__main__':
-    # Run the Flask app on port 8000 and enable debugging
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(
+        host=os.environ.get('APP_HOST') or '0.0.0.0',
+        port=os.environ.get('APP_PORT') or 5000
+    )

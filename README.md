@@ -24,6 +24,9 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
   - [Generate credentials](#generate-credentials)
   - [Set up environment](#set-up-environment)
   - [Run application](#run-application)
+- [Deployment](#deployment)
+  - [Linux Apache server](#linux-apache-server)
+  - [Docker](#docker)
 - [Tips](#tips)
 
 ## Description
@@ -80,10 +83,12 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
   - [img/](static/img): Images used in the main application.
 - [templates/](templates): HTML webpage templates.
 - [venv](venv): Files for Python virtual environment.
+- [.dockerignore](.dockerignore): Instructions to Docker to exclude certain files from container builds.
 - [.gitignore](.gitignore): Instructions to Git to exclude certain files from commits.
 - [application.py](application.py): Main Flask app Python file.
 - [database_data.py](database_data.py): Python file used to populate the database.
 - [database_setup.py](database_setup.py): Python file used to configure the database.
+- [Dockerfile](Dockerfile): Docker container build instructions.
 - [LICENSE](LICENSE): This file describes how the repository can be used by others. I have provided the repository under the MIT license, a permissive and widely-used license. See the [choose a license page](https://choosealicense.com/) for more info on licenses.
 - [README.md](README.md): This file, a concise description of the project.
 - [requirements.txt](requirements.txt): List of Python packages installed by pip.
@@ -226,7 +231,49 @@ I wrote the program in a Linux virtual machine with the following components:
 
 - Navigate to [http://localhost:8000](http://localhost:8000) in a web browser. **Note that Google will reject sign-in from [http://0.0.0.0:8000](http://0.0.0.0:8000).**
 - Log in, and enjoy!
-- For my final project, I also configured a Linux Apache server to serve the app. The app is available at [http://catalog.br3ndonland.com/](http://catalog.br3ndonland.com/), and the project documentation is available in the [udacity-fsnd-p6-server](https://github.com/br3ndonland/udacity-fsnd-p6-server) repo.
+
+## Deployment
+
+### Linux Apache server
+
+- For my final project, I configured a Linux Apache server to serve the app.
+- This was prior to building the Docker container, so the app is running with a standard Linux Apache configuration.
+- The project documentation is available in the [udacity-fsnd-p6-server](https://github.com/br3ndonland/udacity-fsnd-p6-server) repo.
+- The app is available at [catalog.br3ndonland.com](https://catalog.br3ndonland.com).
+
+### Docker
+
+After completing and deploying the application, I learned how to use Docker and assembled the application into a [Docker](https://www.docker.com/) container.
+
+- An **image** is the executable set of files used by Docker.
+- A **container** is a running image.
+- The [Dockerfile](https://docs.docker.com/get-started/part2/#define-a-container-with-dockerfile) tells Docker how to build the container.
+- Visual Studio Code has built-in Docker features. See [Working with Docker in VS Code](https://code.visualstudio.com/docs/azure/docker).
+
+To build and run the Docker application container locally:
+
+1. Clone, or fork and clone, the GitHub repository to your machine.
+2. [Install Docker Desktop](https://www.docker.com/products/docker-desktop) on your machine.
+3. Build and run the container.
+
+    ```sh
+    docker build -t catalog .
+    docker run -d -p 80:80 catalog:latest
+    ```
+
+    `-p 80:80` maps the http port 80 from your local machine to port 80 on the container. Ports other than `80` can be used by modifying the Dockerfile.
+
+    Other useful commands:
+
+    ```sh
+    docker container ls
+    docker container stop <SHA or container name>
+    docker container rm <SHA or container name>
+    docker image ls
+    docker image rm <SHA or container name>
+    ```
+
+4. Browse to [http://localhost:80](http://localhost:80) to see the app.
 
 ## Tips
 
