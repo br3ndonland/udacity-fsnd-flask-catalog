@@ -85,10 +85,11 @@ Python Flask CRUD web app with SQLite DB, Google Sign-In, and JSON API
 - [database_data.py](database_data.py): Python file used to populate the database.
 - [database_setup.py](database_setup.py): Python file used to configure the database.
 - [LICENSE](LICENSE): This file describes how the repository can be used by others. I have provided the repository under the MIT license, a permissive and widely-used license. See the [choose a license page](https://choosealicense.com/) for more info on licenses.
-- [Pipfile](Pipfile): List of Python dependencies for the Pipenv virtual environment.
-- [Pipfile.lock](Pipfile.lock): An extended version of the Pipfile containing hashes and other specific information for Pipenv.
 - [README.md](README.md): This file, a concise description of the project.
 - [requirements.txt](requirements.txt): List of Python packages installed by pip.
+
+<!-- - [Pipfile](Pipfile): List of Python dependencies for the Pipenv virtual environment. -->
+<!-- - [Pipfile.lock](Pipfile.lock): An extended version of the Pipfile containing hashes and other specific information for Pipenv. -->
 
 [(Back to top)](#top)
 
@@ -131,6 +132,7 @@ python3 -m venv venv
 (venv) <PATH> pip install -r requirements.txt
 ```
 
+<!--
 #### Virtual environment with Pipenv
 
 [Pipenv](https://docs.pipenv.org/) can be used to manage a Python virtual environment for this project. The user must first install Pipenv via Homebrew or pip. After changing into the project directory, running `pipenv install` will prompt Pipenv to read the Pipfile and install dependencies.
@@ -146,6 +148,7 @@ The virtual environment can then be activated with `pipenv shell`, which spawns 
 The vscode configuration is also included to specify the virtual environment and enable debugging from within vscode. At the time this application was written (April 2018), support for Pipenv within vscode was still [under active development](https://github.com/Microsoft/vscode-python/issues/1238).
 
 Proceed to the [run application instructions below](#run-application).
+-->
 
 #### Virtual machine
 
