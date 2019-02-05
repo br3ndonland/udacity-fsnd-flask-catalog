@@ -238,7 +238,7 @@ I wrote the program in a Linux virtual machine with the following components:
 
 - For my final project, I configured a Linux Apache server to serve the app.
 - This was prior to building the Docker container, so the app is running with a standard Linux Apache configuration.
-- The project documentation is available in the [udacity-fsnd-p6-server](https://github.com/br3ndonland/udacity-fsnd-p6-server) repo.
+- The project documentation is available in the [udacity-fsnd-flask-catalog-server](https://github.com/br3ndonland/udacity-fsnd-flask-catalog-server) repo.
 - The app is available at [catalog.br3ndonland.com](https://catalog.br3ndonland.com).
 
 ### Docker
@@ -274,6 +274,7 @@ To build and run the Docker application container locally:
     ```
 
 4. Browse to [http://localhost:80](http://localhost:80) to see the app.
+5. For deployment info, see [*server-methods.md*](https://github.com/br3ndonland/udacity-fsnd-flask-catalog-server/blob/master/info/server-methods.md).
 
 ## Tips
 
