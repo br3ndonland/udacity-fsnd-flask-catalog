@@ -548,14 +548,8 @@ def edit_item(category, item):
                 .filter_by(name=item.replace('-', ' '))
                 .one())
         # Get form fields submitted by user, or retain item info
-        if request.form['name']:
-            name = request.form['name']
-        else:
-            name = item.name
-        if request.form['url']:
-            url = request.form['url']
-        else:
-            url = item.url
+        name = request.form['name'] if request.form['name'] else item.name
+        url = request.form['url'] if request.form['url'] else item.url
         if request.form['photo_url']:
             photo_url = request.form['photo_url']
         else:
